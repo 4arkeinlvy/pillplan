@@ -5,11 +5,25 @@
 
 @media print {
   html {
-    font-size: 14pt;
+    font-size: 12pt;
   }
 
+  html,
   body {
+    min-height: 0;
     background: #fff;
+    background-image: none;
+  }
+
+  /* No app chrome or full-height wrappers in print, so no empty extra page. */
+  #root > div {
+    min-height: 0 !important;
+    display: block !important;
+  }
+
+  dialog,
+  [role='status'] {
+    display: none !important;
   }
 
   * {
