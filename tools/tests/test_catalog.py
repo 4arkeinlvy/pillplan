@@ -98,6 +98,19 @@ def test_json_uses_camel_case_and_is_stable() -> None:
     assert {"drugClass", "defaultTimes", "bestTimes", "defaultPrn"} <= drug.keys()
 
 
+def test_missing_translation_is_rejected(data_copy: Path) -> None:
+    _replace(data_copy / "terms.csv", "Statin,Statin\n", "")
+    with pytest.raises(ValueError, match="no Indonesian text for 'Statin'"):
+        read_catalog(data_copy)
+
+
+def test_text_is_bilingual() -> None:
+    catalog = read_catalog(DATA)
+    simvastatin = next(d for d in catalog.drugs if d.id == "simvastatin")
+    assert simvastatin.advice.id == "Biasanya diminum pada malam hari."
+    assert next(d for d in catalog.drugs if d.id == "paracetamol").aliases == ("parasetamol",)
+
+
 def test_area_counts_cover_every_drug() -> None:
     catalog = read_catalog(DATA)
     assert sum(count for _, count in area_counts(catalog)) == len(catalog.drugs)

@@ -26,10 +26,17 @@ class _Model(BaseModel):
     )
 
 
+class LocalText(_Model):
+    """The same text in English and Indonesian."""
+
+    en: Text
+    id: Text
+
+
 class WarningLabel(_Model):
     id: Slug
-    short: Text
-    text: Text
+    short: LocalText
+    text: LocalText
     icon: Slug
     sticker: StickerColor
 
@@ -45,10 +52,11 @@ class Ingredient(_Model):
 class Drug(_Model):
     id: Slug
     name: Text
+    aliases: tuple[Text, ...]
     brands: tuple[Text, ...]
     ingredients: tuple[Slug, ...] = Field(min_length=1)
-    drug_class: Text
-    area: Text
+    drug_class: LocalText
+    area: LocalText
     form: DrugForm
     strengths: tuple[tuple[float, ...], ...] = Field(min_length=1)
     unit: DoseUnit
@@ -57,7 +65,7 @@ class Drug(_Model):
     best_times: tuple[TimeSlot, ...]
     food: Food
     warnings: tuple[Slug, ...]
-    advice: Text
+    advice: LocalText
     source: Text
 
     @model_validator(mode="after")
