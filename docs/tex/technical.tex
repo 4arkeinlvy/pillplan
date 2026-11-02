@@ -289,6 +289,27 @@ Stickers always combine color, an icon and words:
   \item 18 px base and a 1.25 scale. Print uses 14 pt for names and doses.
 \end{itemize}
 
+\subsection{Design rules}
+These rules keep the screen calm for a busy counter. Every new screen is checked against them.
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}p{40mm}X@{}}
+\toprule
+Rule & In PillPlan \\
+\midrule
+One task per area & Left: build the plan. Right: the chart. Everything else (save, PDF, reminders, my drugs) is in the More drawer. Safety notes are one line above the chart until opened. \\
+One primary button & Amber only for the main action of a view: Print / PDF, Add to chart, Add to phone calendar. \\
+Light controls, strong content & Inputs, chips and buttons have 1 px light grey borders that darken on hover and focus. Strong black lines appear only on the chart sheet. \\
+8 px spacing grid & 32 px between sections, 16 px between fields, 6 px from label to control. \\
+Type scale & 17 px interface text, 18 px chart text, headings 20, 24 and 32 px. Bold only for names, doses and labels. \\
+Touch targets & Every control is at least 44 px tall (WCAG 2.2). \\
+Colour budget & About 60\% paper and desk, 30\% ink, at most 10\% amber. A chosen chip is an amber tint, not solid black. \\
+Alignment & Fields in a row share one top line. Units sit inside the stepper (``1 tablet'', ``4 kali''), never below it. \\
+Motion & 150 to 250 ms, ease out, only when something changes, never looping, off with reduced motion. \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Icons}
+Each time of day has its own shape, so they are never confused: \textbf{Pagi} a sun rising over the horizon, \textbf{Siang} a full sun, \textbf{Malam} a moon with a star, \textbf{Sebelum tidur} a bed with ``z''. When a time chip is switched on, its icon moves once: the sun rays turn, the rising sun lifts, the moon tilts, the ``z'' floats up. The icons are drawn as 24 px SVG with 2 px strokes, so they print sharply.
+
 \subsection{Anti-slop rules}
 Taken from Anthropic's \texttt{frontend-design} skill and the \texttt{avoid-ai-design} catalog. PillPlan does not use:
 \begin{itemize}
@@ -308,7 +329,8 @@ Motion is used only where it explains a change, built with CSS and the View Tran
 Moment & What moves and why \\
 \midrule
 Dose stamp & A new dose is pressed into its column like a pharmacy stamp, column by column. It shows where the dose landed. \\
-Signa preview & The preview turns bold with a check once the signa is understood, and the time chips switch on. \\
+Signa preview & The preview turns bold, a check mark draws itself, and the time chips switch on with their icons moving. \\
+Drawer and strip & The More drawer slides in from the right; the safety strip opens downward with a turning chevron. \\
 Counseling timeline & A line from sunrise to night; the doses of the current medicine light up and a sun or moon marker slides to the first one. \\
 Counseling page turn & Next slides the medicine to the left, Back to the right, so the direction is clear. \\
 Note to rows & Pointing at a safety note outlines the medicines it is about and fades the rest. \\
