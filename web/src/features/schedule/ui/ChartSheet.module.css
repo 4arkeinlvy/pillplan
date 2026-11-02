@@ -63,10 +63,25 @@
   text-align: left;
 }
 
+.chart thead th {
+  vertical-align: top;
+}
+
+.chart thead th:first-child {
+  vertical-align: bottom;
+}
+
 .slotHead {
   display: grid;
+  grid-template-rows: 28px auto;
   justify-items: center;
-  gap: 2px;
+  align-items: end;
+  gap: 4px;
+}
+
+.slotLabel {
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .chart tbody th,
@@ -291,5 +306,11 @@
 
   .chart tr {
     break-inside: avoid;
+  }
+
+  .chart thead th {
+    font-size: 9pt;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
