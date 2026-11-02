@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { DrugSearch } from '@/features/catalog';
+import { useRef, useState, type RefObject } from 'react';
+import { DrugSearch, useMyDrugs } from '@/features/catalog';
+import { useI18n } from '@/shared/i18n';
 import { newId } from '@/shared/id';
-import { strings } from '@/shared/strings';
 import { useToast } from '@/shared/ui/Toast';
 import { withViewTransition } from '@/shared/viewTransition';
-import { customMedicine, medicineFromDrug } from '../logic/fromDrug';
+import { customMedicine, medicineFromDrug, medicineFromMyDrug, toMyDrug } from '../logic/fromDrug';
 import type { Medicine } from '../model';
 import { MedicineForm } from './MedicineForm';
 import { MedicineList } from './MedicineList';
@@ -16,24 +16,41 @@ interface Draft {
   mode: 'add' | 'edit';
 }
 
+interface MedicinePanelProps {
+  searchRef?: RefObject<HTMLInputElement | null>;
+}
+
 /** Search, the add or edit form, and the sortable list of medicines. */
-export function MedicinePanel() {
+export function MedicinePanel({ searchRef }: MedicinePanelProps) {
   const { plan, dispatch } = usePlan();
+  const { rememberDrug } = useMyDrugs();
+  const { t, lang } = useI18n();
   const toast = useToast();
+  const ownRef = useRef<HTMLInputElement>(null);
+  const inputRef = searchRef ?? ownRef;
   const [draft, setDraft] = useState<Draft | null>(null);
 
-  const submit = (medicine: Medicine) => {
+  const close = () => {
+    setDraft(null);
+    window.setTimeout(() => inputRef.current?.focus());
+  };
+
+  const submit = (medicine: Medicine, remember: boolean) => {
     const mode = draft?.mode;
     withViewTransition(() => dispatch({ type: mode === 'edit' ? 'update' : 'add', medicine }));
-    setDraft(null);
+    if (mode === 'add' && medicine.drugId === null && remember) {
+      rememberDrug(toMyDrug(medicine, newId()));
+      toast(t.myDrugs.saved(medicine.name));
+    }
+    close();
   };
 
   const remove = (medicine: Medicine) => {
     const index = plan.medicines.findIndex((m) => m.id === medicine.id);
     withViewTransition(() => dispatch({ type: 'remove', id: medicine.id }));
     if (draft?.medicine.id === medicine.id) setDraft(null);
-    toast(strings.list.removed(medicine.name), {
-      label: strings.list.undo,
+    toast(t.list.removed(medicine.name), {
+      label: t.list.undo,
       run: () => withViewTransition(() => dispatch({ type: 'restore', medicine, index })),
     });
   };
@@ -41,7 +58,13 @@ export function MedicinePanel() {
   return (
     <div className={styles.panel}>
       <DrugSearch
-        onPick={(drug) => setDraft({ medicine: medicineFromDrug(drug, 0, newId()), mode: 'add' })}
+        inputRef={inputRef}
+        onPick={(drug) =>
+          setDraft({ medicine: medicineFromDrug(drug, 0, newId(), lang), mode: 'add' })
+        }
+        onPickMine={(drug) =>
+          setDraft({ medicine: medicineFromMyDrug(drug, newId()), mode: 'add' })
+        }
         onCustom={(name) => setDraft({ medicine: customMedicine(name, newId()), mode: 'add' })}
       />
       {draft && (
@@ -50,7 +73,7 @@ export function MedicinePanel() {
           initial={draft.medicine}
           mode={draft.mode}
           onSubmit={submit}
-          onCancel={() => setDraft(null)}
+          onCancel={close}
         />
       )}
       <MedicineList

@@ -1,5 +1,5 @@
 import { TIME_SLOTS, type TimeSlot } from '@/shared/domain/time';
-import { strings } from '@/shared/strings';
+import { useI18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/Icon';
 import styles from './SlotSpotlight.module.css';
 
@@ -11,13 +11,10 @@ interface SlotSpotlightProps {
 
 /** Day ribbon: how many medicines at each time, and a toggle to highlight that column. */
 export function SlotSpotlight({ counts, selected, onSelect }: SlotSpotlightProps) {
+  const { t } = useI18n();
   const most = Math.max(1, ...TIME_SLOTS.map((slot) => counts[slot]));
   return (
-    <div
-      className={`${styles.ribbon} no-print`}
-      role="group"
-      aria-label={strings.chart.spotlightLabel}
-    >
+    <div className={`${styles.ribbon} no-print`} role="group" aria-label={t.chart.spotlightLabel}>
       {TIME_SLOTS.map((slot) => (
         <button
           key={slot}
@@ -28,7 +25,7 @@ export function SlotSpotlight({ counts, selected, onSelect }: SlotSpotlightProps
         >
           <span className={styles.top}>
             <Icon name={slot} size={18} />
-            {strings.slots[slot]}
+            {t.slots[slot]}
           </span>
           <svg
             className={styles.bar}
@@ -37,9 +34,15 @@ export function SlotSpotlight({ counts, selected, onSelect }: SlotSpotlightProps
             aria-hidden="true"
           >
             <rect width="100" height="8" fill="var(--rule)" />
-            <rect width={(counts[slot] / most) * 100} height="8" fill="var(--ink)" />
+            <rect
+              className={styles.fill}
+              width="100"
+              height="8"
+              fill="var(--ink)"
+              style={{ transform: `scaleX(${counts[slot] / most})` }}
+            />
           </svg>
-          <span className={styles.count}>{strings.chart.medicinesAt(counts[slot])}</span>
+          <span className={styles.count}>{t.chart.medicinesAt(counts[slot])}</span>
         </button>
       ))}
     </div>

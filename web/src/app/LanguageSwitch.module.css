@@ -1,0 +1,24 @@
+.switch {
+  display: inline-flex;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.option {
+  min-width: var(--target);
+  min-height: calc(var(--target) - 4px);
+  border: 0;
+  background: var(--paper);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.option + .option {
+  border-left: 2px solid var(--ink);
+}
+
+.option[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}

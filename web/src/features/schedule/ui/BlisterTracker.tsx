@@ -1,6 +1,6 @@
 import { usePlan } from '@/features/medicines';
 import type { TimeSlot } from '@/shared/domain/time';
-import { strings } from '@/shared/strings';
+import { useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { Icon } from '@/shared/ui/Icon';
 import { doseKey, trackerDays } from '../logic/tracker';
@@ -13,16 +13,17 @@ interface BlisterTrackerProps {
 
 /** A week drawn like a blister pack: one bubble per time of day, popped when taken. */
 export function BlisterTracker({ slots, today }: BlisterTrackerProps) {
+  const { t } = useI18n();
   const { plan, dispatch } = usePlan();
   if (slots.length === 0) return null;
-  const days = trackerDays(plan.tracker.start);
+  const days = trackerDays(plan.tracker.start, t.locale);
   const popped = new Set(plan.tracker.popped);
 
   return (
     <section className={styles.tracker} aria-labelledby="tracker-heading">
       <div className={styles.head}>
-        <h3 id="tracker-heading">{strings.tracker.heading}</h3>
-        <p className={styles.hint}>{strings.tracker.hint}</p>
+        <h3 id="tracker-heading">{t.tracker.heading}</h3>
+        <p className={styles.hint}>{t.tracker.hint}</p>
       </div>
       <table className={styles.pack} aria-labelledby="tracker-heading">
         <thead>
@@ -41,7 +42,7 @@ export function BlisterTracker({ slots, today }: BlisterTrackerProps) {
               <th scope="row">
                 <span className={styles.rowLabel}>
                   <Icon name={slot} size={16} />
-                  <span className={styles.rowText}>{strings.slots[slot]}</span>
+                  <span className={styles.rowText}>{t.slots[slot]}</span>
                 </span>
               </th>
               {days.map((day) => {
@@ -53,7 +54,7 @@ export function BlisterTracker({ slots, today }: BlisterTrackerProps) {
                       type="button"
                       className={styles.bubble}
                       aria-pressed={taken}
-                      aria-label={strings.tracker.bubble(day.longLabel, strings.slots[slot], taken)}
+                      aria-label={t.tracker.bubble(day.longLabel, t.slots[slot], taken)}
                       onClick={() => dispatch({ type: 'toggleDose', key })}
                     >
                       {taken && <Icon name="check" size={18} />}
@@ -67,7 +68,7 @@ export function BlisterTracker({ slots, today }: BlisterTrackerProps) {
       </table>
       <div className={`${styles.reset} no-print`}>
         <Button variant="quiet" onClick={() => dispatch({ type: 'resetTracker', start: today })}>
-          {strings.tracker.reset}
+          {t.tracker.reset}
         </Button>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { en } from '@/shared/i18n';
 import { testCatalog } from '@/test/catalog';
 import { medicineFromDrug, withStrength } from './fromDrug';
 import { buildExamplePlan } from './example';
@@ -12,7 +13,7 @@ const drug = (id: string) => {
 
 describe('medicineFromDrug', () => {
   it('copies the catalog defaults', () => {
-    const metformin = medicineFromDrug(drug('metformin'), 1, 'x');
+    const metformin = medicineFromDrug(drug('metformin'), 1, 'x', 'en');
     expect(metformin).toMatchObject({
       drugId: 'metformin',
       strength: '850 mg',
@@ -24,18 +25,20 @@ describe('medicineFromDrug', () => {
   });
 
   it('sets a default limit for when-needed medicines', () => {
-    const paracetamol = medicineFromDrug(drug('paracetamol'), 0, 'x');
+    const paracetamol = medicineFromDrug(drug('paracetamol'), 0, 'x', 'en');
     expect(paracetamol.prn).toBe(true);
     expect(paracetamol.prnMaxPerDay).toBe(4);
     expect(paracetamol.times).toEqual([]);
   });
 
   it('labels combination strengths', () => {
-    expect(medicineFromDrug(drug('paracetamol_caffeine'), 0, 'x').strength).toBe('500 mg + 65 mg');
+    expect(medicineFromDrug(drug('paracetamol_caffeine'), 0, 'x', 'en').strength).toBe(
+      '500 mg + 65 mg',
+    );
   });
 
   it('can switch strength', () => {
-    const base = medicineFromDrug(drug('levothyroxine'), 0, 'x');
+    const base = medicineFromDrug(drug('levothyroxine'), 0, 'x', 'en');
     const changed = withStrength(base, drug('levothyroxine'), 3);
     expect(changed.strength).toBe('88 mcg');
     expect(changed.ingredientAmounts).toEqual([88]);
@@ -43,39 +46,43 @@ describe('medicineFromDrug', () => {
 });
 
 describe('validateMedicine', () => {
-  const valid = medicineFromDrug(drug('amlodipine'), 0, 'x');
+  const valid = medicineFromDrug(drug('amlodipine'), 0, 'x', 'en');
 
   it('accepts catalog defaults', () => {
-    expect(validateMedicine(valid)).toEqual({});
+    expect(validateMedicine(valid, en)).toEqual({});
   });
 
   it('needs a time unless taken when needed', () => {
-    expect(validateMedicine({ ...valid, times: [] }).times).toBeDefined();
-    expect(validateMedicine({ ...valid, times: [], prn: true, prnMaxPerDay: 3 })).toEqual({});
+    expect(validateMedicine({ ...valid, times: [] }, en).times).toBeDefined();
+    expect(validateMedicine({ ...valid, times: [], prn: true, prnMaxPerDay: 3 }, en)).toEqual({});
   });
 
   it('needs a sensible max per day for when-needed medicines', () => {
-    expect(validateMedicine({ ...valid, prn: true, prnMaxPerDay: 0 }).maxPerDay).toBeDefined();
-    expect(validateMedicine({ ...valid, prn: true, prnMaxPerDay: 2.5 }).maxPerDay).toBeDefined();
+    expect(validateMedicine({ ...valid, prn: true, prnMaxPerDay: 0 }, en).maxPerDay).toBeDefined();
+    expect(
+      validateMedicine({ ...valid, prn: true, prnMaxPerDay: 2.5 }, en).maxPerDay,
+    ).toBeDefined();
   });
 
   it('needs a name and a positive amount', () => {
-    expect(validateMedicine({ ...valid, name: '  ' }).name).toBeDefined();
-    expect(validateMedicine({ ...valid, amount: 0 }).amount).toBeDefined();
-    expect(validateMedicine({ ...valid, amount: Number.NaN }).amount).toBeDefined();
+    expect(validateMedicine({ ...valid, name: '  ' }, en).name).toBeDefined();
+    expect(validateMedicine({ ...valid, amount: 0 }, en).amount).toBeDefined();
+    expect(validateMedicine({ ...valid, amount: Number.NaN }, en).amount).toBeDefined();
   });
 });
 
 describe('buildExamplePlan', () => {
   it('uses only drugs that exist in the catalog', () => {
     let next = 0;
-    const plan = buildExamplePlan(testCatalog, '2026-11-02', () => `id${next++}`);
+    const plan = buildExamplePlan(testCatalog, '2026-11-02', () => `id${next++}`, en, 'en');
     expect(plan.medicines.map((m) => m.drugId)).toEqual([
       'metformin',
       'amlodipine',
       'simvastatin',
       'paracetamol',
     ]);
-    expect(plan.medicines.every((m) => Object.keys(validateMedicine(m)).length === 0)).toBe(true);
+    expect(plan.medicines.every((m) => Object.keys(validateMedicine(m, en)).length === 0)).toBe(
+      true,
+    );
   });
 });

@@ -1,15 +1,33 @@
 /**
- * Every piece of interface text lives here, so the app can be translated
+ * English text. Every piece of interface text lives here, so the app can be translated
  * in one place. Plain words, numbers as digits, no dashes as punctuation.
  */
-import type { FoodRule, TimeSlot } from '@/shared/domain/time';
+import type { DoseForm, FoodRule, TimeSlot } from '@/shared/domain/time';
 
 const list = (items: readonly string[]): string =>
   items.length <= 1
     ? (items[0] ?? '')
     : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1] ?? ''}`;
 
-export const strings = {
+export const en = {
+  locale: 'en-US',
+  language: { label: 'Language', en: 'English', id: 'Bahasa Indonesia' },
+  formNames: {
+    tablet: ['tablet', 'tablets'],
+    capsule: ['capsule', 'capsules'],
+    mL: ['mL', 'mL'],
+    puff: ['puff', 'puffs'],
+    drop: ['drop', 'drops'],
+  } satisfies Record<DoseForm, [string, string]>,
+  example: {
+    patient: 'Example patient',
+    purposes: {
+      metformin: 'for diabetes',
+      amlodipine: 'for blood pressure',
+      simvastatin: 'for cholesterol',
+      paracetamol: 'for pain',
+    } as Record<string, string>,
+  },
   app: {
     name: 'PillPlan',
     tagline: 'Turn a list of medicines into a clear chart a patient can follow.',
@@ -40,6 +58,38 @@ export const strings = {
     with_after: 'Take with food or just after eating.',
     any: 'Take with or without food.',
   } satisfies Record<FoodRule, string>,
+  signa: {
+    label: 'Signa (how to take)',
+    placeholder: 'For example 3 dd 1 tab p.c. or 2x1 sesudah makan',
+    hint: 'Type the signa from the prescription. Times, amount and food fill in below.',
+    timesCount: (count: number) => (count === 1 ? 'Once a day' : `${count} times a day`),
+    preview: (count: string, slots: string, dose: string, food: string | null) =>
+      [`${count}: ${slots}`, dose, food].filter(Boolean).join('. ') + '.',
+    previewPrn: (dose: string, max: number | null) =>
+      max ? `When needed: ${dose}, at most ${max} times a day.` : `When needed: ${dose}.`,
+    check: (tokens: readonly string[]) => `Check: ${tokens.join(', ')}`,
+  },
+  myDrugs: {
+    remember: 'Remember this drug for next time',
+    tag: 'My drug, not checked',
+    heading: 'My drugs',
+    hint: 'Drugs you typed yourself. They are saved on this device only.',
+    remove: (name: string) => `Remove ${name} from my drugs`,
+    saved: (name: string) => `${name} saved to my drugs.`,
+  },
+  calendar: {
+    heading: 'Phone reminders',
+    hint: 'Download a calendar file and open it on the phone for daily reminders.',
+    export: 'Add to phone calendar',
+    times: 'Clock time for each part of the day',
+    none: 'Add a medicine with a fixed time first.',
+    eventTitle: (slot: string) => `Medicines: ${slot}`,
+    eventLine: (name: string, dose: string) => `${name}: ${dose}`,
+    repeats: (days: number) => `Repeats every day for ${days} days.`,
+  },
+  timeline: {
+    label: 'When in the day',
+  },
   patient: {
     heading: 'Patient',
     nameLabel: 'Patient name',
@@ -81,6 +131,8 @@ export const strings = {
     color: 'Color',
     add: 'Add to chart',
     save: 'Save changes',
+    moreDetails: 'More details',
+    moreDetailsHint: 'Warnings, purpose, pill look and note',
     cancel: 'Cancel',
     errors: {
       name: 'Enter the medicine name.',
@@ -181,4 +233,6 @@ export const strings = {
     invalidSaved: 'Saved data could not be read, so PillPlan started a new chart.',
     cleared: 'All data cleared.',
   },
-} as const;
+};
+
+export type Strings = typeof en;

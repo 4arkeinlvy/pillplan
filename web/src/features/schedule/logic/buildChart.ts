@@ -1,6 +1,7 @@
 import type { Medicine } from '@/features/medicines';
 import { TIME_SLOTS, type TimeSlot } from '@/shared/domain/time';
 import { formatAmount, formName } from '@/shared/format/dose';
+import type { Strings } from '@/shared/i18n';
 
 export interface ChartCell {
   amount: string;
@@ -29,7 +30,7 @@ const emptyCounts = (): Record<TimeSlot, number> => ({
 });
 
 /** Universal Medication Schedule layout: one row per medicine, one column per time of day. */
-export function buildChart(medicines: readonly Medicine[]): Chart {
+export function buildChart(medicines: readonly Medicine[], t: Strings): Chart {
   const counts = emptyCounts();
   const rows: ChartRow[] = [];
   const whenNeeded: Medicine[] = [];
@@ -40,8 +41,8 @@ export function buildChart(medicines: readonly Medicine[]): Chart {
       continue;
     }
     const cell: ChartCell = {
-      amount: formatAmount(medicine.amount, medicine.form),
-      formName: formName(medicine.amount, medicine.form),
+      amount: formatAmount(medicine.amount, medicine.form, t.locale),
+      formName: formName(medicine.amount, medicine.form, t),
     };
     const cells = { morning: null, noon: null, evening: null, bedtime: null } as Record<
       TimeSlot,

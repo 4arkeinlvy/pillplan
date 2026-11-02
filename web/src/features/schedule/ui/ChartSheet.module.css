@@ -135,6 +135,16 @@
   display: grid;
   justify-items: center;
   line-height: 1.1;
+  animation: stamp 220ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  animation-delay: calc(var(--column, 0) * 45ms);
+}
+
+/* A dose is pressed onto the label like a pharmacy stamp. */
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.35) rotate(-4deg);
+  }
 }
 
 .amount {
@@ -150,6 +160,22 @@
 .empty {
   color: var(--rule);
   font-size: var(--step-1);
+}
+
+/* A safety note points at its medicines: those rows are outlined, the rest fade. */
+.sheet[data-linking] tbody tr:not([data-linked]),
+.sheet[data-linking] .prn li:not([data-linked]) {
+  opacity: 0.35;
+}
+
+.sheet tbody tr,
+.sheet .prn li {
+  transition: opacity 160ms ease-out;
+}
+
+.sheet[data-linking] tbody tr[data-linked] th,
+.sheet[data-linking] .prn li[data-linked] {
+  box-shadow: inset 4px 0 0 var(--amber);
 }
 
 /* Spotlight: dim every other time of day and the medicines not due then. */
@@ -248,6 +274,10 @@
 }
 
 @media print {
+  .dose {
+    animation: none;
+  }
+
   .sheet {
     max-width: none;
     padding: 0;

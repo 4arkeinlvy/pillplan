@@ -1,11 +1,12 @@
-import type { DoseUnit, FoodRule, TimeSlot } from '@/shared/domain/time';
+import type { DoseForm, DoseUnit, FoodRule, TimeSlot } from '@/shared/domain/time';
+import type { LocalText } from '@/shared/i18n';
 import type { StickerTone } from '@/shared/ui/Sticker';
 
 /** Shapes of the generated catalog.json (validated by the Python tools at build time). */
 export interface WarningLabel {
   id: string;
-  short: string;
-  text: string;
+  short: LocalText;
+  text: LocalText;
   icon: string;
   sticker: StickerTone;
 }
@@ -21,10 +22,12 @@ export interface Ingredient {
 export interface Drug {
   id: string;
   name: string;
+  /** Other spellings people search for, such as Indonesian generic names. */
+  aliases: string[];
   brands: string[];
   ingredients: string[];
-  drugClass: string;
-  area: string;
+  drugClass: LocalText;
+  area: LocalText;
   form: 'tablet' | 'capsule';
   strengths: number[][];
   unit: DoseUnit;
@@ -33,7 +36,7 @@ export interface Drug {
   bestTimes: TimeSlot[];
   food: FoodRule;
   warnings: string[];
-  advice: string;
+  advice: LocalText;
   source: string;
 }
 
@@ -48,4 +51,18 @@ export interface Catalog extends CatalogData {
   drugById: ReadonlyMap<string, Drug>;
   ingredientById: ReadonlyMap<string, Ingredient>;
   warningById: ReadonlyMap<string, WarningLabel>;
+}
+
+/** A drug the apoteker typed in, remembered on this device. Never safety checked. */
+export interface MyDrug {
+  id: string;
+  name: string;
+  strength: string;
+  form: DoseForm;
+  times: TimeSlot[];
+  prn: boolean;
+  prnMaxPerDay: number | null;
+  food: FoodRule;
+  warnings: string[];
+  advice: string;
 }

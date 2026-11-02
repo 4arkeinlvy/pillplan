@@ -22,6 +22,7 @@ const MedicineSchema = v.object({
   warnings: v.pipe(v.array(text(40)), v.maxLength(20)),
   purpose: text(120),
   advice: text(400),
+  signa: v.optional(text(120)),
   pill: v.object({
     shape: v.picklist(PILL_SHAPES),
     // Only plain hex colors, because the color ends up in an SVG fill.

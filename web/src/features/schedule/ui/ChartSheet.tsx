@@ -1,9 +1,16 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { useCatalog, type Catalog } from '@/features/catalog';
-import { PillPreview, usePlan, type Medicine } from '@/features/medicines';
+import {
+  displayAdvice,
+  displayStrength,
+  medicineWarnings,
+  PillPreview,
+  usePlan,
+  type Medicine,
+} from '@/features/medicines';
 import { TIME_SLOTS, type TimeSlot } from '@/shared/domain/time';
 import { formatDose } from '@/shared/format/dose';
-import { strings } from '@/shared/strings';
+import { local, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { Icon } from '@/shared/ui/Icon';
 import { Sticker } from '@/shared/ui/Sticker';
@@ -16,34 +23,43 @@ import styles from './ChartSheet.module.css';
 interface ChartSheetProps {
   today: Date;
   onExample: () => void;
+  /** Medicines a safety note is pointing at; they are outlined, the rest fade. */
+  highlight?: readonly string[];
 }
 
 /** The patient's chart, styled as an A4 sheet. This is the only part that prints. */
-export function ChartSheet({ today, onExample }: ChartSheetProps) {
+export function ChartSheet({ today, onExample, highlight = [] }: ChartSheetProps) {
   const { plan } = usePlan();
   const catalog = useCatalog();
+  const { t } = useI18n();
   const [spot, setSpot] = useState<TimeSlot | null>(null);
-  const chart = buildChart(plan.medicines);
+  const chart = buildChart(plan.medicines, t);
   const isEmpty = plan.medicines.length === 0;
+  const linked = (id: string) => (highlight.includes(id) ? '' : undefined);
 
   return (
-    <article id="chart-sheet" className={styles.sheet} aria-labelledby="chart-heading">
+    <article
+      id="chart-sheet"
+      className={styles.sheet}
+      aria-labelledby="chart-heading"
+      data-linking={highlight.length > 0 ? '' : undefined}
+    >
       <header className={styles.header}>
-        <h2 id="chart-heading">{strings.chart.heading}</h2>
+        <h2 id="chart-heading">{t.chart.heading}</h2>
         <dl className={styles.meta}>
-          <dt>{strings.chart.patient}</dt>
+          <dt>{t.chart.patient}</dt>
           <dd>{plan.patientName || ' '}</dd>
-          <dt>{strings.chart.date}</dt>
-          <dd>{formatChartDate(today)}</dd>
+          <dt>{t.chart.date}</dt>
+          <dd>{formatChartDate(today, t.locale)}</dd>
         </dl>
       </header>
 
       {isEmpty ? (
         <div className={styles.blank}>
-          <h3>{strings.chart.emptyTitle}</h3>
-          <p>{strings.chart.emptyBody}</p>
+          <h3>{t.chart.emptyTitle}</h3>
+          <p>{t.chart.emptyBody}</p>
           <Button className="no-print" icon="plus" onClick={onExample}>
-            {strings.app.example}
+            {t.app.example}
           </Button>
         </div>
       ) : (
@@ -53,15 +69,15 @@ export function ChartSheet({ today, onExample }: ChartSheetProps) {
               <SlotSpotlight counts={chart.counts} selected={spot} onSelect={setSpot} />
               <div className={styles.tableWrap}>
                 <table className={styles.chart} data-spot={spot ?? undefined}>
-                  <caption className="visually-hidden">{strings.chart.caption}</caption>
+                  <caption className="visually-hidden">{t.chart.caption}</caption>
                   <thead>
                     <tr>
-                      <th scope="col">{strings.chart.medicine}</th>
+                      <th scope="col">{t.chart.medicine}</th>
                       {TIME_SLOTS.map((slot) => (
                         <th key={slot} scope="col" data-on={spot === slot ? '' : undefined}>
                           <span className={styles.slotHead}>
                             <Icon name={slot} size={26} />
-                            <span className={styles.slotLabel}>{strings.slots[slot]}</span>
+                            <span className={styles.slotLabel}>{t.slots[slot]}</span>
                           </span>
                         </th>
                       ))}
@@ -73,23 +89,27 @@ export function ChartSheet({ today, onExample }: ChartSheetProps) {
                         key={medicine.id}
                         style={{ viewTransitionName: `row-${medicine.id}` }}
                         data-off={spot && !cells[spot] ? '' : undefined}
+                        data-linked={linked(medicine.id)}
                       >
                         <th scope="row">
                           <MedicineCell medicine={medicine} catalog={catalog} />
                         </th>
-                        {TIME_SLOTS.map((slot) => {
+                        {TIME_SLOTS.map((slot, column) => {
                           const cell = cells[slot];
                           return (
                             <td key={slot} data-on={spot === slot ? '' : undefined}>
                               {cell ? (
-                                <span className={styles.dose}>
+                                <span
+                                  className={styles.dose}
+                                  style={{ '--column': column } as CSSProperties}
+                                >
                                   <span className={styles.amount}>{cell.amount}</span>
                                   <span className={styles.formName}>{cell.formName}</span>
                                 </span>
                               ) : (
                                 <span className={styles.empty}>
                                   <span aria-hidden="true">{'·'}</span>
-                                  <span className="visually-hidden">{strings.chart.none}</span>
+                                  <span className="visually-hidden">{t.chart.none}</span>
                                 </span>
                               )}
                             </td>
@@ -107,15 +127,19 @@ export function ChartSheet({ today, onExample }: ChartSheetProps) {
             <section className={styles.prn} aria-labelledby="prn-heading">
               <h3 id="prn-heading">
                 <Icon name="prn" />
-                {strings.chart.whenNeededHeading}
+                {t.chart.whenNeededHeading}
               </h3>
               <ul>
                 {chart.whenNeeded.map((medicine) => (
-                  <li key={medicine.id} style={{ viewTransitionName: `row-${medicine.id}` }}>
+                  <li
+                    key={medicine.id}
+                    style={{ viewTransitionName: `row-${medicine.id}` }}
+                    data-linked={linked(medicine.id)}
+                  >
                     <MedicineCell medicine={medicine} catalog={catalog} />
                     <p className={styles.prnLine}>
-                      {strings.chart.prnLine(
-                        formatDose(medicine.amount, medicine.form),
+                      {t.chart.prnLine(
+                        formatDose(medicine.amount, medicine.form, t),
                         medicine.prnMaxPerDay,
                       )}
                     </p>
@@ -130,36 +154,36 @@ export function ChartSheet({ today, onExample }: ChartSheetProps) {
       )}
 
       <footer className={styles.footer}>
-        <p>{strings.chart.footer}</p>
-        <p>{strings.app.disclaimer}</p>
+        <p>{t.chart.footer}</p>
+        <p>{t.app.disclaimer}</p>
       </footer>
     </article>
   );
 }
 
 function MedicineCell({ medicine, catalog }: { medicine: Medicine; catalog: Catalog | null }) {
-  const warnings = medicine.warnings.flatMap((id) => {
-    const warning = catalog?.warningById.get(id);
-    return warning ? [warning] : [];
-  });
+  const { t, lang } = useI18n();
+  const warnings = medicineWarnings(medicine, catalog);
+  const advice = displayAdvice(medicine, catalog, lang);
   return (
     <div className={styles.medicine}>
       <PillPreview pill={medicine.pill} size={44} />
       <div>
         <p className={styles.name}>
-          {medicine.name} <span className={styles.strength}>{medicine.strength}</span>
+          {medicine.name}{' '}
+          <span className={styles.strength}>{displayStrength(medicine, t.locale)}</span>
         </p>
         {medicine.purpose && <p className={styles.purpose}>{medicine.purpose}</p>}
         <p className={styles.food}>
           <Icon name="food" size={16} />
-          {strings.food[medicine.food]}
+          {t.food[medicine.food]}
         </p>
-        {medicine.advice && <p className={styles.advice}>{medicine.advice}</p>}
+        {advice && <p className={styles.advice}>{advice}</p>}
         {warnings.length > 0 && (
           <div className={styles.stickers}>
             {warnings.map((warning) => (
               <Sticker key={warning.id} tone={warning.sticker} icon={warning.icon}>
-                {warning.short}
+                {local(warning.short, lang)}
               </Sticker>
             ))}
           </div>

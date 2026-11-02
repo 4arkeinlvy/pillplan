@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { buildExamplePlan, emptyPlan } from '@/features/medicines';
+import { en } from '@/shared/i18n';
 import { testCatalog } from '@/test/catalog';
 import { exportFileName, importPlan } from './file';
 import {
@@ -13,7 +14,7 @@ import {
 import { serializePlan } from './schema';
 
 let n = 0;
-const example = () => buildExamplePlan(testCatalog, '2026-11-02', () => `id${n++}`);
+const example = () => buildExamplePlan(testCatalog, '2026-11-02', () => `id${n++}`, en, 'en');
 const now = new Date('2026-11-02T10:00:00Z');
 
 describe('browser storage', () => {

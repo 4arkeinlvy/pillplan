@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { customMedicine, type Medicine } from '@/features/medicines';
+import { en, id } from '@/shared/i18n';
 import { buildChart } from './buildChart';
 import { doseKey, toIsoDate, trackerDays } from './tracker';
 
@@ -9,11 +10,14 @@ const med = (id: string, patch: Partial<Medicine>): Medicine => ({
 });
 
 describe('buildChart', () => {
-  const chart = buildChart([
-    med('metformin', { times: ['morning', 'evening'] }),
-    med('simvastatin', { times: ['bedtime'], amount: 0.5 }),
-    med('paracetamol', { prn: true, times: [], prnMaxPerDay: 4 }),
-  ]);
+  const chart = buildChart(
+    [
+      med('metformin', { times: ['morning', 'evening'] }),
+      med('simvastatin', { times: ['bedtime'], amount: 0.5 }),
+      med('paracetamol', { prn: true, times: [], prnMaxPerDay: 4 }),
+    ],
+    en,
+  );
 
   it('puts each dose in its time-of-day column', () => {
     const [metformin, simvastatin] = chart.rows;
@@ -25,6 +29,11 @@ describe('buildChart', () => {
   it('keeps when-needed medicines out of the grid', () => {
     expect(chart.rows).toHaveLength(2);
     expect(chart.whenNeeded.map((m) => m.id)).toEqual(['paracetamol']);
+  });
+
+  it('uses the chosen language for form names', () => {
+    const [row] = buildChart([med('a', { times: ['noon'], amount: 2, form: 'capsule' })], id).rows;
+    expect(row?.cells.noon).toEqual({ amount: '2', formName: 'kapsul' });
   });
 
   it('counts medicines per time and lists used times in day order', () => {
@@ -43,6 +52,7 @@ describe('tracker', () => {
     expect(days).toHaveLength(7);
     expect(days[0]?.label).toBe('Sun');
     expect(days[2]?.longLabel).toBe('Tuesday, December 1');
+    expect(trackerDays('2026-11-29', 'id-ID')[2]?.label).toBe('Sel');
   });
 
   it('formats local dates without time zone shifts', () => {

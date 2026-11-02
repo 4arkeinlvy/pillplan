@@ -41,6 +41,8 @@ export interface Medicine {
   purpose: string;
   advice: string;
   pill: PillLook;
+  /** The prescription signa as typed, for example "3 dd 1 tab p.c.". */
+  signa?: string | undefined;
 }
 
 export interface Tracker {

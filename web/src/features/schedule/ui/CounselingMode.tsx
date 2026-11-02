@@ -1,22 +1,35 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { flushSync } from 'react-dom';
 import { useCatalog } from '@/features/catalog';
-import { PillPreview, usePlan } from '@/features/medicines';
+import {
+  displayAdvice,
+  displayStrength,
+  medicineWarnings,
+  PillPreview,
+  usePlan,
+} from '@/features/medicines';
 import { formatDose } from '@/shared/format/dose';
-import { strings } from '@/shared/strings';
+import { local, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { Icon } from '@/shared/ui/Icon';
 import { Sticker } from '@/shared/ui/Sticker';
 import { useModalDialog } from '@/shared/ui/useModalDialog';
+import { DayTimeline } from './DayTimeline';
 import styles from './CounselingMode.module.css';
 
 interface CounselingModeProps {
   onClose: () => void;
 }
 
+function prefersReducedMotion(): boolean {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+}
+
 /** Full screen, one medicine at a time, for explaining the plan to a patient. */
 export function CounselingMode({ onClose }: CounselingModeProps) {
   const { plan } = usePlan();
   const catalog = useCatalog();
+  const { t, lang } = useI18n();
   const ref = useModalDialog(true, onClose);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [index, setIndex] = useState(0);
@@ -29,31 +42,40 @@ export function CounselingMode({ onClose }: CounselingModeProps) {
 
   if (!medicine) return null;
   const isLast = index >= total - 1;
-  const go = (step: number) =>
-    setIndex((current) => Math.min(total - 1, Math.max(0, current + step)));
+
+  /** Slide the page left or right; the browser animates it when it can. */
+  const go = (step: number) => {
+    const next = Math.min(total - 1, Math.max(0, index + step));
+    if (next === index) return;
+    const update = () => setIndex(next);
+    if (typeof document.startViewTransition !== 'function' || prefersReducedMotion()) {
+      update();
+      return;
+    }
+    document.documentElement.dataset.counselDirection = step > 0 ? 'next' : 'back';
+    document.startViewTransition(() => flushSync(update));
+  };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
     if (event.key === 'ArrowRight') go(1);
     if (event.key === 'ArrowLeft') go(-1);
   };
 
-  const dose = formatDose(medicine.amount, medicine.form);
-  const warnings = medicine.warnings.flatMap((id) => {
-    const warning = catalog?.warningById.get(id);
-    return warning ? [warning] : [];
-  });
+  const dose = formatDose(medicine.amount, medicine.form, t);
+  const warnings = medicineWarnings(medicine, catalog);
+  const advice = displayAdvice(medicine, catalog, lang);
 
   return (
     <dialog
       ref={ref}
       className={styles.dialog}
-      aria-label={strings.counsel.title}
+      aria-label={t.counsel.title}
       onKeyDown={handleKeyDown}
     >
       <div className={styles.frame}>
         <div className={styles.top}>
           <p className={styles.progress} aria-live="polite">
-            {strings.counsel.progress(index + 1, total)}
+            {t.counsel.progress(index + 1, total)}
           </p>
           <div className={styles.dots} aria-hidden="true">
             {plan.medicines.map((m, i) => (
@@ -61,58 +83,51 @@ export function CounselingMode({ onClose }: CounselingModeProps) {
             ))}
           </div>
           <Button variant="quiet" icon="close" onClick={onClose}>
-            {strings.counsel.close}
+            {t.counsel.close}
           </Button>
         </div>
 
-        <div className={styles.body}>
+        <div className={styles.body} style={{ viewTransitionName: 'counsel-body' }}>
           <div className={styles.title}>
             <PillPreview pill={medicine.pill} size={120} />
             <h2 ref={headingRef} tabIndex={-1}>
               {medicine.name}
-              <span className={styles.strength}>{medicine.strength}</span>
+              <span className={styles.strength}>{displayStrength(medicine, t.locale)}</span>
             </h2>
           </div>
 
           {medicine.purpose && (
             <div>
-              <p className={styles.label}>{strings.counsel.whatFor}</p>
+              <p className={styles.label}>{t.counsel.whatFor}</p>
               <p>{medicine.purpose}</p>
             </div>
           )}
 
           <div>
-            <p className={styles.label}>{strings.counsel.when}</p>
-            <ul className={styles.times}>
-              {medicine.prn ? (
-                <li className={styles.time}>
-                  <Icon name="prn" size={24} />
-                  {strings.chart.prnLine(dose, medicine.prnMaxPerDay)}
-                </li>
-              ) : (
-                medicine.times.map((slot) => (
-                  <li key={slot} className={styles.time}>
-                    <Icon name={slot} size={24} />
-                    {strings.counsel.at(strings.slots[slot], dose)}
-                  </li>
-                ))
-              )}
-            </ul>
+            <p className={styles.label}>{t.counsel.when}</p>
+            {medicine.prn ? (
+              <p className={styles.time}>
+                <Icon name="prn" size={24} />
+                {t.chart.prnLine(dose, medicine.prnMaxPerDay)}
+              </p>
+            ) : (
+              <DayTimeline medicine={medicine} />
+            )}
           </div>
 
           <div>
-            <p className={styles.label}>{strings.counsel.how}</p>
-            <p>{strings.foodLong[medicine.food]}</p>
+            <p className={styles.label}>{t.counsel.how}</p>
+            <p>{t.foodLong[medicine.food]}</p>
           </div>
 
           {warnings.length > 0 && (
             <div>
-              <p className={styles.label}>{strings.counsel.warnings}</p>
+              <p className={styles.label}>{t.counsel.warnings}</p>
               <ul className={styles.stickers}>
                 {warnings.map((warning) => (
                   <li key={warning.id}>
                     <Sticker tone={warning.sticker} icon={warning.icon} large>
-                      {warning.text}
+                      {local(warning.text, lang)}
                     </Sticker>
                   </li>
                 ))}
@@ -120,25 +135,25 @@ export function CounselingMode({ onClose }: CounselingModeProps) {
             </div>
           )}
 
-          {medicine.advice && (
+          {advice && (
             <div>
-              <p className={styles.label}>{strings.counsel.note}</p>
-              <p>{medicine.advice}</p>
+              <p className={styles.label}>{t.counsel.note}</p>
+              <p>{advice}</p>
             </div>
           )}
         </div>
 
         <div className={styles.nav}>
           <Button icon="back" disabled={index === 0} onClick={() => go(-1)}>
-            {strings.counsel.back}
+            {t.counsel.back}
           </Button>
           {isLast ? (
             <Button variant="primary" icon="check" onClick={onClose}>
-              {strings.counsel.done}
+              {t.counsel.done}
             </Button>
           ) : (
             <Button variant="primary" onClick={() => go(1)}>
-              {strings.counsel.next}
+              {t.counsel.next}
               <Icon name="next" />
             </Button>
           )}

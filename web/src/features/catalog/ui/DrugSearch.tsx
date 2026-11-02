@@ -1,27 +1,34 @@
-import { useId, useMemo, useState, type KeyboardEvent } from 'react';
+import { useId, useMemo, useState, type KeyboardEvent, type Ref } from 'react';
 import { formatStrength } from '@/shared/format/dose';
 import { Icon } from '@/shared/ui/Icon';
-import { strings } from '@/shared/strings';
+import { local, useI18n } from '@/shared/i18n';
 import { searchDrugs } from '../logic/search';
-import type { Drug } from '../model';
-import { useCatalog } from './CatalogProvider';
+import type { Drug, MyDrug } from '../model';
+import { useCatalog, useMyDrugs } from './CatalogProvider';
 import styles from './DrugSearch.module.css';
 
 interface DrugSearchProps {
   onPick: (drug: Drug) => void;
+  onPickMine: (drug: MyDrug) => void;
   onCustom: (name: string) => void;
+  inputRef?: Ref<HTMLInputElement> | undefined;
 }
 
 /** Combobox (ARIA 1.2 pattern): type, move with arrow keys, Enter to choose. */
-export function DrugSearch({ onPick, onCustom }: DrugSearchProps) {
+export function DrugSearch({ onPick, onPickMine, onCustom, inputRef }: DrugSearchProps) {
   const catalog = useCatalog();
+  const { myDrugs } = useMyDrugs();
+  const { t, lang } = useI18n();
   const id = useId();
   const listId = `${id}-list`;
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
 
-  const hits = useMemo(() => (catalog ? searchDrugs(catalog.drugs, query) : []), [catalog, query]);
+  const hits = useMemo(
+    () => (catalog ? searchDrugs(catalog.drugs, query, 8, myDrugs) : []),
+    [catalog, query, myDrugs],
+  );
   const trimmed = query.trim();
   const optionCount = hits.length + (trimmed ? 1 : 0);
   const expanded = open && optionCount > 0;
@@ -29,7 +36,8 @@ export function DrugSearch({ onPick, onCustom }: DrugSearchProps) {
 
   const choose = (index: number) => {
     const hit = hits[index];
-    if (hit) onPick(hit.drug);
+    if (hit?.kind === 'drug') onPick(hit.drug);
+    else if (hit?.kind === 'mine') onPickMine(hit.drug);
     else if (trimmed) onCustom(trimmed);
     else return;
     setQuery('');
@@ -56,11 +64,12 @@ export function DrugSearch({ onPick, onCustom }: DrugSearchProps) {
   return (
     <div className={styles.search}>
       <label className={styles.label} htmlFor={id}>
-        {strings.search.label}
+        {t.search.label}
       </label>
       <div className={styles.inputWrap}>
         <Icon name="search" />
         <input
+          ref={inputRef}
           id={id}
           className={styles.input}
           type="text"
@@ -72,7 +81,7 @@ export function DrugSearch({ onPick, onCustom }: DrugSearchProps) {
           aria-controls={listId}
           aria-activedescendant={expanded ? optionId(active) : undefined}
           aria-describedby={`${id}-hint`}
-          placeholder={catalog ? strings.search.placeholder : strings.search.loading}
+          placeholder={catalog ? t.search.placeholder : t.search.loading}
           disabled={!catalog}
           value={query}
           onChange={(event) => {
@@ -87,13 +96,13 @@ export function DrugSearch({ onPick, onCustom }: DrugSearchProps) {
         <ul
           id={listId}
           role="listbox"
-          aria-label={strings.search.listLabel}
+          aria-label={t.search.listLabel}
           className={styles.list}
           hidden={!expanded}
         >
-          {hits.map(({ drug, brand }, index) => (
+          {hits.map((hit, index) => (
             <li
-              key={drug.id}
+              key={`${hit.kind}-${hit.drug.id}`}
               id={optionId(index)}
               role="option"
               aria-selected={index === active}
@@ -102,12 +111,15 @@ export function DrugSearch({ onPick, onCustom }: DrugSearchProps) {
               onClick={() => choose(index)}
             >
               <span className={styles.name}>
-                {drug.name}
-                {brand && ` (${brand})`}
+                {hit.drug.name}
+                {hit.matched && ` (${hit.matched})`}
               </span>
               <span className={styles.meta}>
-                {drug.drugClass}.{' '}
-                {strings.search.strengths(drug.strengths.map((s) => formatStrength(s, drug.unit)))}
+                {hit.kind === 'drug'
+                  ? `${local(hit.drug.drugClass, lang)}. ${t.search.strengths(
+                      hit.drug.strengths.map((s) => formatStrength(s, hit.drug.unit, t.locale)),
+                    )}`
+                  : `${t.myDrugs.tag}. ${hit.drug.strength}`}
               </span>
             </li>
           ))}
@@ -120,17 +132,17 @@ export function DrugSearch({ onPick, onCustom }: DrugSearchProps) {
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => choose(hits.length)}
             >
-              {strings.search.addCustom(trimmed)}
-              <span className={styles.meta}>{strings.search.customNote}</span>
+              {t.search.addCustom(trimmed)}
+              <span className={styles.meta}>{t.search.customNote}</span>
             </li>
           )}
         </ul>
       </div>
       <p id={`${id}-hint`} className={styles.hint}>
-        {strings.search.hint}
+        {t.search.hint}
       </p>
       <p className="visually-hidden" aria-live="polite">
-        {expanded ? strings.search.matches(hits.length) : ''}
+        {expanded ? t.search.matches(hits.length) : ''}
       </p>
     </div>
   );

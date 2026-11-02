@@ -79,3 +79,7 @@
     white-space: nowrap;
   }
 }
+
+.signa {
+  font-family: var(--font-mono);
+}

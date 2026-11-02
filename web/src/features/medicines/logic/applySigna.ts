@@ -1,0 +1,24 @@
+import type { Medicine } from '../model';
+import { DEFAULT_PRN_MAX } from './fromDrug';
+import type { SignaResult } from './signa';
+
+/**
+ * Copy what the signa says onto the medicine. Fields the signa does not mention stay as they
+ * are. Catalog drugs keep their own form; only custom medicines take the form from the signa.
+ */
+export function applySigna(medicine: Medicine, signa: string, result: SignaResult): Medicine {
+  const next: Medicine = { ...medicine, signa };
+  if (result.prn) {
+    next.prn = true;
+    next.times = [];
+    next.prnMaxPerDay = result.maxPerDay ?? medicine.prnMaxPerDay ?? DEFAULT_PRN_MAX;
+  } else if (result.times) {
+    next.prn = false;
+    next.times = result.times;
+    next.prnMaxPerDay = null;
+  }
+  if (result.amount !== null) next.amount = result.amount;
+  if (result.food) next.food = result.food;
+  if (result.form && medicine.drugId === null) next.form = result.form;
+  return next;
+}
