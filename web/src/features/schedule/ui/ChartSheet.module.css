@@ -1,0 +1,265 @@
+.sheet {
+  max-width: 52rem;
+  padding: var(--space-6);
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-bottom: 3px solid var(--ink);
+}
+
+.header h2 {
+  font-size: var(--step-3);
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 var(--space-3);
+  font-size: var(--step--1);
+}
+
+.meta dt {
+  color: var(--ink-muted);
+}
+
+.meta dd {
+  font-weight: 700;
+  min-width: 10rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.chart {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.chart caption {
+  text-align: left;
+}
+
+.chart thead th {
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 2px solid var(--ink);
+  font-size: var(--step--1);
+  text-align: center;
+}
+
+.chart thead th:first-child {
+  width: 46%;
+  text-align: left;
+}
+
+.slotHead {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.chart tbody th,
+.chart tbody td {
+  padding: var(--space-3) var(--space-1);
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+}
+
+.chart tbody th {
+  font-weight: 400;
+  text-align: left;
+}
+
+.chart td {
+  text-align: center;
+  border-left: 1px solid var(--rule);
+}
+
+.medicine {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-3);
+  align-items: start;
+}
+
+.name {
+  font-weight: 700;
+  font-size: var(--step-1);
+  line-height: 1.2;
+}
+
+.strength {
+  font-weight: 400;
+  font-size: var(--step-0);
+}
+
+.purpose,
+.food,
+.advice {
+  font-size: var(--step--1);
+}
+
+.purpose {
+  font-weight: 700;
+}
+
+.food {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.advice {
+  color: var(--ink-muted);
+}
+
+.stickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.dose {
+  display: grid;
+  justify-items: center;
+  line-height: 1.1;
+}
+
+.amount {
+  font-family: var(--font-mono);
+  font-size: var(--step-2);
+  font-weight: 700;
+}
+
+.formName {
+  font-size: var(--step--1);
+}
+
+.empty {
+  color: var(--rule);
+  font-size: var(--step-1);
+}
+
+/* Spotlight: dim every other time of day and the medicines not due then. */
+.chart[data-spot] td:not([data-on]),
+.chart[data-spot] thead th:not(:first-child):not([data-on]) {
+  opacity: 0.3;
+}
+
+.chart[data-spot] td[data-on],
+.chart[data-spot] thead th[data-on] {
+  background: var(--highlight);
+}
+
+.chart[data-spot] tr[data-off] th {
+  opacity: 0.3;
+}
+
+.prn {
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 2px dashed var(--ink);
+  break-inside: avoid;
+}
+
+.prn h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--step-1);
+  margin-bottom: var(--space-2);
+}
+
+.prn li + li {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.prnLine {
+  margin-top: var(--space-1);
+  font-weight: 700;
+}
+
+.blank {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+}
+
+.blank h3 {
+  font-size: var(--step-2);
+}
+
+.footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--ink);
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+}
+
+@media (max-width: 40rem) {
+  .sheet {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .chart thead th:first-child {
+    width: 40%;
+  }
+
+  .slotLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .medicine {
+    grid-template-columns: 1fr;
+  }
+
+  .medicine > svg {
+    display: none;
+  }
+
+  .name {
+    font-size: var(--step-0);
+  }
+
+  .amount {
+    font-size: var(--step-1);
+  }
+}
+
+@media print {
+  .sheet {
+    max-width: none;
+    padding: 0;
+    border: 0;
+  }
+
+  .chart tbody th,
+  .chart tbody td {
+    padding: 6pt 3pt;
+  }
+
+  .chart tr {
+    break-inside: avoid;
+  }
+}
