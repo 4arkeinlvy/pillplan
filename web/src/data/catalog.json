@@ -1,0 +1,1886 @@
+{
+  "version": 1,
+  "warnings": [
+    {
+      "id": "alcohol",
+      "short": "No alcohol",
+      "text": "Avoid alcohol while taking this medicine.",
+      "icon": "alcohol",
+      "sticker": "red"
+    },
+    {
+      "id": "course",
+      "short": "Finish the course",
+      "text": "Finish the whole course even if you feel better.",
+      "icon": "course",
+      "sticker": "blue"
+    },
+    {
+      "id": "dont_stop",
+      "short": "Do not stop suddenly",
+      "text": "Do not stop taking this suddenly. Ask your doctor or pharmacist first.",
+      "icon": "dont_stop",
+      "sticker": "red"
+    },
+    {
+      "id": "drowsy",
+      "short": "May cause sleepiness",
+      "text": "May make you sleepy. Do not drive if affected.",
+      "icon": "drowsy",
+      "sticker": "yellow"
+    },
+    {
+      "id": "fridge",
+      "short": "Keep in fridge",
+      "text": "Keep in the fridge. Do not freeze.",
+      "icon": "fridge",
+      "sticker": "blue"
+    },
+    {
+      "id": "shake",
+      "short": "Shake well",
+      "text": "Shake the bottle well before each use.",
+      "icon": "shake",
+      "sticker": "blue"
+    },
+    {
+      "id": "sun",
+      "short": "Avoid strong sun",
+      "text": "Avoid strong sunlight and sunbeds. Use sunscreen.",
+      "icon": "sun",
+      "sticker": "yellow"
+    },
+    {
+      "id": "water",
+      "short": "Full glass of water",
+      "text": "Take with a full glass of water.",
+      "icon": "water",
+      "sticker": "blue"
+    },
+    {
+      "id": "whole",
+      "short": "Swallow whole",
+      "text": "Swallow whole. Do not crush or chew.",
+      "icon": "whole",
+      "sticker": "blue"
+    }
+  ],
+  "ingredients": [
+    {
+      "id": "allopurinol",
+      "name": "Allopurinol",
+      "usualMaxDaily": 800.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "amlodipine",
+      "name": "Amlodipine",
+      "usualMaxDaily": 10.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "amoxicillin",
+      "name": "Amoxicillin",
+      "usualMaxDaily": null,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "aspirin",
+      "name": "Aspirin",
+      "usualMaxDaily": 325.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed); antiplatelet dosing"
+    },
+    {
+      "id": "atenolol",
+      "name": "Atenolol",
+      "usualMaxDaily": 200.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "atorvastatin",
+      "name": "Atorvastatin",
+      "usualMaxDaily": 80.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "azithromycin",
+      "name": "Azithromycin",
+      "usualMaxDaily": null,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "bisoprolol",
+      "name": "Bisoprolol",
+      "usualMaxDaily": 20.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "caffeine",
+      "name": "Caffeine",
+      "usualMaxDaily": null,
+      "unit": "mg",
+      "source": "Not checked"
+    },
+    {
+      "id": "cetirizine",
+      "name": "Cetirizine",
+      "usualMaxDaily": 10.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "chlorphenamine",
+      "name": "Chlorphenamine",
+      "usualMaxDaily": 24.0,
+      "unit": "mg",
+      "source": "FDA OTC monograph"
+    },
+    {
+      "id": "ciprofloxacin",
+      "name": "Ciprofloxacin",
+      "usualMaxDaily": 1500.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "clopidogrel",
+      "name": "Clopidogrel",
+      "usualMaxDaily": 75.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed); maintenance dose"
+    },
+    {
+      "id": "diazepam",
+      "name": "Diazepam",
+      "usualMaxDaily": 40.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "doxycycline",
+      "name": "Doxycycline",
+      "usualMaxDaily": 200.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "empagliflozin",
+      "name": "Empagliflozin",
+      "usualMaxDaily": 25.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "enalapril",
+      "name": "Enalapril",
+      "usualMaxDaily": 40.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "famotidine",
+      "name": "Famotidine",
+      "usualMaxDaily": 80.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "fluoxetine",
+      "name": "Fluoxetine",
+      "usualMaxDaily": 80.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "furosemide",
+      "name": "Furosemide",
+      "usualMaxDaily": null,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "gabapentin",
+      "name": "Gabapentin",
+      "usualMaxDaily": 3600.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "glipizide",
+      "name": "Glipizide",
+      "usualMaxDaily": 40.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "hydrochlorothiazide",
+      "name": "Hydrochlorothiazide",
+      "usualMaxDaily": 100.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "ibuprofen",
+      "name": "Ibuprofen",
+      "usualMaxDaily": 3200.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed); prescription dosing"
+    },
+    {
+      "id": "levothyroxine",
+      "name": "Levothyroxine",
+      "usualMaxDaily": null,
+      "unit": "mcg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "loratadine",
+      "name": "Loratadine",
+      "usualMaxDaily": 10.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "lorazepam",
+      "name": "Lorazepam",
+      "usualMaxDaily": 10.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "losartan",
+      "name": "Losartan",
+      "usualMaxDaily": 100.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "metformin",
+      "name": "Metformin",
+      "usualMaxDaily": 2550.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed); immediate release"
+    },
+    {
+      "id": "metronidazole",
+      "name": "Metronidazole",
+      "usualMaxDaily": null,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "montelukast",
+      "name": "Montelukast",
+      "usualMaxDaily": 10.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "naproxen",
+      "name": "Naproxen",
+      "usualMaxDaily": 1500.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "omeprazole",
+      "name": "Omeprazole",
+      "usualMaxDaily": 40.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed); excludes Zollinger-Ellison"
+    },
+    {
+      "id": "pantoprazole",
+      "name": "Pantoprazole",
+      "usualMaxDaily": 40.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed); excludes Zollinger-Ellison"
+    },
+    {
+      "id": "paracetamol",
+      "name": "Paracetamol",
+      "usualMaxDaily": 4000.0,
+      "unit": "mg",
+      "source": "FDA OTC monograph"
+    },
+    {
+      "id": "prednisone",
+      "name": "Prednisone",
+      "usualMaxDaily": null,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "rosuvastatin",
+      "name": "Rosuvastatin",
+      "usualMaxDaily": 40.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "sertraline",
+      "name": "Sertraline",
+      "usualMaxDaily": 200.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "simvastatin",
+      "name": "Simvastatin",
+      "usualMaxDaily": 40.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed); 80 mg is restricted"
+    },
+    {
+      "id": "sitagliptin",
+      "name": "Sitagliptin",
+      "usualMaxDaily": 100.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "tamsulosin",
+      "name": "Tamsulosin",
+      "usualMaxDaily": 0.8,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "tramadol",
+      "name": "Tramadol",
+      "usualMaxDaily": 400.0,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "warfarin",
+      "name": "Warfarin",
+      "usualMaxDaily": null,
+      "unit": "mg",
+      "source": "FDA label (DailyMed)"
+    }
+  ],
+  "drugs": [
+    {
+      "id": "allopurinol",
+      "name": "Allopurinol",
+      "brands": [
+        "Zyloprim"
+      ],
+      "ingredients": [
+        "allopurinol"
+      ],
+      "drugClass": "Xanthine oxidase inhibitor",
+      "area": "Other",
+      "form": "tablet",
+      "strengths": [
+        [
+          100.0
+        ],
+        [
+          300.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "with_after",
+      "warnings": [
+        "water"
+      ],
+      "advice": "Take after food. Drink plenty of water during the day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "amlodipine",
+      "name": "Amlodipine",
+      "brands": [
+        "Norvasc"
+      ],
+      "ingredients": [
+        "amlodipine"
+      ],
+      "drugClass": "Calcium channel blocker",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          2.5
+        ],
+        [
+          5.0
+        ],
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "Take at the same time each day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "amoxicillin",
+      "name": "Amoxicillin",
+      "brands": [
+        "Amoxil"
+      ],
+      "ingredients": [
+        "amoxicillin"
+      ],
+      "drugClass": "Penicillin antibiotic",
+      "area": "Infection",
+      "form": "capsule",
+      "strengths": [
+        [
+          250.0
+        ],
+        [
+          500.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning",
+        "noon",
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "course"
+      ],
+      "advice": "Space the doses evenly through the day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "aspirin_low",
+      "name": "Aspirin (low dose)",
+      "brands": [
+        "Bayer Low Dose"
+      ],
+      "ingredients": [
+        "aspirin"
+      ],
+      "drugClass": "Antiplatelet (aspirin)",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          75.0
+        ],
+        [
+          81.0
+        ],
+        [
+          100.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "with_after",
+      "warnings": [],
+      "advice": "Take with food to protect the stomach.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "atenolol",
+      "name": "Atenolol",
+      "brands": [
+        "Tenormin"
+      ],
+      "ingredients": [
+        "atenolol"
+      ],
+      "drugClass": "Beta-blocker",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          25.0
+        ],
+        [
+          50.0
+        ],
+        [
+          100.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "dont_stop"
+      ],
+      "advice": "Take at the same time each day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "atorvastatin",
+      "name": "Atorvastatin",
+      "brands": [
+        "Lipitor"
+      ],
+      "ingredients": [
+        "atorvastatin"
+      ],
+      "drugClass": "Statin",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          10.0
+        ],
+        [
+          20.0
+        ],
+        [
+          40.0
+        ],
+        [
+          80.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "Can be taken at any time of day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "azithromycin",
+      "name": "Azithromycin",
+      "brands": [
+        "Zithromax"
+      ],
+      "ingredients": [
+        "azithromycin"
+      ],
+      "drugClass": "Macrolide antibiotic",
+      "area": "Infection",
+      "form": "tablet",
+      "strengths": [
+        [
+          250.0
+        ],
+        [
+          500.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "course"
+      ],
+      "advice": "Take once a day at the same time.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "bisoprolol",
+      "name": "Bisoprolol",
+      "brands": [
+        "Zebeta",
+        "Concor"
+      ],
+      "ingredients": [
+        "bisoprolol"
+      ],
+      "drugClass": "Beta-blocker",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          2.5
+        ],
+        [
+          5.0
+        ],
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "dont_stop"
+      ],
+      "advice": "Take in the morning at the same time each day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "cetirizine",
+      "name": "Cetirizine",
+      "brands": [
+        "Zyrtec"
+      ],
+      "ingredients": [
+        "cetirizine"
+      ],
+      "drugClass": "Antihistamine (2nd generation)",
+      "area": "Allergy and breathing",
+      "form": "tablet",
+      "strengths": [
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "drowsy"
+      ],
+      "advice": "Some people feel a little sleepy. Taking it in the evening can help.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "chlorphenamine",
+      "name": "Chlorphenamine (chlorpheniramine)",
+      "brands": [
+        "Piriton",
+        "Chlor-Trimeton"
+      ],
+      "ingredients": [
+        "chlorphenamine"
+      ],
+      "drugClass": "Antihistamine (1st generation)",
+      "area": "Allergy and breathing",
+      "form": "tablet",
+      "strengths": [
+        [
+          4.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [],
+      "defaultPrn": true,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "drowsy",
+        "alcohol"
+      ],
+      "advice": "This medicine often causes sleepiness.",
+      "source": "FDA OTC monograph"
+    },
+    {
+      "id": "ciprofloxacin",
+      "name": "Ciprofloxacin",
+      "brands": [
+        "Cipro"
+      ],
+      "ingredients": [
+        "ciprofloxacin"
+      ],
+      "drugClass": "Fluoroquinolone antibiotic",
+      "area": "Infection",
+      "form": "tablet",
+      "strengths": [
+        [
+          250.0
+        ],
+        [
+          500.0
+        ],
+        [
+          750.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning",
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "water",
+        "sun",
+        "course"
+      ],
+      "advice": "Take 2 hours before or 6 hours after antacids, iron, calcium or zinc.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "clopidogrel",
+      "name": "Clopidogrel",
+      "brands": [
+        "Plavix"
+      ],
+      "ingredients": [
+        "clopidogrel"
+      ],
+      "drugClass": "Antiplatelet (P2Y12 inhibitor)",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          75.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "dont_stop"
+      ],
+      "advice": "Do not stop before talking to your doctor.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "diazepam",
+      "name": "Diazepam",
+      "brands": [
+        "Valium"
+      ],
+      "ingredients": [
+        "diazepam"
+      ],
+      "drugClass": "Benzodiazepine",
+      "area": "Mental health and sleep",
+      "form": "tablet",
+      "strengths": [
+        [
+          2.0
+        ],
+        [
+          5.0
+        ],
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "bedtime"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "drowsy",
+        "alcohol",
+        "dont_stop"
+      ],
+      "advice": "Causes sleepiness. Usually for short-term use.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "doxycycline",
+      "name": "Doxycycline",
+      "brands": [
+        "Vibramycin"
+      ],
+      "ingredients": [
+        "doxycycline"
+      ],
+      "drugClass": "Tetracycline antibiotic",
+      "area": "Infection",
+      "form": "capsule",
+      "strengths": [
+        [
+          100.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning",
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "morning",
+        "noon",
+        "evening"
+      ],
+      "food": "with_after",
+      "warnings": [
+        "water",
+        "sun",
+        "course"
+      ],
+      "advice": "Stay upright for 30 minutes after each dose, so not at bedtime. Keep 2 hours away from antacids, iron or calcium.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "empagliflozin",
+      "name": "Empagliflozin",
+      "brands": [
+        "Jardiance"
+      ],
+      "ingredients": [
+        "empagliflozin"
+      ],
+      "drugClass": "SGLT2 inhibitor",
+      "area": "Diabetes",
+      "form": "tablet",
+      "strengths": [
+        [
+          10.0
+        ],
+        [
+          25.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "morning"
+      ],
+      "food": "any",
+      "warnings": [],
+      "advice": "Take in the morning. Drink enough fluids.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "enalapril",
+      "name": "Enalapril",
+      "brands": [
+        "Vasotec"
+      ],
+      "ingredients": [
+        "enalapril"
+      ],
+      "drugClass": "ACE inhibitor",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          2.5
+        ],
+        [
+          5.0
+        ],
+        [
+          10.0
+        ],
+        [
+          20.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "A dry cough can happen. Tell your pharmacist if it starts.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "famotidine",
+      "name": "Famotidine",
+      "brands": [
+        "Pepcid"
+      ],
+      "ingredients": [
+        "famotidine"
+      ],
+      "drugClass": "H2 blocker",
+      "area": "Stomach",
+      "form": "tablet",
+      "strengths": [
+        [
+          20.0
+        ],
+        [
+          40.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "bedtime"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "Often taken at bedtime.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "fluoxetine",
+      "name": "Fluoxetine",
+      "brands": [
+        "Prozac"
+      ],
+      "ingredients": [
+        "fluoxetine"
+      ],
+      "drugClass": "SSRI antidepressant",
+      "area": "Mental health and sleep",
+      "form": "capsule",
+      "strengths": [
+        [
+          10.0
+        ],
+        [
+          20.0
+        ],
+        [
+          40.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "morning",
+        "noon"
+      ],
+      "food": "any",
+      "warnings": [
+        "dont_stop"
+      ],
+      "advice": "Take in the morning so it does not keep you awake at night.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "furosemide",
+      "name": "Furosemide",
+      "brands": [
+        "Lasix"
+      ],
+      "ingredients": [
+        "furosemide"
+      ],
+      "drugClass": "Loop diuretic",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          20.0
+        ],
+        [
+          40.0
+        ],
+        [
+          80.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "morning",
+        "noon"
+      ],
+      "food": "any",
+      "warnings": [],
+      "advice": "Take in the morning, or by early afternoon, so you do not need to pass urine at night.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "gabapentin",
+      "name": "Gabapentin",
+      "brands": [
+        "Neurontin"
+      ],
+      "ingredients": [
+        "gabapentin"
+      ],
+      "drugClass": "Gabapentinoid",
+      "area": "Pain and inflammation",
+      "form": "capsule",
+      "strengths": [
+        [
+          100.0
+        ],
+        [
+          300.0
+        ],
+        [
+          400.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning",
+        "noon",
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "drowsy",
+        "alcohol",
+        "dont_stop"
+      ],
+      "advice": "Can cause sleepiness and dizziness.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "glipizide",
+      "name": "Glipizide",
+      "brands": [
+        "Glucotrol"
+      ],
+      "ingredients": [
+        "glipizide"
+      ],
+      "drugClass": "Sulfonylurea",
+      "area": "Diabetes",
+      "form": "tablet",
+      "strengths": [
+        [
+          5.0
+        ],
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "before",
+      "warnings": [],
+      "advice": "Take about 30 minutes before a meal. Do not skip the meal.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "hydrochlorothiazide",
+      "name": "Hydrochlorothiazide",
+      "brands": [
+        "Microzide"
+      ],
+      "ingredients": [
+        "hydrochlorothiazide"
+      ],
+      "drugClass": "Thiazide diuretic",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          12.5
+        ],
+        [
+          25.0
+        ],
+        [
+          50.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "morning",
+        "noon"
+      ],
+      "food": "any",
+      "warnings": [
+        "sun"
+      ],
+      "advice": "Take in the morning so you do not need to pass urine at night.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "ibuprofen",
+      "name": "Ibuprofen",
+      "brands": [
+        "Advil",
+        "Brufen"
+      ],
+      "ingredients": [
+        "ibuprofen"
+      ],
+      "drugClass": "NSAID",
+      "area": "Pain and inflammation",
+      "form": "tablet",
+      "strengths": [
+        [
+          200.0
+        ],
+        [
+          400.0
+        ],
+        [
+          600.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [],
+      "defaultPrn": true,
+      "bestTimes": [],
+      "food": "with_after",
+      "warnings": [],
+      "advice": "Take with food or milk to protect the stomach.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "levothyroxine",
+      "name": "Levothyroxine",
+      "brands": [
+        "Synthroid"
+      ],
+      "ingredients": [
+        "levothyroxine"
+      ],
+      "drugClass": "Thyroid hormone",
+      "area": "Other",
+      "form": "tablet",
+      "strengths": [
+        [
+          25.0
+        ],
+        [
+          50.0
+        ],
+        [
+          75.0
+        ],
+        [
+          88.0
+        ],
+        [
+          100.0
+        ],
+        [
+          112.0
+        ],
+        [
+          125.0
+        ],
+        [
+          150.0
+        ]
+      ],
+      "unit": "mcg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "morning"
+      ],
+      "food": "before",
+      "warnings": [],
+      "advice": "Take on an empty stomach, 30 to 60 minutes before breakfast.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "loratadine",
+      "name": "Loratadine",
+      "brands": [
+        "Claritin"
+      ],
+      "ingredients": [
+        "loratadine"
+      ],
+      "drugClass": "Antihistamine (2nd generation)",
+      "area": "Allergy and breathing",
+      "form": "tablet",
+      "strengths": [
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "Take once a day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "lorazepam",
+      "name": "Lorazepam",
+      "brands": [
+        "Ativan"
+      ],
+      "ingredients": [
+        "lorazepam"
+      ],
+      "drugClass": "Benzodiazepine",
+      "area": "Mental health and sleep",
+      "form": "tablet",
+      "strengths": [
+        [
+          0.5
+        ],
+        [
+          1.0
+        ],
+        [
+          2.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "bedtime"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "drowsy",
+        "alcohol",
+        "dont_stop"
+      ],
+      "advice": "Causes sleepiness. Usually for short-term use.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "losartan",
+      "name": "Losartan",
+      "brands": [
+        "Cozaar"
+      ],
+      "ingredients": [
+        "losartan"
+      ],
+      "drugClass": "ARB",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          25.0
+        ],
+        [
+          50.0
+        ],
+        [
+          100.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "Take at the same time each day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "metformin",
+      "name": "Metformin",
+      "brands": [
+        "Glucophage"
+      ],
+      "ingredients": [
+        "metformin"
+      ],
+      "drugClass": "Biguanide",
+      "area": "Diabetes",
+      "form": "tablet",
+      "strengths": [
+        [
+          500.0
+        ],
+        [
+          850.0
+        ],
+        [
+          1000.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning",
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "with_after",
+      "warnings": [],
+      "advice": "Take with meals to reduce stomach upset.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "metronidazole",
+      "name": "Metronidazole",
+      "brands": [
+        "Flagyl"
+      ],
+      "ingredients": [
+        "metronidazole"
+      ],
+      "drugClass": "Nitroimidazole antibiotic",
+      "area": "Infection",
+      "form": "tablet",
+      "strengths": [
+        [
+          250.0
+        ],
+        [
+          500.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning",
+        "noon",
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "with_after",
+      "warnings": [
+        "alcohol",
+        "course"
+      ],
+      "advice": "No alcohol during the course and for at least 3 days after.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "montelukast",
+      "name": "Montelukast",
+      "brands": [
+        "Singulair"
+      ],
+      "ingredients": [
+        "montelukast"
+      ],
+      "drugClass": "Leukotriene receptor antagonist",
+      "area": "Allergy and breathing",
+      "form": "tablet",
+      "strengths": [
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "evening",
+        "bedtime"
+      ],
+      "food": "any",
+      "warnings": [],
+      "advice": "Usually taken in the evening.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "naproxen",
+      "name": "Naproxen",
+      "brands": [
+        "Naprosyn",
+        "Aleve"
+      ],
+      "ingredients": [
+        "naproxen"
+      ],
+      "drugClass": "NSAID",
+      "area": "Pain and inflammation",
+      "form": "tablet",
+      "strengths": [
+        [
+          250.0
+        ],
+        [
+          500.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning",
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "with_after",
+      "warnings": [],
+      "advice": "Take with food or milk to protect the stomach.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "omeprazole",
+      "name": "Omeprazole",
+      "brands": [
+        "Prilosec"
+      ],
+      "ingredients": [
+        "omeprazole"
+      ],
+      "drugClass": "Proton pump inhibitor",
+      "area": "Stomach",
+      "form": "capsule",
+      "strengths": [
+        [
+          10.0
+        ],
+        [
+          20.0
+        ],
+        [
+          40.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "before",
+      "warnings": [
+        "whole"
+      ],
+      "advice": "Take 30 to 60 minutes before breakfast.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "pantoprazole",
+      "name": "Pantoprazole",
+      "brands": [
+        "Protonix"
+      ],
+      "ingredients": [
+        "pantoprazole"
+      ],
+      "drugClass": "Proton pump inhibitor",
+      "area": "Stomach",
+      "form": "tablet",
+      "strengths": [
+        [
+          20.0
+        ],
+        [
+          40.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "whole"
+      ],
+      "advice": "Can be taken with or without food. Take at the same time each day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "paracetamol",
+      "name": "Paracetamol (acetaminophen)",
+      "brands": [
+        "Panadol",
+        "Tylenol"
+      ],
+      "ingredients": [
+        "paracetamol"
+      ],
+      "drugClass": "Analgesic (paracetamol)",
+      "area": "Pain and inflammation",
+      "form": "tablet",
+      "strengths": [
+        [
+          500.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [],
+      "defaultPrn": true,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "alcohol"
+      ],
+      "advice": "Check other medicines for hidden paracetamol.",
+      "source": "FDA OTC monograph"
+    },
+    {
+      "id": "paracetamol_caffeine",
+      "name": "Paracetamol + caffeine",
+      "brands": [
+        "Panadol Extra"
+      ],
+      "ingredients": [
+        "paracetamol",
+        "caffeine"
+      ],
+      "drugClass": "Analgesic (paracetamol)",
+      "area": "Pain and inflammation",
+      "form": "tablet",
+      "strengths": [
+        [
+          500.0,
+          65.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [],
+      "defaultPrn": true,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "alcohol"
+      ],
+      "advice": "Contains paracetamol. Do not take with other paracetamol products.",
+      "source": "Product label"
+    },
+    {
+      "id": "prednisone",
+      "name": "Prednisone",
+      "brands": [
+        "Deltasone"
+      ],
+      "ingredients": [
+        "prednisone"
+      ],
+      "drugClass": "Corticosteroid",
+      "area": "Other",
+      "form": "tablet",
+      "strengths": [
+        [
+          5.0
+        ],
+        [
+          10.0
+        ],
+        [
+          20.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "morning"
+      ],
+      "food": "with_after",
+      "warnings": [
+        "dont_stop"
+      ],
+      "advice": "Take in the morning with food.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "rosuvastatin",
+      "name": "Rosuvastatin",
+      "brands": [
+        "Crestor"
+      ],
+      "ingredients": [
+        "rosuvastatin"
+      ],
+      "drugClass": "Statin",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          5.0
+        ],
+        [
+          10.0
+        ],
+        [
+          20.0
+        ],
+        [
+          40.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "Can be taken at any time of day.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "sertraline",
+      "name": "Sertraline",
+      "brands": [
+        "Zoloft"
+      ],
+      "ingredients": [
+        "sertraline"
+      ],
+      "drugClass": "SSRI antidepressant",
+      "area": "Mental health and sleep",
+      "form": "tablet",
+      "strengths": [
+        [
+          25.0
+        ],
+        [
+          50.0
+        ],
+        [
+          100.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "dont_stop"
+      ],
+      "advice": "It can take a few weeks to feel the full benefit.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "simvastatin",
+      "name": "Simvastatin",
+      "brands": [
+        "Zocor"
+      ],
+      "ingredients": [
+        "simvastatin"
+      ],
+      "drugClass": "Statin",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          10.0
+        ],
+        [
+          20.0
+        ],
+        [
+          40.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "bedtime"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [
+        "evening",
+        "bedtime"
+      ],
+      "food": "any",
+      "warnings": [],
+      "advice": "Usually taken in the evening.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "sitagliptin",
+      "name": "Sitagliptin",
+      "brands": [
+        "Januvia"
+      ],
+      "ingredients": [
+        "sitagliptin"
+      ],
+      "drugClass": "DPP-4 inhibitor",
+      "area": "Diabetes",
+      "form": "tablet",
+      "strengths": [
+        [
+          25.0
+        ],
+        [
+          50.0
+        ],
+        [
+          100.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "morning"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [],
+      "advice": "Take once a day with or without food.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "tamsulosin",
+      "name": "Tamsulosin",
+      "brands": [
+        "Flomax"
+      ],
+      "ingredients": [
+        "tamsulosin"
+      ],
+      "drugClass": "Alpha-1 blocker",
+      "area": "Other",
+      "form": "capsule",
+      "strengths": [
+        [
+          0.4
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "with_after",
+      "warnings": [
+        "whole"
+      ],
+      "advice": "Take 30 minutes after the same meal each day. Stand up slowly.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "tramadol",
+      "name": "Tramadol",
+      "brands": [
+        "Ultram"
+      ],
+      "ingredients": [
+        "tramadol"
+      ],
+      "drugClass": "Opioid analgesic",
+      "area": "Pain and inflammation",
+      "form": "tablet",
+      "strengths": [
+        [
+          50.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [],
+      "defaultPrn": true,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "drowsy",
+        "alcohol"
+      ],
+      "advice": "Can cause sleepiness and constipation.",
+      "source": "FDA label (DailyMed)"
+    },
+    {
+      "id": "warfarin",
+      "name": "Warfarin",
+      "brands": [
+        "Coumadin"
+      ],
+      "ingredients": [
+        "warfarin"
+      ],
+      "drugClass": "Anticoagulant (vitamin K antagonist)",
+      "area": "Heart and circulation",
+      "form": "tablet",
+      "strengths": [
+        [
+          1.0
+        ],
+        [
+          2.0
+        ],
+        [
+          2.5
+        ],
+        [
+          3.0
+        ],
+        [
+          4.0
+        ],
+        [
+          5.0
+        ],
+        [
+          6.0
+        ],
+        [
+          7.5
+        ],
+        [
+          10.0
+        ]
+      ],
+      "unit": "mg",
+      "defaultTimes": [
+        "evening"
+      ],
+      "defaultPrn": false,
+      "bestTimes": [],
+      "food": "any",
+      "warnings": [
+        "alcohol",
+        "dont_stop"
+      ],
+      "advice": "Take at the same time each day. Keep the amount of leafy green vegetables steady.",
+      "source": "FDA label (DailyMed)"
+    }
+  ]
+}
