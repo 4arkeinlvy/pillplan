@@ -298,12 +298,16 @@ Rule & In PillPlan \\
 One task per area & Left: build the plan. Right: the chart. Everything else (save, PDF, reminders, my drugs) is in the More drawer. Safety notes are one line above the chart until opened. \\
 One primary button & Amber only for the main action of a view: Print / PDF, Add to chart, Add to phone calendar. \\
 Light controls, strong content & Inputs, chips and buttons have 1 px light grey borders that darken on hover and focus. Strong black lines appear only on the chart sheet. \\
+Ruled grid & The desk is a faint cutting mat: lines every 8 px and stronger ones every 40 px. The A4 chart lies on it like label paper. The layout uses 12 columns with a 24 px gutter: the plan takes 4, the chart 8. \\
+Navbar & No boxed buttons. Each icon answers its meaning on hover: the printer feeds paper, the speech bubble pops, the three dots spread. A 2 px line grows under the label. Print / PDF is the only filled button. \\
+Tooltips & Only for short help, never for anything needed to finish the task. They open on hover after 400 ms and at once on keyboard focus, close with Esc, stay open while the pointer is on them, and never show on touch screens (WCAG 2.2 SC 1.4.13). \\
+No stripe accents & Severity is shown by an icon and the title colour, never by a coloured left border. \\
 8 px spacing grid & 32 px between sections, 16 px between fields, 6 px from label to control. \\
 Type scale & 17 px interface text, 18 px chart text, headings 20, 24 and 32 px. Bold only for names, doses and labels. \\
 Touch targets & Every control is at least 44 px tall (WCAG 2.2). \\
 Colour budget & About 60\% paper and desk, 30\% ink, at most 10\% amber. A chosen chip is an amber tint, not solid black. \\
 Alignment & Fields in a row share one top line. Units sit inside the stepper (``1 tablet'', ``4 kali''), never below it. \\
-Motion & 150 to 250 ms, ease out, only when something changes, never looping, off with reduced motion. \\
+Motion & Material 3 tokens: standard easing \texttt{(0.2, 0, 0, 1)}, enter \texttt{(0.05, 0.7, 0.1, 1)}, exit \texttt{(0.3, 0, 0.8, 0.15)}; 150 ms for feedback, 300 ms for state changes, 450 ms for the one orchestrated moment. No bounce, no loops, off with reduced motion. \\
 \bottomrule
 \end{tabularx}
 
@@ -328,7 +332,9 @@ Motion is used only where it explains a change, built with CSS and the View Tran
 \toprule
 Moment & What moves and why \\
 \midrule
-Dose stamp & A new dose is pressed into its column like a pharmacy stamp, column by column. It shows where the dose landed. \\
+Chart printing & The one orchestrated moment: the chart appears like a label printer printing, each row revealed left to right, one after another. \\
+Dose stamp & Then each dose is pressed into its column like a pharmacy stamp, column by column. It shows where the dose landed. \\
+Navbar icons & Hover or focus makes each icon act out its meaning (paper feed, bubble, dots). \\
 Signa preview & The preview turns bold, a check mark draws itself, and the time chips switch on with their icons moving. \\
 Drawer and strip & The More drawer slides in from the right; the safety strip opens downward with a turning chevron. \\
 Counseling timeline & A line from sunrise to night; the doses of the current medicine light up and a sun or moon marker slides to the first one. \\
