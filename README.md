@@ -2,7 +2,7 @@
 
 A counter tool for the apoteker: type the prescription signa (for example `3 dd 1 tab p.c.`), and PillPlan checks the plan and turns it into one clear picture chart, a counseling view and phone reminders, in English or Indonesian.
 
-**Live:** https://pillplan-6f0b530d.netlify.app (try `?example` or `?example&lang=id`)
+**Live:** https://pillplan-cela.netlify.app (try `?example` or `?example&lang=id`)
 
 ## What it does
 
