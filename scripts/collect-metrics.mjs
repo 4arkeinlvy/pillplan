@@ -17,7 +17,7 @@ const pick = (pattern) => files.filter((file) => pattern.test(file));
 const initialJs = pick(/^index-.*\.js$/);
 const css = pick(/\.css$/);
 const fonts = pick(/-latin-(400|700)-normal-.*\.woff2$/);
-const lazy = pick(/^(catalog|counseling)-.*\.js$/);
+const lazy = pick(/^(catalog|counseling|SortableMedicineList)-.*\.js$/);
 
 const rows = [
   ['Initial JS', sum(initialJs, gz), 110 * 1024],

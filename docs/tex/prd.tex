@@ -1,0 +1,311 @@
+\documentclass[11pt]{article}
+\usepackage{pillplan}
+\input{generated/catalog-stats.tex}
+\input{generated/metrics.tex}
+\input{generated/lighthouse.tex}
+
+\begin{document}
+
+% Title block, styled like the app's top bar.
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[amber] ([xshift=22mm,yshift=-22mm]current page.north west) rectangle ++(14mm,-2.2mm);
+\end{tikzpicture}
+\vspace*{8mm}
+{\fontsize{34}{38}\selectfont\bfseries PillPlan}\par
+\vspace{2mm}
+{\Large Product Requirements Document}\par
+\vspace{4mm}
+{\color{inkmuted}A medicine schedule maker that turns a list of medicines into a clear picture chart a patient can follow.}\par
+\vspace{6mm}
+\begin{tabular}{@{}ll@{}}
+\textbf{Version} & 2.0 \\
+\textbf{Date} & 2 November 2026 \\
+\textbf{Author} & Moh Khoirul Umam Al Amin \\
+\textbf{Status} & Built and tested, English and Indonesian \\
+\textbf{Course} & Pharmacy class project \\
+\end{tabular}
+\vspace{6mm}
+
+\begin{note}
+\textbf{In one sentence.} At the pharmacy counter, the apoteker types the prescription signa (for example \texttt{3 dd 1 tab p.c.}), PillPlan checks the plan and turns it into one clear picture chart, a counseling view and phone reminders, in English or Indonesian.
+\end{note}
+
+\tableofcontents
+\newpage
+
+\section{Problem}
+Patients who take several medicines often take them at the wrong time, with the wrong food, or twice by accident. The risk is highest for older adults and for people with low health literacy. Labels such as \emph{``take 1 tablet twice daily''} leave the patient to work out the times themselves.
+
+Research gives a clear direction:
+\begin{itemize}
+  \item The \textbf{Universal Medication Schedule (UMS)} uses four standard times: morning, noon, evening and bedtime. It improves understanding for every literacy level and helps most for people with low literacy and complex regimens.
+  \item The \textbf{AHRQ Pill Card} shows that a simple table with a row per medicine, sun and moon icons and a ``what it is for'' column is easier to follow than text.
+  \item Good instructions use \textbf{numbers instead of words}, put \textbf{each dose on its own line}, and use \textbf{plain words} for the purpose.
+\end{itemize}
+
+In Indonesia the apoteker reads the signa, writes the etiket and gives drug information and counseling at handover, as required by Permenkes 73/2016. An Indonesian study found that elderly patients understood the etiket in 99\% of cases, yet only 54\% of those with 5 medicines took all of them. Understanding one label is not the problem; organizing the whole day is.
+
+The AHRQ card is a Word template. It is slow to fill in, it does not check anything, and it cannot help during counseling. PillPlan keeps the proven layout and adds speed, checks and interaction.
+
+\section{Why not a reminder app?}
+A classmate is building a pill reminder app. The two products solve different problems and work well together.
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}p{30mm}XXX@{}}
+\toprule
+ & Reminder app & AHRQ pill card & PillPlan \\
+\midrule
+Who uses it & Patient at home & Pharmacist, by hand & Apoteker at the counter \\
+When & Every day & At handover & At handover and counseling \\
+Data entry & Patient types it & Typed in Word & Signa or catalog, prefilled \\
+Checks the plan & No & No & Daily maximum, duplicates, timing \\
+Works without a phone & No & Yes, paper & Yes, paper and screen \\
+Reminders & Yes & No & Yes, through the phone calendar \\
+Language & Varies & English & English and Indonesian \\
+\bottomrule
+\end{tabularx}
+
+Reviews of reminder apps for older adults find mixed results: many users stop using the app, and studies with cognitively impaired users showed no benefit. PillPlan therefore puts the effort where the plan is made, and hands reminders to the phone calendar the patient already has.
+
+\section{Users}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}p{30mm}X X@{}}
+\toprule
+User & Need & What PillPlan gives \\
+\midrule
+Apoteker & Turn a prescription into a clear plan in under 2 minutes & Signa entry, checks, one-page print, counseling mode \\
+Pharmacy student & Practice reading signa and counseling & Live signa preview, safety notes, counseling mode \\
+Caregiver & Manage a parent's medicines & Plain words, tracker, saved in the browser \\
+Patient & Know what to take and when & Picture chart, pill drawings, warning stickers \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Personas}
+\begin{note}[stickerblue]
+\textbf{Sari, 21, pharmacy student.} Practices counseling for an exam. Wants to see if her dosing is sensible and to explain each medicine one at a time.
+\end{note}
+\begin{note}[stickerblue]
+\textbf{Mr Budi, 72, patient.} Takes 4 medicines for diabetes, blood pressure and cholesterol. Reads large print best. Keeps the chart on the fridge.
+\end{note}
+
+\section{Goals and non-goals}
+\textbf{Goals}
+\begin{enumerate}
+  \item A correct chart for 4 to 6 medicines in \textbf{under 2 minutes}.
+  \item The chart fits on \textbf{one A4 page} and reads well in black and white.
+  \item The app is \textbf{fast, light and private}: no account, no server, no upload.
+  \item Simple checks catch common mistakes such as hidden paracetamol.
+\end{enumerate}
+\textbf{Non-goals}
+\begin{itemize}
+  \item Accounts, cloud sync or sharing between devices.
+  \item A full drug interaction checker.
+  \item Prescribing advice. PillPlan never says a plan is ``safe''.
+\end{itemize}
+
+\section{Features and acceptance criteria}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}p{32mm}X@{}}
+\toprule
+Feature & Accepted when \\
+\midrule
+Drug search & Generic, brand or Indonesian name (``parasetamol'', ``CTM'') lists matches at once. Picking one fills strength, usual time, food rule, warnings and advice. \\
+Signa entry & Typing \texttt{3 dd 1 tab p.c.} or \texttt{2x1 sesudah makan} fills times, amount and food, shows a plain preview, and lists any word it did not understand. \\
+Own drugs & Any drug can be typed. It is tagged ``not checked'' and remembered on the device as ``My drugs'' for next time. \\
+Language & One switch changes the whole app, the chart and the print between English and Indonesian, including number format (\texttt{0,5 mg}). \\
+Phone reminders & One button downloads a calendar file with a daily reminder for each time of day. \\
+Medicine form & Amount in half steps, four times or ``when needed'' with a daily limit, food rule, warning stickers, purpose, note, pill shape and color. Errors are shown next to the field. \\
+Live chart & Each medicine is one row, each time is one column, doses are numbers. When-needed medicines sit in their own box. \\
+Safety notes & Daily total per ingredient across products, duplicate ingredient, duplicate class and time-of-day hints. \\
+Reorder & Drag with mouse or touch, or move with the keyboard. Screen readers hear the new position. \\
+Spotlight & Tapping a time highlights only the doses at that time. \\
+Tracker & A 7-day blister pack. Tapping a bubble marks a dose as taken and is saved. \\
+Counseling mode & Full screen, one medicine at a time, big text, arrow keys. \\
+Saving & Autosave in this browser, a switch to turn it off, clear all data, export and import a file. \\
+Print & Only the chart prints, on A4, with names and doses at 14 pt or larger. \\
+\bottomrule
+\end{tabularx}
+
+\section{User flow}
+\begin{center}
+\begin{tikzpicture}[node distance=7mm and 10mm]
+  \node[accent] (start) {Open PillPlan};
+  \node[box, below=of start] (patient) {Type patient name\\\footnotesize(optional)};
+  \node[box, below=of patient] (search) {Search a medicine};
+  \node[decision, below=of search] (found) {In the\\list?};
+  \node[box, below left=8mm and 2mm of found] (prefill) {Form is prefilled\\from the catalog};
+  \node[box, below right=8mm and 2mm of found] (custom) {Add as custom\\\footnotesize``not checked''};
+  \node[box, below=24mm of found] (adjust) {Type the signa\\\footnotesize times, amount and food fill in};
+  \node[box, below=of adjust] (add) {Add to chart};
+  \node[box, right=14mm of add] (notes) {Chart and safety\\notes update live};
+  \node[decision, below=of add] (more) {More\\medicines?};
+  \node[box, below left=8mm and 2mm of more] (print) {Print or save PDF};
+  \node[box, below right=8mm and 2mm of more] (counsel) {Counseling mode};
+  \node[accent, below=26mm of more] (done) {Patient takes the chart home};
+
+  \draw[flow] (start) -- (patient);
+  \draw[flow] (patient) -- (search);
+  \draw[flow] (search) -- (found);
+  \draw[flow] (found) -| node[lbl, pos=0.25] {yes} (prefill);
+  \draw[flow] (found) -| node[lbl, pos=0.25] {no} (custom);
+  \draw[flow] (prefill) |- (adjust);
+  \draw[flow] (custom) |- (adjust);
+  \draw[flow] (adjust) -- (add);
+  \draw[flow, dashed] (add) -- (notes);
+  \draw[flow] (add) -- (more);
+  \draw[flow] (more.west) -- ++(-38mm,0) |- node[lbl, pos=0.25] {yes} (search.west);
+  \draw[flow] (more) -| node[lbl, pos=0.25] {no} (print);
+  \draw[flow] (more) -| (counsel);
+  \draw[flow] (print) |- (done);
+  \draw[flow] (counsel) |- (done);
+\end{tikzpicture}
+\end{center}
+
+\section{The chart}
+The chart follows the UMS grid. The drawing below shows the layout with the example patient used in demos.
+
+\begin{center}
+\begin{tikzpicture}[x=1mm, y=1mm, font=\small]
+  \draw[line width=1.6pt] (0,0) -- (150,0);
+  \node[anchor=west, font=\bfseries] at (0,-6) {Medicine};
+  \foreach \x/\t in {84/Morning, 101/Noon, 118/Evening, 135/Bedtime}
+    \node[font=\bfseries\footnotesize] at (\x,-6) {\t};
+  \draw[line width=0.9pt] (0,-10) -- (150,-10);
+  \foreach \y/\n/\p/\m/\no/\e/\b in {
+      -18/Metformin 500 mg/for diabetes/1/{}/1/{},
+      -32/Amlodipine 5 mg/for blood pressure/1/{}/{}/{},
+      -46/Simvastatin 20 mg/for cholesterol/{}/{}/{}/1} {
+    \node[anchor=west, font=\bfseries] at (12,\y+2) {\n};
+    \node[anchor=west, font=\footnotesize, text=inkmuted] at (12,\y-3) {\p};
+    \draw[fill=white, line width=0.8pt] (5,\y) ellipse (4 and 2.4);
+    \node[font=\ttfamily\bfseries\large] at (84,\y) {\m};
+    \node[font=\ttfamily\bfseries\large] at (101,\y) {\no};
+    \node[font=\ttfamily\bfseries\large] at (118,\y) {\e};
+    \node[font=\ttfamily\bfseries\large] at (135,\y) {\b};
+    \draw[rule] (0,\y-7) -- (150,\y-7);
+  }
+  \foreach \x in {75.5, 92.5, 109.5, 126.5} \draw[rule] (\x,-10) -- (\x,-53);
+  \draw[dashed, line width=0.8pt] (0,-58) rectangle (150,-74);
+  \node[anchor=west, font=\bfseries] at (4,-62) {When needed};
+  \node[anchor=west] at (4,-69) {Paracetamol 500 mg. Take 2 tablets. No more than 4 times a day.};
+  \node[anchor=east] at (146,-69) {\sticker{alert}{white}{No alcohol}};
+\end{tikzpicture}
+\end{center}
+
+\section{Requirements}
+\subsection{Performance}
+\begin{itemize}
+  \item Initial JavaScript at most 110 KB gzip. Measured: \metric{\MetricInitialJsGzip\ KB}.
+  \item Fonts at most 60 KB. Measured: \metric{\MetricFonts\ KB}.
+  \item The drug list and counseling mode load as separate chunks (\metric{\MetricLazyGzip\ KB} together).
+  \item Lighthouse 95 or higher in every category. Measured on mobile: \metric{\LighthousePerformance, \LighthouseAccessibility, \LighthouseBestPractices\ and \LighthouseSeo} for performance, accessibility, best practices and SEO.
+\end{itemize}
+\subsection{Accessibility}
+\begin{itemize}
+  \item WCAG 2.2 AA: contrast, visible focus, touch targets of 44 px or more, full keyboard use.
+  \item Atkinson Hyperlegible Next, designed by the Braille Institute for low-vision readers.
+  \item Motion is turned off when the device asks for reduced motion.
+\end{itemize}
+\subsection{Security and privacy}
+\begin{itemize}
+  \item A fully static site: no server, no database, no accounts, no third-party scripts.
+  \item Patient data stays in the browser. The export file name never contains the patient name.
+  \item A strict Content Security Policy and other security headers on every response.
+  \item Saved and imported data is validated before use.
+\end{itemize}
+\subsection{Medical safety}
+\begin{itemize}
+  \item Every catalog row names its source. Starter data comes from US FDA labels and must be checked against a local formulary.
+  \item Notes say ``check with your pharmacist''. Custom medicines are tagged ``not checked''.
+  \item Numbers follow ISMP rules: \texttt{0.5 mg}, never \texttt{.5 mg} or \texttt{1.0 mg}.
+\end{itemize}
+
+\section{Success metrics}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}X p{35mm} p{35mm}@{}}
+\toprule
+Metric & Target & Status \\
+\midrule
+Time to build the example chart & under 2 minutes & to measure with classmates \\
+Chart fits on A4 & 1 page & met (print test) \\
+Automated tests passing & all & \MetricAllTests\ of \MetricAllTests \\
+Initial JavaScript (gzip) & $\leq$ 110 KB & \MetricInitialJsGzip\ KB \\
+Catalog medicines & 35 or more & \CatalogDrugs \\
+Lighthouse, every category & $\geq$ 95 & \LighthousePerformance, \LighthouseAccessibility, \LighthouseBestPractices, \LighthouseSeo \\
+Classmates who understand the chart & 4 of 5 & to measure \\
+\bottomrule
+\end{tabularx}
+
+\section{Risks}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}p{45mm}X@{}}
+\toprule
+Risk & Mitigation \\
+\midrule
+Wrong catalog data & Python validation, a source per row, review against the formulary before real use. \\
+User trusts ``no notes'' as safe & Wording never says safe, and lists what is not checked. \\
+Data loss when the browser is cleared & Export file, and a clear note about where data lives. \\
+Shared computers & ``Remember on this device'' switch and Clear all data. \\
+Older browsers & View Transitions fall back to normal updates. \\
+\bottomrule
+\end{tabularx}
+
+\section{Evaluation study}
+A small study for the class, so the value is measured, not only claimed.
+
+\subsection{Study 1: does the chart help patients understand?}
+\begin{itemize}
+  \item \textbf{People:} 10 adults who are not pharmacy students (family, friends), 5 aged 50 or older if possible.
+  \item \textbf{Material:} the same 5-drug plan shown two ways: (A) five etiket texts such as ``3 x sehari 1 tablet sesudah makan'', (B) the PillPlan chart. Half see A first, half see B first.
+  \item \textbf{Questions:} 6, for example ``Which medicines do you take at night?'', ``How many tablets at noon?'', ``Before or after food for metformin?''
+  \item \textbf{Measures:} correct answers out of 6, and seconds to answer all.
+\end{itemize}
+
+\subsection{Study 2: is it quick and easy for the apoteker?}
+\begin{itemize}
+  \item \textbf{People:} 5 pharmacy students.
+  \item \textbf{Task:} turn 3 sample prescriptions into charts, once by hand (etiket) and once with PillPlan.
+  \item \textbf{Measures:} minutes per prescription, errors found by a second student, and the System Usability Scale (SUS, 10 questions, 0 to 100; above 68 is above average).
+\end{itemize}
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}X p{32mm} p{32mm}@{}}
+\toprule
+Result (fill in) & Etiket text & PillPlan \\
+\midrule
+Correct answers (mean of 6) & & \\
+Time to answer (seconds) & & \\
+Minutes per prescription & & \\
+Errors per prescription & & \\
+SUS score & not used & \\
+\bottomrule
+\end{tabularx}
+
+\section{Milestones}
+\begin{center}
+\begin{tikzpicture}[x=1mm, y=1mm]
+  \draw[line width=1.2pt] (0,0) -- (150,0);
+  \foreach \x/\t/\s/\c in {
+      0/Research and PRD/done/ink,
+      25/Drug data and tools/done/ink,
+      50/App skeleton/done/ink,
+      75/Features and tests/done/ink,
+      100/EN and ID with signa/done/ink,
+      125/Class study/next/amber,
+      150/Deploy/next/amber} {
+    \fill[\c] (\x,0) circle (2.2);
+    \node[anchor=north, align=center, font=\footnotesize, text width=22mm] at (\x,-4) {\textbf{\t}\\\color{inkmuted}\s};
+  }
+\end{tikzpicture}
+\end{center}
+
+\section{Sources}
+\begin{itemize}\small
+  \item AHRQ. How to Create a Pill Card. \url{https://www.ahrq.gov/health-literacy/patient-education/diagnosis/pillcard.html}
+  \item AHRQ. Health Literacy Tools for Use in Pharmacies. \url{https://www.ahrq.gov/health-literacy/pharmhealthlit/tools.html}
+  \item A Universal Medication Schedule to Promote Adherence to Complex Drug Regimens. \url{https://clinicaltrials.gov/study/NCT02820753}
+  \item Braille Institute. Atkinson Hyperlegible Next. \url{https://fontsource.org/fonts/atkinson-hyperlegible-next/about}
+  \item ISMP. List of Error-Prone Abbreviations, Symbols, and Dose Designations.
+  \item Permenkes 73/2016, Standar Pelayanan Kefarmasian di Apotek. \url{https://jdih.kemkes.go.id/documents/peraturan-menteri-kesehatan-nomor-73-tahun-2016}
+  \item Pengetahuan dan Praktik Pengelolaan Obat pada Lansia, Jurnal Farmasi Komunitas, Universitas Airlangga. \url{https://e-journal.unair.ac.id/JFK/article/download/52653/30742}
+  \item Effects of using medication reminder technologies by home-dwelling older citizens: a systematic review. Age and Ageing, 2026. \url{https://academic.oup.com/ageing/article/55/2/afag007/8464951}
+  \item Digital Health Interventions to Improve Medication Adherence Among Older Adults: A Systematic Review. Australasian Journal on Ageing, 2026. \url{https://onlinelibrary.wiley.com/doi/10.1111/ajag.70206}
+  \item Singkatan Latin dalam Resep (untuk Apoteker), M. Rifqi Rokhman, UGM. \url{https://m-rifqi-rokhman.staff.ugm.ac.id/2014/03/09/singkatan-latin-dalam-resep-untuk-apoteker/}
+\end{itemize}
+
+\end{document}

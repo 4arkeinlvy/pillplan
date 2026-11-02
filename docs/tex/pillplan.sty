@@ -1,0 +1,87 @@
+% Shared look for the PillPlan documents: same ink, amber and fonts as the app.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pillplan}
+
+\RequirePackage[a4paper,margin=22mm,headheight=14pt]{geometry}
+\RequirePackage{fontspec}
+\setmainfont{AtkinsonHyperlegibleNext}[
+  Path=fonts/, Extension=.ttf,
+  UprightFont=*-Regular, BoldFont=*-Bold, ItalicFont=*-Italic, BoldItalicFont=*-Bold]
+\setsansfont{AtkinsonHyperlegibleNext}[
+  Path=fonts/, Extension=.ttf,
+  UprightFont=*-Regular, BoldFont=*-Bold, ItalicFont=*-Italic, BoldItalicFont=*-Bold]
+\setmonofont{AtkinsonHyperlegibleMono}[
+  Path=fonts/, Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold, Scale=0.92]
+
+\RequirePackage{xcolor}
+\definecolor{paper}{HTML}{FFFFFF}
+\definecolor{ink}{HTML}{141414}
+\definecolor{inkmuted}{HTML}{5A5A5A}
+\definecolor{rule}{HTML}{CFCFCF}
+\definecolor{amber}{HTML}{B45F06}
+\definecolor{alert}{HTML}{C62828}
+\definecolor{stickeryellow}{HTML}{FFD60A}
+\definecolor{stickerblue}{HTML}{1565C0}
+\definecolor{highlight}{HTML}{FFF1A8}
+\definecolor{desk}{HTML}{E9E9E7}
+\color{ink}
+
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage{array}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{tcolorbox}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{dateplot}
+\RequirePackage{pgfplotstable}
+\RequirePackage{pgf-pie}
+\RequirePackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,shapes.multipart,shapes.symbols,fit,backgrounds,calc,automata,matrix}
+\RequirePackage{xurl}
+\RequirePackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\linespread{1.12}
+\setlist{itemsep=0.2em,topsep=0.3em}
+\renewcommand{\arraystretch}{1.25}
+
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{}[{\titlerule[1.6pt]}]
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.6em}{0.8em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small\bfseries PillPlan}
+\fancyhead[R]{\small\color{inkmuted}\leftmark}
+\fancyfoot[C]{\small\color{inkmuted}\thepage}
+
+% Callout boxes: a colored left bar, like the safety notes in the app.
+\newtcolorbox{note}[1][amber]{boxrule=0pt, leftrule=5pt, arc=0pt,
+  colback=white, colframe=#1, left=8pt, right=6pt, top=4pt, bottom=4pt}
+
+% Warning sticker, like the pharmacy auxiliary labels in the app.
+\newcommand{\sticker}[3]{{\setlength{\fboxsep}{2pt}\colorbox{#1}{\color{#2}\small\bfseries\,#3\,}}}
+
+% TikZ styles shared by every diagram.
+\tikzset{
+  >={Stealth[length=2.4mm]},
+  box/.style={draw=ink, line width=0.9pt, fill=white, minimum height=9mm, inner sep=5pt,
+    align=center, font=\small},
+  feature/.style={box, minimum width=27mm},
+  accent/.style={box, fill=amber, text=white, draw=amber, font=\small\bfseries},
+  soft/.style={box, fill=desk, draw=desk},
+  datafile/.style={box, shape=tape, tape bend top=none, draw=ink},
+  flow/.style={->, line width=0.9pt, draw=ink},
+  dep/.style={->, line width=0.8pt, draw=inkmuted},
+  lbl/.style={font=\footnotesize, fill=white, inner sep=1.5pt, text=inkmuted},
+  decision/.style={draw=ink, line width=0.9pt, diamond, aspect=2.2, inner sep=1pt, align=center,
+    font=\small, fill=white},
+}
+
+\newcommand{\metric}[1]{\textbf{#1}}
