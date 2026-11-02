@@ -1,5 +1,5 @@
 .heading {
-  font-size: var(--step-1);
+  font-size: var(--step-0);
   margin-bottom: var(--space-2);
 }
 
@@ -9,7 +9,7 @@
 
 .list {
   display: grid;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--line);
 }
 
 .item {
@@ -18,8 +18,8 @@
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--rule);
-  background: var(--desk);
+  border-bottom: 1px solid var(--line);
+  background: transparent;
 }
 
 .dragging {
@@ -49,6 +49,7 @@
 
 .name {
   font-weight: 700;
+  font-size: 0.94rem;
 }
 
 .summary {
@@ -81,5 +82,7 @@
 }
 
 .signa {
+  color: var(--ink-muted);
   font-family: var(--font-mono);
+  font-size: var(--step--1);
 }

@@ -7,7 +7,7 @@ import {
   TIME_SLOTS,
   type TimeSlot,
 } from '@/shared/domain/time';
-import { formatDose, formatStrength } from '@/shared/format/dose';
+import { formatDose, formatStrength, formName } from '@/shared/format/dose';
 import { local, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import {
@@ -55,8 +55,8 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
   const set = (patch: Partial<Medicine>) => setMedicine((current) => ({ ...current, ...patch }));
 
   useEffect(() => {
-    signaRef.current?.focus();
-  }, []);
+    if (initial.drugId !== null || initial.name) signaRef.current?.focus();
+  }, [initial.drugId, initial.name]);
 
   const parsed = parseSigna(signa, drug?.defaultTimes ?? []);
   const understood = signa.trim() !== '' && !isEmptySigna(parsed);
@@ -121,7 +121,11 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
       );
   const strength = displayStrength(medicine, t.locale);
   const heading =
-    mode === 'add' ? t.form.addHeading(medicine.name) : t.form.editHeading(medicine.name);
+    mode === 'edit'
+      ? t.form.editHeading(medicine.name)
+      : initial.name
+        ? t.form.addHeading(medicine.name)
+        : t.myDrugs.ownHeading;
 
   return (
     <form ref={formRef} className={styles.form} onSubmit={submit} noValidate aria-label={heading}>
@@ -177,6 +181,7 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
         <div className={styles.row}>
           <TextField
             label={t.form.name}
+            autoFocus={!initial.name}
             value={medicine.name}
             error={errors.name}
             onChange={(event) => set({ name: event.target.value })}
@@ -236,7 +241,7 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
           max={20}
           lessLabel={t.form.less}
           moreLabel={t.form.more}
-          suffix={t.form.forms[medicine.form]}
+          unit={formName(medicine.amount, medicine.form, t)}
           error={errors.amount}
           onChange={(amount) => set({ amount })}
         />
@@ -249,6 +254,7 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
             max={24}
             lessLabel={t.form.less}
             moreLabel={t.form.more}
+            unit={t.form.timesUnit}
             error={errors.maxPerDay}
             onChange={(prnMaxPerDay) => set({ prnMaxPerDay })}
           />
@@ -264,6 +270,7 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
 
       <details className={styles.more}>
         <summary>
+          <Icon name="chevron" size={18} className={styles.moreChevron} />
           <span className={styles.moreTitle}>{t.form.moreDetails}</span>
           <span className={styles.moreHint}>{t.form.moreDetailsHint}</span>
         </summary>

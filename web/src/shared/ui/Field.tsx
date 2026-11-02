@@ -197,12 +197,13 @@ interface StepperProps {
   max: number;
   lessLabel: string;
   moreLabel: string;
-  suffix?: string;
+  /** Unit shown inside the control, for example "tablet". */
+  unit?: string | undefined;
   error?: string | undefined;
   onChange: (value: number) => void;
 }
 
-/** Number input with large minus and plus buttons. */
+/** Number with minus and plus buttons; the unit sits inside so rows of steppers line up. */
 export function Stepper({
   label,
   value,
@@ -211,15 +212,15 @@ export function Stepper({
   max,
   lessLabel,
   moreLabel,
-  suffix,
+  unit,
   error,
   onChange,
 }: StepperProps) {
   const clamp = (next: number) => Math.min(max, Math.max(min, Math.round(next / step) * step));
   return (
-    <FieldFrame label={label} hint={suffix} error={error}>
+    <FieldFrame label={label} error={error}>
       {({ inputId, describedBy }) => (
-        <div className={styles.stepper}>
+        <div className={styles.stepper} data-invalid={error ? '' : undefined}>
           <button
             type="button"
             className={styles.stepButton}
@@ -227,21 +228,23 @@ export function Stepper({
             disabled={value <= min}
             onClick={() => onChange(clamp(value - step))}
           >
-            {'−'}
+            {'\u2212'}
           </button>
-          <input
-            id={inputId}
-            className={styles.input}
-            type="number"
-            inputMode="decimal"
-            min={min}
-            max={max}
-            step={step}
-            value={Number.isFinite(value) ? value : ''}
-            aria-describedby={describedBy}
-            aria-invalid={error ? true : undefined}
-            onChange={(event) => onChange(event.target.valueAsNumber)}
-          />
+          <span className={styles.stepValue}>
+            <input
+              id={inputId}
+              type="number"
+              inputMode="decimal"
+              min={min}
+              max={max}
+              step={step}
+              value={Number.isFinite(value) ? value : ''}
+              aria-describedby={describedBy}
+              aria-invalid={error ? true : undefined}
+              onChange={(event) => onChange(event.target.valueAsNumber)}
+            />
+            {unit && <span className={styles.unit}>{unit}</span>}
+          </span>
           <button
             type="button"
             className={styles.stepButton}

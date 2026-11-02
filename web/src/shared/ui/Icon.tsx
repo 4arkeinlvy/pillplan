@@ -4,23 +4,35 @@ import type { ReactElement } from 'react';
 const PATHS = {
   morning: (
     <>
-      <path d="M2 19h20M6 19a6 6 0 0 1 12 0" />
-      <path d="M12 9v2M4.5 12.5l1.4 1M19.5 12.5l-1.4 1M12 2v4M10 4l2-2 2 2" />
+      <path d="M2 19h20" />
+      <g className="icon-sunrise">
+        <path d="M7 19a5 5 0 0 1 10 0" />
+        <path className="icon-rays" d="M12 8.5v2M5.8 12.3l1.4 1.1M18.2 12.3l-1.4 1.1" />
+      </g>
     </>
   ),
   noon: (
     <>
       <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+      <path
+        className="icon-rays"
+        d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"
+      />
     </>
   ),
   evening: (
     <>
-      <path d="M2 19h20M6 19a6 6 0 0 1 12 0" />
-      <path d="M12 9v2M4.5 12.5l1.4 1M19.5 12.5l-1.4 1M12 2v4M10 4l2 2 2-2" />
+      <path className="icon-moon" d="M15.5 3.5a8 8 0 1 0 5 13.4A7 7 0 0 1 15.5 3.5Z" />
+      <path d="M19 3v3M17.5 4.5h3" />
     </>
   ),
-  bedtime: <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />,
+  bedtime: (
+    <>
+      <path d="M2 20V9M2 16h20v4M22 16v-3a2 2 0 0 0-2-2h-8v5" />
+      <circle cx="6.5" cy="13" r="1.8" />
+      <path className="icon-z" d="M14 3h4l-4 4h4" />
+    </>
+  ),
   prn: (
     <>
       <circle cx="12" cy="12" r="9" />
@@ -105,11 +117,19 @@ const PATHS = {
     </>
   ),
   back: <path d="m15 18-6-6 6-6" />,
+  chevron: <path d="m6 9 6 6 6-6" />,
+  more: (
+    <g fill="currentColor" stroke="none">
+      <circle cx="5" cy="12" r="1.8" />
+      <circle cx="12" cy="12" r="1.8" />
+      <circle cx="19" cy="12" r="1.8" />
+    </g>
+  ),
+  check: <path className="icon-check" d="m5 12 5 5L20 7" />,
   next: <path d="m9 6 6 6-6 6" />,
   close: <path d="M6 6l12 12M18 6 6 18" />,
   download: <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />,
   upload: <path d="M12 15V3M7 8l5-5 5 5M5 21h14" />,
-  check: <path d="m5 12 5 5L20 7" />,
   alert: <path d="M12 3 2 21h20ZM12 10v5M12 18h.01" />,
   info: (
     <>

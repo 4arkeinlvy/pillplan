@@ -48,20 +48,24 @@ export function MedicineRow({
         <p className={styles.name}>
           {medicine.name} {displayStrength(medicine, t.locale)}
         </p>
-        <p className={styles.summary}>
-          {scheduleSummary(medicine, t)}
-          {medicine.signa && <span className={styles.signa}> {medicine.signa}</span>}
-        </p>
+        <p className={styles.summary}>{scheduleSummary(medicine, t)}</p>
+        {medicine.signa && <p className={styles.signa}>{medicine.signa}</p>}
       </div>
       <div className={styles.actions}>
-        <Button variant="quiet" icon="edit" onClick={() => onEdit(medicine)}>
-          <span className="visually-hidden">{medicine.name}: </span>
-          <span className={styles.actionText}>{t.list.edit}</span>
-        </Button>
-        <Button variant="quiet" icon="remove" onClick={() => onRemove(medicine)}>
-          <span className="visually-hidden">{medicine.name}: </span>
-          <span className={styles.actionText}>{t.list.remove}</span>
-        </Button>
+        <Button
+          variant="quiet"
+          icon="edit"
+          aria-label={`${t.list.edit}: ${medicine.name}`}
+          title={t.list.edit}
+          onClick={() => onEdit(medicine)}
+        />
+        <Button
+          variant="quiet"
+          icon="remove"
+          aria-label={`${t.list.remove}: ${medicine.name}`}
+          title={t.list.remove}
+          onClick={() => onRemove(medicine)}
+        />
       </div>
     </li>
   );

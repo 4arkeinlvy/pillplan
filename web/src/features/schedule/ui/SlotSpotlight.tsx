@@ -26,6 +26,9 @@ export function SlotSpotlight({ counts, selected, onSelect }: SlotSpotlightProps
           <span className={styles.top}>
             <Icon name={slot} size={18} />
             {t.slots[slot]}
+            <span className={styles.count} aria-label={t.chart.medicinesAt(counts[slot])}>
+              {counts[slot]}
+            </span>
           </span>
           <svg
             className={styles.bar}
@@ -33,16 +36,15 @@ export function SlotSpotlight({ counts, selected, onSelect }: SlotSpotlightProps
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <rect width="100" height="8" fill="var(--rule)" />
+            <rect width="100" height="4" fill="#e6e6e4" />
             <rect
               className={styles.fill}
               width="100"
-              height="8"
-              fill="var(--ink)"
+              height="4"
+              fill="var(--amber)"
               style={{ transform: `scaleX(${counts[slot] / most})` }}
             />
           </svg>
-          <span className={styles.count}>{t.chart.medicinesAt(counts[slot])}</span>
         </button>
       ))}
     </div>

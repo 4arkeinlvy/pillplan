@@ -7,12 +7,11 @@ import styles from './MyDrugsList.module.css';
 export function MyDrugsList() {
   const { myDrugs, forgetDrug } = useMyDrugs();
   const { t } = useI18n();
-  if (myDrugs.length === 0) return null;
   return (
     <section className="no-print" aria-labelledby="my-drugs-heading">
-      <h2 id="my-drugs-heading" className={styles.heading}>
+      <h3 id="my-drugs-heading" className={styles.heading}>
         {t.myDrugs.heading} ({myDrugs.length})
-      </h2>
+      </h3>
       <p className={styles.hint}>{t.myDrugs.hint}</p>
       <ul className={styles.list}>
         {myDrugs.map((drug) => (

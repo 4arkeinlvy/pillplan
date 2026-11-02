@@ -6,7 +6,6 @@ import { ConfirmDialog } from '@/shared/ui/ConfirmDialog';
 import { Switch } from '@/shared/ui/Field';
 import { useToast } from '@/shared/ui/Toast';
 import { downloadBlob, exportFileName, exportPlan, importPlan } from '../logic/file';
-import { CalendarExport } from './CalendarExport';
 import styles from './StorageControls.module.css';
 
 interface StorageControlsProps {
@@ -42,9 +41,9 @@ export function StorageControls({
 
   return (
     <section className={`${styles.section} no-print`} aria-labelledby="storage-heading">
-      <h2 id="storage-heading" className={styles.heading}>
+      <h3 id="storage-heading" className={styles.heading}>
         {t.storage.heading}
-      </h2>
+      </h3>
       {available ? (
         <div>
           <Switch label={t.storage.remember} checked={remember} onChange={onRememberChange} />
@@ -78,7 +77,6 @@ export function StorageControls({
           {t.storage.clear}
         </Button>
       </div>
-      <CalendarExport />
       <ConfirmDialog
         open={confirming}
         title={t.storage.clearTitle}

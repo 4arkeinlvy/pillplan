@@ -2,6 +2,7 @@ import { useRef, useState, type RefObject } from 'react';
 import { DrugSearch, useMyDrugs } from '@/features/catalog';
 import { useI18n } from '@/shared/i18n';
 import { newId } from '@/shared/id';
+import { Button } from '@/shared/ui/Button';
 import { useToast } from '@/shared/ui/Toast';
 import { withViewTransition } from '@/shared/viewTransition';
 import { customMedicine, medicineFromDrug, medicineFromMyDrug, toMyDrug } from '../logic/fromDrug';
@@ -67,6 +68,16 @@ export function MedicinePanel({ searchRef }: MedicinePanelProps) {
         }
         onCustom={(name) => setDraft({ medicine: customMedicine(name, newId()), mode: 'add' })}
       />
+      {!draft && (
+        <Button
+          variant="quiet"
+          icon="edit"
+          className={styles.own}
+          onClick={() => setDraft({ medicine: customMedicine('', newId()), mode: 'add' })}
+        >
+          {t.myDrugs.typeOwn}
+        </Button>
+      )}
       {draft && (
         <MedicineForm
           key={draft.medicine.id}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useCatalog } from '@/features/catalog';
 import { usePlan } from '@/features/medicines';
 import { useI18n } from '@/shared/i18n';
@@ -9,34 +9,52 @@ import styles from './SafetyNotes.module.css';
 
 const ICON: Record<Severity, IconName> = { alert: 'alert', caution: 'alert', info: 'info' };
 
-/** Notes for the pharmacist or student. They are not printed on the patient's chart. */
 interface SafetyNotesProps {
   /** Tell the chart which medicines a note is about while it is hovered or focused. */
   onHighlight?: (medicineIds: readonly string[]) => void;
 }
 
+/**
+ * A slim strip above the chart: one line when collapsed, the notes when opened.
+ * Notes are for the apoteker; they are never printed on the patient's chart.
+ */
 export function SafetyNotes({ onHighlight }: SafetyNotesProps) {
   const { plan } = usePlan();
   const catalog = useCatalog();
   const { t, lang } = useI18n();
+  const [open, setOpen] = useState(false);
   const notes = useMemo(
     () => (catalog ? runSafetyChecks(plan.medicines, catalog, t, lang) : []),
     [catalog, plan.medicines, t, lang],
   );
   if (plan.medicines.length === 0) return null;
 
+  if (notes.length === 0) {
+    return (
+      <p className={`${styles.strip} ${styles.ok} no-print`} title={t.safety.noneDetail}>
+        <Icon name="check" size={18} />
+        {t.safety.okShort}
+      </p>
+    );
+  }
+
+  const worst = notes[0]?.severity ?? 'info';
   return (
-    <section aria-labelledby="safety-heading">
-      <h2 id="safety-heading" className={styles.heading}>
-        {t.safety.heading} ({notes.length})
-      </h2>
-      {notes.length === 0 ? (
-        <div className={styles.none}>
-          <p>{t.safety.none}</p>
-          <p>{t.safety.noneDetail}</p>
-        </div>
-      ) : (
-        <ul className={styles.list} aria-live="polite">
+    <section className={`${styles.strip} ${styles[worst]} no-print`} aria-label={t.safety.heading}>
+      <button
+        type="button"
+        className={styles.toggle}
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <Icon name={ICON[worst]} size={20} />
+        <span key={notes.length} className={styles.count}>
+          {t.safety.count(notes.length)}
+        </span>
+        <Icon name="chevron" size={18} className={styles.chevron} />
+      </button>
+      {open && (
+        <ul className={styles.list}>
           {notes.map((note) => (
             <li
               key={note.id}
@@ -47,13 +65,11 @@ export function SafetyNotes({ onHighlight }: SafetyNotesProps) {
               onFocus={() => onHighlight?.(note.medicineIds)}
               onBlur={() => onHighlight?.([])}
             >
-              <Icon name={ICON[note.severity]} size={22} />
-              <div>
-                <p className={styles.title}>{note.title}</p>
-                <p className={styles.detail}>{note.detail}</p>
-              </div>
+              <p className={styles.title}>{note.title}</p>
+              <p className={styles.detail}>{note.detail}</p>
             </li>
           ))}
+          <li className={styles.footnote}>{t.safety.noneDetail}</li>
         </ul>
       )}
     </section>

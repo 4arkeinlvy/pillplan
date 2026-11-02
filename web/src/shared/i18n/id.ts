@@ -29,7 +29,7 @@ export const id: Strings = {
     name: 'PillPlan',
     tagline: 'Ubah daftar obat menjadi jadwal yang jelas dan mudah diikuti pasien.',
     counsel: 'Mode konseling',
-    print: 'Cetak jadwal',
+    print: 'Cetak / PDF',
     example: 'Coba contoh pasien',
     repo: 'Kode sumber dan dokumentasi',
     disclaimer:
@@ -68,6 +68,8 @@ export const id: Strings = {
   },
   myDrugs: {
     remember: 'Ingat obat ini untuk berikutnya',
+    typeOwn: 'Ketik obat sendiri',
+    ownHeading: 'Tambah obat sendiri',
     tag: 'Obat saya, tidak diperiksa',
     heading: 'Obat saya',
     hint: 'Obat yang Anda ketik sendiri. Hanya tersimpan di perangkat ini.',
@@ -79,6 +81,9 @@ export const id: Strings = {
     hint: 'Unduh file kalender lalu buka di ponsel untuk pengingat setiap hari.',
     export: 'Tambahkan ke kalender ponsel',
     times: 'Jam untuk setiap waktu',
+    hour: 'Jam',
+    minute: 'Menit',
+    done: 'Selesai',
     none: 'Tambahkan dulu obat dengan waktu tetap.',
     eventTitle: (slot: string) => `Obat: ${slot}`,
     eventLine: (name: string, dose: string) => `${name}: ${dose}`,
@@ -86,6 +91,16 @@ export const id: Strings = {
   },
   timeline: {
     label: 'Waktu dalam sehari',
+  },
+  drawer: {
+    more: 'Lainnya',
+    title: 'Pilihan lainnya',
+    close: 'Tutup',
+    tabs: { save: 'Simpan', reminders: 'Pengingat', myDrugs: 'Obat saya' },
+  },
+  pdf: {
+    button: 'Simpan sebagai PDF',
+    hint: 'Membuka jendela cetak. Pilih "Simpan sebagai PDF" sebagai printer. PDF terlihat sama seperti jadwal di layar.',
   },
   patient: {
     heading: 'Pasien',
@@ -95,7 +110,7 @@ export const id: Strings = {
   search: {
     label: 'Cari obat',
     placeholder: 'Nama generik atau merek',
-    hint: 'Tidak ada di daftar? Ketik namanya lalu pilih tambahkan sebagai obat lain.',
+    hint: 'Nama generik, merek, atau nama Indonesia.',
     loading: 'Memuat daftar obat',
     listLabel: 'Obat yang cocok',
     addCustom: (name: string) => `Tambahkan "${name}" sebagai obat lain`,
@@ -123,6 +138,7 @@ export const id: Strings = {
     when: 'Kapan diminum',
     whenNeededHint: 'Hanya saat pasien membutuhkan, misalnya untuk nyeri.',
     maxPerDay: 'Paling banyak per hari',
+    timesUnit: 'kali',
     food: 'Makanan',
     warnings: 'Stiker peringatan',
     purpose: 'Untuk apa',
@@ -203,6 +219,8 @@ export const id: Strings = {
   },
   safety: {
     heading: 'Catatan keamanan',
+    count: (n: number) => `${n} catatan keamanan`,
+    okShort: 'Tidak ada masalah dari pemeriksaan',
     none: 'Tidak ada masalah dari pemeriksaan yang bisa dilakukan PillPlan.',
     noneDetail:
       'PillPlan memeriksa total harian, duplikasi, dan waktu minum. PillPlan tidak memeriksa interaksi obat.',

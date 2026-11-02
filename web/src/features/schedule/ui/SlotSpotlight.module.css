@@ -1,53 +1,62 @@
 .ribbon {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2);
+  gap: var(--space-1);
   margin: 0 0 var(--space-4);
 }
 
 .slot {
   display: grid;
-  justify-items: start;
-  gap: 2px;
+  gap: 4px;
   min-height: var(--target);
   padding: var(--space-2);
-  border: 2px solid var(--ink);
+  border: 1px solid transparent;
   border-radius: var(--radius);
-  background: var(--paper);
+  background: transparent;
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out;
+}
+
+.slot:hover {
+  background: rgb(0 0 0 / 0.04);
 }
 
 .slot[aria-pressed='true'] {
-  background: var(--highlight);
+  border-color: var(--amber);
+  background: var(--amber-tint);
 }
 
 .top {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 6px;
   font-weight: 700;
   font-size: var(--step--1);
+}
+
+.count {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
 }
 
 .bar {
   display: block;
   width: 100%;
-  height: 8px;
+  height: 4px;
+  border-radius: 2px;
 }
 
-.count {
-  color: var(--ink-muted);
-  font-size: var(--step--1);
+.fill {
+  transform-origin: left center;
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @media (max-width: 30rem) {
   .ribbon {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-
-.fill {
-  transform-origin: left center;
-  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }

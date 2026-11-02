@@ -3,11 +3,12 @@ import { CatalogProvider, MyDrugsList, useCatalog } from '@/features/catalog';
 import { buildExamplePlan, MedicinePanel, PlanProvider, usePlan } from '@/features/medicines';
 import { SafetyNotes } from '@/features/safety';
 import { ChartSheet, toIsoDate } from '@/features/schedule';
-import { StorageControls, usePersistence } from '@/features/storage';
+import { CalendarExport, StorageControls, usePersistence } from '@/features/storage';
 import { newId } from '@/shared/id';
 import { I18nProvider, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { TextField } from '@/shared/ui/Field';
+import { Drawer } from '@/shared/ui/Drawer';
 import { ToastProvider } from '@/shared/ui/Toast';
 import { withViewTransition } from '@/shared/viewTransition';
 import type { Catalog } from '@/features/catalog';
@@ -19,8 +20,6 @@ import styles from './App.module.css';
 const CounselingMode = lazy(() =>
   import('@/features/schedule/counseling').then((module) => ({ default: module.CounselingMode })),
 );
-
-export const REPO_URL = 'https://github.com/4arkeinlvy/pillplan';
 
 interface AppProps {
   startup?: Startup;
@@ -50,6 +49,7 @@ function Shell({ startup }: { startup: Startup }) {
   const [highlight, setHighlight] = useState<readonly string[]>([]);
   const persistence = usePersistence(plan, startup.storage);
   const [counseling, setCounseling] = useState(startup.counsel);
+  const [drawer, setDrawer] = useState(false);
   const demoDone = useRef(!startup.example);
   const today = toIsoDate(startup.today);
   const hasMedicines = plan.medicines.length > 0;
@@ -107,6 +107,9 @@ function Shell({ startup }: { startup: Startup }) {
           >
             {t.app.print}
           </Button>
+          <Button icon="more" aria-haspopup="dialog" onClick={() => setDrawer(true)}>
+            <span className={styles.moreLabel}>{t.drawer.more}</span>
+          </Button>
         </div>
       </header>
 
@@ -131,16 +134,9 @@ function Shell({ startup }: { startup: Startup }) {
             />
           </section>
           <MedicinePanel searchRef={searchRef} />
-          <SafetyNotes onHighlight={setHighlight} />
-          <MyDrugsList />
-          <StorageControls
-            remember={persistence.remember}
-            available={persistence.available}
-            today={today}
-            onRememberChange={persistence.setRemember}
-          />
         </div>
         <div className={styles.preview}>
+          <SafetyNotes onHighlight={setHighlight} />
           <ChartSheet today={startup.today} onExample={loadExample} highlight={highlight} />
         </div>
       </main>
@@ -148,10 +144,46 @@ function Shell({ startup }: { startup: Startup }) {
       <footer className={`${styles.footer} no-print`}>
         <p>{t.app.privacy}</p>
         <p>{t.app.dataNote}</p>
-        <p>
-          <a href={REPO_URL}>{t.app.repo}</a>
-        </p>
       </footer>
+
+      <Drawer
+        open={drawer}
+        title={t.drawer.title}
+        closeLabel={t.drawer.close}
+        onClose={() => setDrawer(false)}
+        tabs={[
+          {
+            id: 'save',
+            label: t.drawer.tabs.save,
+            content: (
+              <div className={styles.drawerStack}>
+                <div className={styles.pdf}>
+                  <Button
+                    variant="primary"
+                    icon="print"
+                    disabled={!hasMedicines}
+                    onClick={() => {
+                      setDrawer(false);
+                      window.setTimeout(() => window.print(), 250);
+                    }}
+                  >
+                    {t.pdf.button}
+                  </Button>
+                  <p className={styles.drawerHint}>{t.pdf.hint}</p>
+                </div>
+                <StorageControls
+                  remember={persistence.remember}
+                  available={persistence.available}
+                  today={today}
+                  onRememberChange={persistence.setRemember}
+                />
+              </div>
+            ),
+          },
+          { id: 'reminders', label: t.drawer.tabs.reminders, content: <CalendarExport /> },
+          { id: 'mydrugs', label: t.drawer.tabs.myDrugs, content: <MyDrugsList /> },
+        ]}
+      />
 
       {counseling && hasMedicines && (
         <Suspense fallback={null}>

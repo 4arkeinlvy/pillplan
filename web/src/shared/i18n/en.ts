@@ -32,7 +32,7 @@ export const en = {
     name: 'PillPlan',
     tagline: 'Turn a list of medicines into a clear chart a patient can follow.',
     counsel: 'Counseling mode',
-    print: 'Print chart',
+    print: 'Print / PDF',
     example: 'Try an example patient',
     repo: 'Source code and documentation',
     disclaimer:
@@ -71,6 +71,8 @@ export const en = {
   },
   myDrugs: {
     remember: 'Remember this drug for next time',
+    typeOwn: 'Type my own medicine',
+    ownHeading: 'Add my own medicine',
     tag: 'My drug, not checked',
     heading: 'My drugs',
     hint: 'Drugs you typed yourself. They are saved on this device only.',
@@ -82,6 +84,9 @@ export const en = {
     hint: 'Download a calendar file and open it on the phone for daily reminders.',
     export: 'Add to phone calendar',
     times: 'Clock time for each part of the day',
+    hour: 'Hour',
+    minute: 'Minute',
+    done: 'Done',
     none: 'Add a medicine with a fixed time first.',
     eventTitle: (slot: string) => `Medicines: ${slot}`,
     eventLine: (name: string, dose: string) => `${name}: ${dose}`,
@@ -89,6 +94,16 @@ export const en = {
   },
   timeline: {
     label: 'When in the day',
+  },
+  drawer: {
+    more: 'More',
+    title: 'More options',
+    close: 'Close',
+    tabs: { save: 'Save', reminders: 'Reminders', myDrugs: 'My drugs' },
+  },
+  pdf: {
+    button: 'Save as PDF',
+    hint: 'Opens the print window. Choose "Save as PDF" as the printer. The PDF looks the same as the chart on screen.',
   },
   patient: {
     heading: 'Patient',
@@ -98,7 +113,7 @@ export const en = {
   search: {
     label: 'Find a medicine',
     placeholder: 'Generic or brand name',
-    hint: 'Not in the list? Type the name and choose to add it as a custom medicine.',
+    hint: 'Generic, brand or Indonesian name.',
     loading: 'Loading the drug list',
     listLabel: 'Matching medicines',
     addCustom: (name: string) => `Add "${name}" as a custom medicine`,
@@ -120,6 +135,7 @@ export const en = {
     when: 'When to take it',
     whenNeededHint: 'Only when the patient needs it, for example for pain.',
     maxPerDay: 'Most times a day',
+    timesUnit: 'times',
     food: 'Food',
     warnings: 'Warning stickers',
     purpose: 'What it is for',
@@ -200,6 +216,8 @@ export const en = {
   },
   safety: {
     heading: 'Safety notes',
+    count: (n: number) => (n === 1 ? '1 safety note' : `${n} safety notes`),
+    okShort: 'No issues found by the checks',
     none: 'No issues found by the checks PillPlan can do.',
     noneDetail:
       'PillPlan checks daily totals, duplicates and time of day. It does not check interactions.',

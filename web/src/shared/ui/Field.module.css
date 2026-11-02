@@ -1,11 +1,18 @@
 .field {
   display: grid;
-  gap: var(--space-1);
+  gap: 6px;
+  align-content: start;
 }
 
 .label,
 .legend {
   font-weight: 700;
+  font-size: 0.94rem;
+}
+
+.legend {
+  margin-bottom: 6px;
+  padding: 0;
 }
 
 .hint {
@@ -23,9 +30,15 @@
   width: 100%;
   min-height: var(--target);
   padding: var(--space-2) var(--space-3);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper);
+  transition: border-color 150ms ease-out;
+}
+
+.input:hover,
+.input:focus {
+  border-color: var(--ink);
 }
 
 .input[aria-invalid='true'] {
@@ -33,7 +46,7 @@
 }
 
 textarea.input {
-  min-height: 5rem;
+  min-height: 4.5rem;
   resize: vertical;
 }
 
@@ -42,7 +55,8 @@ textarea.input {
   padding: 0;
   border: 0;
   display: grid;
-  gap: var(--space-2);
+  gap: 6px;
+  min-width: 0;
 }
 
 .chips {
@@ -54,19 +68,32 @@ textarea.input {
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  min-height: var(--target);
+  gap: 6px;
+  min-height: 40px;
   padding: 0 var(--space-3);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper);
+  font-size: 0.94rem;
   cursor: pointer;
   user-select: none;
+  transition:
+    border-color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.chip:hover {
+  border-color: var(--ink);
 }
 
 .chip:has(input:checked) {
-  background: var(--ink);
-  color: var(--paper);
+  border-color: var(--amber);
+  background: var(--amber-tint);
+  animation: chip-on 180ms ease-out;
+}
+
+.chip:has(input:checked) svg {
+  color: var(--amber-dark);
 }
 
 .chip:has(input:focus-visible) {
@@ -75,7 +102,7 @@ textarea.input {
 }
 
 .chip:has(input:disabled) {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -86,48 +113,127 @@ textarea.input {
   height: 1px;
 }
 
+@keyframes chip-on {
+  from {
+    transform: scale(0.96);
+  }
+}
+
+/* Time-of-day icons come alive when their chip turns on. */
+.chip:has(input:checked) :global(.icon-rays) {
+  animation: rays-turn 420ms ease-out;
+  transform-origin: 12px 12px;
+  transform-box: view-box;
+}
+
+.chip:has(input:checked) :global(.icon-sunrise) {
+  animation: sun-rise 380ms ease-out;
+}
+
+.chip:has(input:checked) :global(.icon-moon) {
+  animation: moon-tilt 420ms ease-out;
+  transform-origin: 12px 12px;
+  transform-box: view-box;
+}
+
+.chip:has(input:checked) :global(.icon-z) {
+  animation: z-float 520ms ease-out;
+}
+
+@keyframes rays-turn {
+  from {
+    transform: rotate(-30deg);
+    opacity: 0.3;
+  }
+}
+
+@keyframes sun-rise {
+  from {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes moon-tilt {
+  from {
+    transform: rotate(-25deg);
+  }
+}
+
+@keyframes z-float {
+  from {
+    transform: translate(-2px, 4px);
+    opacity: 0;
+  }
+}
+
 .stepper {
   display: inline-flex;
   align-items: stretch;
+  height: var(--target);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  transition: border-color 150ms ease-out;
 }
 
-.stepper .input {
-  width: 5.5rem;
-  border-radius: 0;
-  border-left: 0;
-  border-right: 0;
-  text-align: center;
+.stepper:hover,
+.stepper:focus-within {
+  border-color: var(--ink);
+}
+
+.stepper[data-invalid] {
+  border-color: var(--alert);
+}
+
+.stepValue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 var(--space-2);
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+.stepValue input {
+  width: 3rem;
+  border: 0;
+  background: transparent;
+  text-align: right;
   font-family: var(--font-mono);
   font-weight: 700;
   -moz-appearance: textfield;
 }
 
-.stepper .input::-webkit-outer-spin-button,
-.stepper .input::-webkit-inner-spin-button {
+.stepValue input:focus {
+  outline: none;
+}
+
+.stepValue input::-webkit-outer-spin-button,
+.stepValue input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
+.unit {
+  min-width: 3.5rem;
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+}
+
 .stepButton {
   min-width: var(--target);
-  min-height: var(--target);
-  border: 2px solid var(--ink);
-  background: var(--paper);
+  border: 0;
+  background: transparent;
   font-size: var(--step-1);
-  font-weight: 700;
   cursor: pointer;
 }
 
-.stepButton:first-child {
-  border-radius: var(--radius) 0 0 var(--radius);
-}
-
-.stepButton:last-child {
-  border-radius: 0 var(--radius) var(--radius) 0;
+.stepButton:hover {
+  background: rgb(0 0 0 / 0.05);
 }
 
 .stepButton:disabled {
-  opacity: 0.45;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
@@ -144,25 +250,27 @@ textarea.input {
   appearance: none;
   position: relative;
   flex: none;
-  width: 3rem;
-  height: 1.6rem;
+  width: 2.75rem;
+  height: 1.5rem;
   margin: 0;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: 1rem;
-  background: var(--paper);
+  background: #e2e2e0;
   cursor: pointer;
+  transition: background-color 160ms ease-out;
 }
 
 .switch input::after {
   content: '';
   position: absolute;
-  top: 0.15rem;
-  left: 0.15rem;
-  width: 1.05rem;
-  height: 1.05rem;
+  top: 2px;
+  left: 2px;
+  width: 1.15rem;
+  height: 1.15rem;
   border-radius: 50%;
-  background: var(--ink);
-  transition: transform 120ms ease-out;
+  background: var(--paper);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+  transition: transform 160ms ease-out;
 }
 
 .switch input:checked {
@@ -171,6 +279,5 @@ textarea.input {
 }
 
 .switch input:checked::after {
-  background: var(--paper);
-  transform: translateX(1.4rem);
+  transform: translateX(1.2rem);
 }

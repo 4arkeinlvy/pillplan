@@ -54,10 +54,11 @@ describe('PillPlan app', () => {
     await addFromSearch(user, 'paracetamol (', /^Paracetamol \(acetaminophen\)/);
     await addFromSearch(user, 'panadol extra', /Panadol Extra/);
 
-    const notes = screen.getByRole('region', { name: /Safety notes/ });
+    const notes = screen.getByRole('region', { name: 'Safety notes' });
+    await user.click(within(notes).getByRole('button', { name: /safety note/ }));
     expect(within(notes).getByText('Paracetamol is in 2 medicines')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /Paracetamol \+ caffeine:\s*Remove/ }));
+    await user.click(screen.getByRole('button', { name: 'Remove: Paracetamol + caffeine' }));
     expect(screen.getByRole('heading', { name: 'Medicines on the chart (1)' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Undo' }));
     expect(screen.getByRole('heading', { name: 'Medicines on the chart (2)' })).toBeInTheDocument();
@@ -71,6 +72,7 @@ describe('PillPlan app', () => {
     await user.click(screen.getByRole('option', { name: /Add "Ginger tea"/ }));
     await user.click(screen.getByRole('button', { name: 'Add to chart' }));
 
+    await user.click(screen.getByRole('button', { name: /1 safety note/ }));
     expect(screen.getByText('Ginger tea is not in the drug list')).toBeInTheDocument();
   });
 
@@ -136,7 +138,67 @@ describe('PillPlan app', () => {
 
     await screen.findByRole('rowheader', { name: /Metformin/ });
     expect(window.localStorage.getItem('pillplan:plan')).not.toBeNull();
+    await user.click(screen.getByRole('button', { name: 'More' }));
     await user.click(screen.getByRole('switch', { name: 'Remember on this device' }));
     expect(window.localStorage.getItem('pillplan:plan')).toBeNull();
+  });
+
+  it('lets the apoteker type their own medicine, even with a name from the list', async () => {
+    const user = userEvent.setup();
+    render(<App startup={startup()} catalog={testCatalog} />);
+
+    await user.click(screen.getByRole('button', { name: 'Type my own medicine' }));
+    const name = screen.getByRole('textbox', { name: 'Medicine name' });
+    expect(name).toHaveFocus();
+    await user.type(name, 'Metformin');
+    await user.type(screen.getByRole('textbox', { name: /Signa/ }), '2 dd 1 p.c.');
+    await user.click(screen.getByRole('button', { name: 'Add to chart' }));
+
+    expect(within(chart()).getByRole('rowheader', { name: /Metformin/ })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /1 safety note/ }));
+    expect(screen.getByText('Metformin is not in the drug list')).toBeInTheDocument();
+  });
+
+  it('fills times, amount and food from a signa', async () => {
+    const user = userEvent.setup();
+    render(<App startup={startup()} catalog={testCatalog} />);
+
+    await user.type(screen.getByRole('combobox', { name: 'Find a medicine' }), 'amox');
+    await user.click(screen.getByRole('option', { name: /^Amoxicillin/ }));
+    await user.type(screen.getByRole('textbox', { name: /Signa/ }), '3 dd 1 caps p.c.');
+
+    expect(screen.getByRole('checkbox', { name: 'Morning' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Noon' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Evening' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Bedtime' })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: 'With or after food' })).toBeChecked();
+  });
+
+  it('opens the More drawer with tabs and closes it', async () => {
+    const user = userEvent.setup();
+    render(<App startup={startup({ example: true })} catalog={testCatalog} />);
+
+    await screen.findByRole('rowheader', { name: /Metformin/ });
+    await user.click(screen.getByRole('button', { name: 'More' }));
+    const drawer = screen.getByRole('dialog', { name: 'More options' });
+    await user.click(within(drawer).getByRole('tab', { name: 'Reminders' }));
+    expect(
+      within(drawer).getByRole('button', { name: 'Add to phone calendar' }),
+    ).toBeInTheDocument();
+    await user.click(within(drawer).getByRole('button', { name: /Morning/ }));
+    expect(within(drawer).getByRole('spinbutton', { name: 'Hour' })).toHaveValue(7);
+    await user.click(within(drawer).getByRole('button', { name: 'Close' }));
+    await waitFor(() => expect(drawer).not.toHaveAttribute('open'));
+  });
+
+  it('switches the whole app and the chart to Indonesian', async () => {
+    const user = userEvent.setup();
+    render(<App startup={startup({ example: true })} catalog={testCatalog} />);
+
+    await screen.findByRole('rowheader', { name: /Metformin/ });
+    await user.click(screen.getByRole('button', { name: 'ID' }));
+    const sheet = screen.getByRole('article', { name: 'Jadwal minum obat' });
+    expect(within(sheet).getAllByText('Sebelum tidur').length).toBeGreaterThan(0);
+    expect(screen.getByText('Biasanya diminum pada malam hari.')).toBeInTheDocument();
   });
 });

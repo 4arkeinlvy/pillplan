@@ -14,6 +14,8 @@
   --alert: #c62828;
 
   --amber-dark: #8a4904;
+  --amber-tint: #fbeedf;
+  --line: #cfcfcf;
   --desk: #e9e9e7;
   --highlight: #fff1a8;
   --sticker-yellow: #ffd60a;
@@ -38,6 +40,6 @@
   --space-6: 2rem;
   --space-7: 3rem;
 
-  --radius: 4px;
+  --radius: 6px;
   --target: 44px;
 }
