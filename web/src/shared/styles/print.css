@@ -1,0 +1,23 @@
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  html {
+    font-size: 14pt;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
