@@ -42,6 +42,8 @@ export function MedicinePanel({ searchRef }: MedicinePanelProps) {
     if (mode === 'add' && medicine.drugId === null && remember) {
       rememberDrug(toMyDrug(medicine, newId()));
       toast(t.myDrugs.saved(medicine.name));
+    } else if (mode === 'add') {
+      toast(t.list.added(medicine.name));
     }
     close();
   };

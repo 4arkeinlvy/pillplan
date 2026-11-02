@@ -3,6 +3,7 @@ import { useCatalog } from '@/features/catalog';
 import { usePlan } from '@/features/medicines';
 import { useI18n } from '@/shared/i18n';
 import { Icon, type IconName } from '@/shared/ui/Icon';
+import { Tooltip } from '@/shared/ui/Tooltip';
 import { runSafetyChecks } from '../logic/checks';
 import type { Severity } from '../model';
 import styles from './SafetyNotes.module.css';
@@ -31,10 +32,14 @@ export function SafetyNotes({ onHighlight }: SafetyNotesProps) {
 
   if (notes.length === 0) {
     return (
-      <p className={`${styles.strip} ${styles.ok} no-print`} title={t.safety.noneDetail}>
+      <div className={`${styles.strip} ${styles.ok} no-print`}>
         <Icon name="check" size={18} />
-        {t.safety.okShort}
-      </p>
+        <Tooltip text={t.safety.noneDetail} placement="below">
+          <button type="button" className={styles.okButton}>
+            {t.safety.okShort}
+          </button>
+        </Tooltip>
+      </div>
     );
   }
 
@@ -65,6 +70,7 @@ export function SafetyNotes({ onHighlight }: SafetyNotesProps) {
               onFocus={() => onHighlight?.(note.medicineIds)}
               onBlur={() => onHighlight?.([])}
             >
+              <Icon name={ICON[note.severity]} size={18} />
               <p className={styles.title}>{note.title}</p>
               <p className={styles.detail}>{note.detail}</p>
             </li>

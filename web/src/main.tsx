@@ -3,6 +3,7 @@ import '@fontsource/atkinson-hyperlegible-next/latin-700.css';
 import '@fontsource/atkinson-hyperlegible-mono/latin-400.css';
 import '@fontsource/atkinson-hyperlegible-mono/latin-700.css';
 import './shared/styles/tokens.css';
+import './shared/styles/motion.css';
 import './shared/styles/global.css';
 import './shared/styles/print.css';
 import { StrictMode } from 'react';

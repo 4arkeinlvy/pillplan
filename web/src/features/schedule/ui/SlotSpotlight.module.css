@@ -16,8 +16,8 @@
   text-align: left;
   cursor: pointer;
   transition:
-    background-color 150ms ease-out,
-    border-color 150ms ease-out;
+    background-color var(--dur-short) var(--ease-standard),
+    border-color var(--dur-short) var(--ease-standard);
 }
 
 .slot:hover {
@@ -40,7 +40,7 @@
 .count {
   margin-left: auto;
   color: var(--ink-muted);
-  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .bar {
@@ -52,7 +52,7 @@
 
 .fill {
   transform-origin: left center;
-  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform var(--dur-medium) var(--ease-standard);
 }
 
 @media (max-width: 30rem) {

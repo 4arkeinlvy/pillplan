@@ -107,22 +107,23 @@ const PATHS = {
   print: (
     <>
       <path d="M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-      <path d="M7 14h10v7H7Z" />
+      <path className="icon-paper" d="M7 14h10v7H7Z" />
     </>
   ),
   counsel: (
     <>
       <circle cx="8" cy="8" r="3" />
-      <path d="M2.5 20a5.5 5.5 0 0 1 11 0M14 3h7v6h-3l-2.5 2.5V9H14Z" />
+      <path d="M2.5 20a5.5 5.5 0 0 1 11 0" />
+      <path className="icon-bubble" d="M14 3h7v6h-3l-2.5 2.5V9H14Z" />
     </>
   ),
   back: <path d="m15 18-6-6 6-6" />,
   chevron: <path d="m6 9 6 6 6-6" />,
   more: (
     <g fill="currentColor" stroke="none">
-      <circle cx="5" cy="12" r="1.8" />
+      <circle className="icon-dot-left" cx="5" cy="12" r="1.8" />
       <circle cx="12" cy="12" r="1.8" />
-      <circle cx="19" cy="12" r="1.8" />
+      <circle className="icon-dot-right" cx="19" cy="12" r="1.8" />
     </g>
   ),
   check: <path className="icon-check" d="m5 12 5 5L20 7" />,

@@ -114,11 +114,11 @@
 
 /* Direction-aware page turn between medicines (View Transitions). */
 ::view-transition-old(counsel-body) {
-  animation: counsel-out 240ms ease-in both;
+  animation: counsel-out var(--dur-medium) var(--ease-exit) both;
 }
 
 ::view-transition-new(counsel-body) {
-  animation: counsel-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: counsel-in var(--dur-medium) var(--ease-enter) both;
 }
 
 :root[data-counsel-direction='back']::view-transition-old(counsel-body) {

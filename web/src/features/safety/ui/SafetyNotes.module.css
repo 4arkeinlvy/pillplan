@@ -1,8 +1,8 @@
+/* No coloured stripes: severity is carried by the icon and the title colour. */
 .strip {
   max-width: 52rem;
   margin-bottom: var(--space-3);
   border: 1px solid var(--line);
-  border-left: 6px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper);
 }
@@ -12,25 +12,23 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
-  border-left-color: #2e7d32;
   color: var(--ink-muted);
   font-size: var(--step--1);
 }
 
 .ok svg {
-  color: #2e7d32;
+  color: var(--ok);
 }
 
-.alert {
-  border-left-color: var(--sticker-red);
-}
-
-.caution {
-  border-left-color: var(--sticker-yellow);
-}
-
-.info {
-  border-left-color: var(--sticker-blue);
+.okButton {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.25em;
+  cursor: help;
 }
 
 .toggle {
@@ -41,28 +39,44 @@
   min-height: var(--target);
   padding: 0 var(--space-3);
   border: 0;
+  border-radius: var(--radius);
   background: transparent;
   font-weight: 700;
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-standard);
 }
 
-.strip.alert .toggle > svg:first-child {
-  color: var(--sticker-red);
+.toggle:hover {
+  background: rgb(0 0 0 / 0.03);
 }
 
-.strip.info .toggle > svg:first-child {
+.alert .toggle > svg:first-child,
+.note.alert svg,
+.note.alert .title {
+  color: var(--alert);
+}
+
+.caution .toggle > svg:first-child,
+.note.caution svg,
+.note.caution .title {
+  color: var(--caution);
+}
+
+.info .toggle > svg:first-child,
+.note.info svg,
+.note.info .title {
   color: var(--sticker-blue);
 }
 
 .count {
   flex: 1;
-  animation: slap 260ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  animation: count-in var(--dur-medium) var(--ease-enter);
 }
 
 .chevron {
   color: var(--ink-muted);
-  transition: transform 180ms ease-out;
+  transition: transform var(--dur-medium) var(--ease-standard);
 }
 
 .toggle[aria-expanded='true'] .chevron {
@@ -70,30 +84,28 @@
 }
 
 .list {
-  display: grid;
-  gap: var(--space-2);
-  padding: 0 var(--space-3) var(--space-3);
-  animation: open 180ms ease-out;
+  padding: 0 var(--space-3) var(--space-2);
+  animation: open var(--dur-medium) var(--ease-enter);
 }
 
 .note {
-  padding: var(--space-2) var(--space-3);
-  border-left: 3px solid;
-  background: #f7f7f6;
-  border-radius: 0 var(--radius) var(--radius) 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px var(--space-2);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--line);
   cursor: default;
+  transition: background-color var(--dur-short) var(--ease-standard);
 }
 
-.note.alert {
-  border-color: var(--sticker-red);
+.note:hover,
+.note:focus-visible {
+  background: rgb(0 0 0 / 0.025);
 }
 
-.note.caution {
-  border-color: var(--sticker-yellow);
-}
-
-.note.info {
-  border-color: var(--sticker-blue);
+.note svg {
+  grid-row: span 2;
+  margin-top: 2px;
 }
 
 .title {
@@ -107,13 +119,15 @@
 }
 
 .footnote {
+  padding: var(--space-2) 0 0;
+  border-top: 1px solid var(--line);
   color: var(--ink-muted);
 }
 
-@keyframes slap {
+@keyframes count-in {
   from {
-    transform: translateX(-0.5rem);
     opacity: 0;
+    transform: translateY(4px);
   }
 }
 

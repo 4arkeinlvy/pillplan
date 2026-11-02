@@ -83,6 +83,6 @@
 
 .signa {
   color: var(--ink-muted);
-  font-family: var(--font-mono);
   font-size: var(--step--1);
+  font-style: italic;
 }

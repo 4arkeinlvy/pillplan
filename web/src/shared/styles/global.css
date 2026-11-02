@@ -5,13 +5,27 @@
 }
 
 html {
+  min-height: 100%;
+  background: var(--desk);
   font-size: 106.25%;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  background: var(--desk);
+  /* The desk is a ruled cutting mat: fine lines every 8px, stronger every 40px. */
+  background-color: var(--desk);
+  background-image:
+    linear-gradient(var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    8px 8px,
+    8px 8px;
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: var(--step-0);
@@ -79,7 +93,13 @@ a {
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 160ms;
+  animation-duration: var(--dur-short);
+  animation-timing-function: var(--ease-standard);
+}
+
+::view-transition-group(*) {
+  animation-duration: var(--dur-medium);
+  animation-timing-function: var(--ease-standard);
 }
 
 @media (prefers-reduced-motion: reduce) {

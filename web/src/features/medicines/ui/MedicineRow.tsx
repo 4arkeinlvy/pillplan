@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode, Ref } from 'react';
 import { useI18n, type Strings } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
+import { Tooltip } from '@/shared/ui/Tooltip';
 import { displayStrength } from '../logic/display';
 import type { Medicine } from '../model';
 import { PillPreview } from './PillPreview';
@@ -52,20 +53,12 @@ export function MedicineRow({
         {medicine.signa && <p className={styles.signa}>{medicine.signa}</p>}
       </div>
       <div className={styles.actions}>
-        <Button
-          variant="quiet"
-          icon="edit"
-          aria-label={`${t.list.edit}: ${medicine.name}`}
-          title={t.list.edit}
-          onClick={() => onEdit(medicine)}
-        />
-        <Button
-          variant="quiet"
-          icon="remove"
-          aria-label={`${t.list.remove}: ${medicine.name}`}
-          title={t.list.remove}
-          onClick={() => onRemove(medicine)}
-        />
+        <Tooltip text={t.list.editNamed(medicine.name)} role="label">
+          <Button variant="quiet" icon="edit" onClick={() => onEdit(medicine)} />
+        </Tooltip>
+        <Tooltip text={t.list.removeNamed(medicine.name)} role="label">
+          <Button variant="quiet" icon="remove" onClick={() => onRemove(medicine)} />
+        </Tooltip>
       </div>
     </li>
   );

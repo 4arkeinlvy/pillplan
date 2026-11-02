@@ -18,6 +18,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useI18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/Icon';
+import { Tooltip } from '@/shared/ui/Tooltip';
 import type { Medicine } from '../model';
 import styles from './MedicineList.module.css';
 
@@ -106,16 +107,17 @@ function SortableItem({ medicine, onEdit, onRemove }: SortableItemProps) {
       dragging={isDragging}
       style={{ transform: CSS.Translate.toString(transform), transition }}
       handle={
-        <button
-          ref={setActivatorNodeRef}
-          type="button"
-          className={styles.handle}
-          aria-label={t.list.reorder(medicine.name)}
-          {...attributes}
-          {...listeners}
-        >
-          <Icon name="grip" />
-        </button>
+        <Tooltip text={t.list.reorder(medicine.name)} role="label">
+          <button
+            ref={setActivatorNodeRef}
+            type="button"
+            className={styles.handle}
+            {...attributes}
+            {...listeners}
+          >
+            <Icon name="grip" />
+          </button>
+        </Tooltip>
       }
     />
   );

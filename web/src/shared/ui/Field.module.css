@@ -33,7 +33,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper);
-  transition: border-color 150ms ease-out;
+  transition: border-color var(--dur-short) var(--ease-standard);
 }
 
 .input:hover,
@@ -78,8 +78,8 @@ textarea.input {
   cursor: pointer;
   user-select: none;
   transition:
-    border-color 150ms ease-out,
-    background-color 150ms ease-out;
+    border-color var(--dur-short) var(--ease-standard),
+    background-color var(--dur-short) var(--ease-standard);
 }
 
 .chip:hover {
@@ -89,7 +89,7 @@ textarea.input {
 .chip:has(input:checked) {
   border-color: var(--amber);
   background: var(--amber-tint);
-  animation: chip-on 180ms ease-out;
+  animation: chip-on var(--dur-short) var(--ease-enter);
 }
 
 .chip:has(input:checked) svg {
@@ -121,23 +121,23 @@ textarea.input {
 
 /* Time-of-day icons come alive when their chip turns on. */
 .chip:has(input:checked) :global(.icon-rays) {
-  animation: rays-turn 420ms ease-out;
+  animation: rays-turn var(--dur-long) var(--ease-enter);
   transform-origin: 12px 12px;
   transform-box: view-box;
 }
 
 .chip:has(input:checked) :global(.icon-sunrise) {
-  animation: sun-rise 380ms ease-out;
+  animation: sun-rise var(--dur-long) var(--ease-enter);
 }
 
 .chip:has(input:checked) :global(.icon-moon) {
-  animation: moon-tilt 420ms ease-out;
+  animation: moon-tilt var(--dur-long) var(--ease-enter);
   transform-origin: 12px 12px;
   transform-box: view-box;
 }
 
 .chip:has(input:checked) :global(.icon-z) {
-  animation: z-float 520ms ease-out;
+  animation: z-float var(--dur-long) var(--ease-enter);
 }
 
 @keyframes rays-turn {
@@ -173,7 +173,7 @@ textarea.input {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper);
-  transition: border-color 150ms ease-out;
+  transition: border-color var(--dur-short) var(--ease-standard);
 }
 
 .stepper:hover,
@@ -199,8 +199,8 @@ textarea.input {
   border: 0;
   background: transparent;
   text-align: right;
-  font-family: var(--font-mono);
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   -moz-appearance: textfield;
 }
 
@@ -257,7 +257,7 @@ textarea.input {
   border-radius: 1rem;
   background: #e2e2e0;
   cursor: pointer;
-  transition: background-color 160ms ease-out;
+  transition: background-color var(--dur-short) var(--ease-standard);
 }
 
 .switch input::after {
@@ -270,7 +270,7 @@ textarea.input {
   border-radius: 50%;
   background: var(--paper);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
-  transition: transform 160ms ease-out;
+  transition: transform var(--dur-short) var(--ease-standard);
 }
 
 .switch input:checked {

@@ -12,7 +12,7 @@
 }
 
 .drawer[open] {
-  animation: drawer-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: drawer-in var(--dur-medium) var(--ease-enter);
 }
 
 .drawer::backdrop {
@@ -53,8 +53,8 @@
   font-weight: 700;
   cursor: pointer;
   transition:
-    color 150ms ease-out,
-    border-color 150ms ease-out;
+    color var(--dur-short) var(--ease-standard),
+    border-color var(--dur-short) var(--ease-standard);
 }
 
 .tab[aria-selected='true'] {

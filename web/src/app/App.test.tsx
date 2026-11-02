@@ -58,7 +58,7 @@ describe('PillPlan app', () => {
     await user.click(within(notes).getByRole('button', { name: /safety note/ }));
     expect(within(notes).getByText('Paracetamol is in 2 medicines')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Remove: Paracetamol + caffeine' }));
+    await user.click(screen.getByRole('button', { name: 'Remove Paracetamol + caffeine' }));
     expect(screen.getByRole('heading', { name: 'Medicines on the chart (1)' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Undo' }));
     expect(screen.getByRole('heading', { name: 'Medicines on the chart (2)' })).toBeInTheDocument();
@@ -138,7 +138,7 @@ describe('PillPlan app', () => {
 
     await screen.findByRole('rowheader', { name: /Metformin/ });
     expect(window.localStorage.getItem('pillplan:plan')).not.toBeNull();
-    await user.click(screen.getByRole('button', { name: 'More' }));
+    await user.click(screen.getByRole('button', { name: 'More options' }));
     await user.click(screen.getByRole('switch', { name: 'Remember on this device' }));
     expect(window.localStorage.getItem('pillplan:plan')).toBeNull();
   });
@@ -179,7 +179,7 @@ describe('PillPlan app', () => {
     render(<App startup={startup({ example: true })} catalog={testCatalog} />);
 
     await screen.findByRole('rowheader', { name: /Metformin/ });
-    await user.click(screen.getByRole('button', { name: 'More' }));
+    await user.click(screen.getByRole('button', { name: 'More options' }));
     const drawer = screen.getByRole('dialog', { name: 'More options' });
     await user.click(within(drawer).getByRole('tab', { name: 'Reminders' }));
     expect(

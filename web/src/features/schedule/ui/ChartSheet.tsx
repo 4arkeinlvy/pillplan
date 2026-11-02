@@ -84,10 +84,15 @@ export function ChartSheet({ today, onExample, highlight = [] }: ChartSheetProps
                     </tr>
                   </thead>
                   <tbody>
-                    {chart.rows.map(({ medicine, cells }) => (
+                    {chart.rows.map(({ medicine, cells }, row) => (
                       <tr
                         key={medicine.id}
-                        style={{ viewTransitionName: `row-${medicine.id}` }}
+                        style={
+                          {
+                            viewTransitionName: `row-${medicine.id}`,
+                            '--row': Math.min(row, 5),
+                          } as CSSProperties
+                        }
                         data-off={spot && !cells[spot] ? '' : undefined}
                         data-linked={linked(medicine.id)}
                       >
@@ -130,10 +135,15 @@ export function ChartSheet({ today, onExample, highlight = [] }: ChartSheetProps
                 {t.chart.whenNeededHeading}
               </h3>
               <ul>
-                {chart.whenNeeded.map((medicine) => (
+                {chart.whenNeeded.map((medicine, row) => (
                   <li
                     key={medicine.id}
-                    style={{ viewTransitionName: `row-${medicine.id}` }}
+                    style={
+                      {
+                        viewTransitionName: `row-${medicine.id}`,
+                        '--row': Math.min(chart.rows.length + row, 6),
+                      } as CSSProperties
+                    }
                     data-linked={linked(medicine.id)}
                   >
                     <MedicineCell medicine={medicine} catalog={catalog} />

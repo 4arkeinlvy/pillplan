@@ -9,6 +9,8 @@ import { I18nProvider, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { TextField } from '@/shared/ui/Field';
 import { Drawer } from '@/shared/ui/Drawer';
+import { Icon } from '@/shared/ui/Icon';
+import { Tooltip } from '@/shared/ui/Tooltip';
 import { ToastProvider } from '@/shared/ui/Toast';
 import { withViewTransition } from '@/shared/viewTransition';
 import type { Catalog } from '@/features/catalog';
@@ -89,32 +91,49 @@ function Shell({ startup }: { startup: Startup }) {
       <header className={`${styles.topbar} no-print`}>
         <div className={styles.brand}>
           <Wordmark />
-          <div>
-            <h1>{t.app.name}</h1>
-            <p className={styles.tagline}>{t.app.tagline}</p>
-          </div>
+          <h1>{t.app.name}</h1>
         </div>
-        <div className={styles.actions}>
+        <nav className={styles.actions} aria-label={t.app.name}>
           <LanguageSwitch />
-          <Button icon="counsel" disabled={!hasMedicines} onClick={() => setCounseling(true)}>
-            {t.app.counsel}
-          </Button>
-          <Button
-            variant="primary"
-            icon="print"
-            disabled={!hasMedicines}
-            onClick={() => window.print()}
-          >
-            {t.app.print}
-          </Button>
-          <Button icon="more" aria-haspopup="dialog" onClick={() => setDrawer(true)}>
-            <span className={styles.moreLabel}>{t.drawer.more}</span>
-          </Button>
-        </div>
+          <span className={styles.divider} aria-hidden="true" />
+          <Tooltip text={hasMedicines ? t.counsel.hint : t.app.needMedicine}>
+            <Button
+              variant="nav"
+              icon="counsel"
+              aria-disabled={!hasMedicines || undefined}
+              onClick={() => hasMedicines && setCounseling(true)}
+            >
+              {t.app.counsel}
+            </Button>
+          </Tooltip>
+          <Tooltip text={hasMedicines ? t.pdf.hint : t.app.needMedicine}>
+            <Button
+              variant="primary"
+              icon="print"
+              aria-disabled={!hasMedicines || undefined}
+              onClick={() => hasMedicines && window.print()}
+            >
+              {t.app.print}
+            </Button>
+          </Tooltip>
+          <Tooltip text={t.drawer.title} role="label">
+            <Button
+              variant="nav"
+              icon="more"
+              aria-haspopup="dialog"
+              onClick={() => setDrawer(true)}
+            >
+              <span className={styles.moreLabel} aria-hidden="true">
+                {t.drawer.more}
+              </span>
+            </Button>
+          </Tooltip>
+        </nav>
       </header>
 
       {startup.invalidSaved ? (
         <p className={`${styles.notice} no-print`} role="status">
+          <Icon name="info" size={18} />
           {t.storage.invalidSaved}
         </p>
       ) : (

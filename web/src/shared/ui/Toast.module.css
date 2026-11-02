@@ -16,7 +16,7 @@
   border-radius: var(--radius);
   background: var(--ink);
   color: var(--paper);
-  animation: rise 160ms ease-out;
+  animation: rise var(--dur-short) var(--ease-enter);
 }
 
 .action {

@@ -5,7 +5,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper);
-  animation: form-in 200ms ease-out;
+  animation: form-in var(--dur-short) var(--ease-enter);
 }
 
 .title {
@@ -81,7 +81,7 @@
   min-height: 1.6em;
   color: var(--ink-muted);
   font-size: var(--step--1);
-  transition: color 160ms ease-out;
+  transition: color var(--dur-short) var(--ease-standard);
 }
 
 .preview[data-ok] {
@@ -126,7 +126,7 @@
   grid-row: span 2;
   align-self: center;
   color: var(--ink-muted);
-  transition: transform 180ms ease-out;
+  transition: transform var(--dur-short) var(--ease-standard);
 }
 
 .more[open] .moreChevron {
@@ -146,8 +146,8 @@
   height: 0;
   overflow: clip;
   transition:
-    height 220ms ease-out,
-    content-visibility 220ms allow-discrete;
+    height var(--dur-medium) var(--ease-standard),
+    content-visibility var(--dur-medium) allow-discrete;
 }
 
 .more[open]::details-content {
@@ -167,7 +167,7 @@
 
 .preview[data-ok] :global(.icon-check) {
   stroke-dasharray: 24;
-  animation: draw-check 320ms ease-out;
+  animation: draw-check var(--dur-medium) var(--ease-enter);
 }
 
 .title {

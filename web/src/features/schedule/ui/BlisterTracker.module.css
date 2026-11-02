@@ -72,7 +72,7 @@
   border-color: var(--amber);
   background: transparent;
   box-shadow: none;
-  animation: pop 180ms ease-out;
+  animation: pop var(--dur-short) var(--ease-enter);
 }
 
 @keyframes pop {

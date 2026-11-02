@@ -150,15 +150,29 @@
   display: grid;
   justify-items: center;
   line-height: 1.1;
-  animation: stamp 220ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
-  animation-delay: calc(var(--column, 0) * 45ms);
+  animation: stamp var(--dur-medium) var(--ease-enter) both;
+  animation-delay: calc((var(--row, 0) + var(--column, 0)) * var(--stagger) + var(--dur-medium));
+}
+
+/* The one orchestrated moment: the chart prints like a label printer.
+   Each row is revealed left to right, one after another, then its doses stamp. */
+.chart tbody tr > *,
+.prn li {
+  animation: print-row var(--dur-long) var(--ease-enter) both;
+  animation-delay: calc(var(--row, 0) * var(--stagger));
+}
+
+@keyframes print-row {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
 }
 
 /* A dose is pressed onto the label like a pharmacy stamp. */
 @keyframes stamp {
   from {
     opacity: 0;
-    transform: scale(1.35) rotate(-4deg);
+    transform: scale(1.2) rotate(-3deg);
   }
 }
 
@@ -185,12 +199,12 @@
 
 .sheet tbody tr,
 .sheet .prn li {
-  transition: opacity 160ms ease-out;
+  transition: opacity var(--dur-short) var(--ease-standard);
 }
 
-.sheet[data-linking] tbody tr[data-linked] th,
+.sheet[data-linking] tbody tr[data-linked],
 .sheet[data-linking] .prn li[data-linked] {
-  box-shadow: inset 4px 0 0 var(--amber);
+  background: var(--amber-tint);
 }
 
 /* Spotlight: dim every other time of day and the medicines not due then. */
@@ -289,7 +303,9 @@
 }
 
 @media print {
-  .dose {
+  .dose,
+  .chart tbody tr > *,
+  .prn li {
     animation: none;
   }
 
