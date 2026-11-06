@@ -124,7 +124,6 @@
   background: var(--amber-tint);
 }
 
-
 @media (max-width: 60rem) {
   .welcome {
     align-content: start;
