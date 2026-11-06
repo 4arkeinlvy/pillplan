@@ -1,17 +1,7 @@
-import { displayStrength, type PlanState } from '@/features/medicines';
-import { TIME_SLOTS, type TimeSlot } from '@/shared/domain/time';
+import { displayStrength, medicineDoseTimes, type PlanState } from '@/features/medicines';
+import { formatClock, toMinutes, type ClockTime } from '@/shared/domain/time';
 import { formatDose } from '@/shared/format/dose';
 import type { Strings } from '@/shared/i18n';
-
-/** Clock times (HH:MM) for each part of the day. */
-export type ClockTimes = Record<TimeSlot, string>;
-
-export const DEFAULT_CLOCK: ClockTimes = {
-  morning: '07:00',
-  noon: '12:00',
-  evening: '19:00',
-  bedtime: '21:00',
-};
 
 export const REMINDER_DAYS = 30;
 
@@ -48,16 +38,24 @@ const stamp = (date: Date) =>
     .replace(/[-:]/g, '')
     .replace(/\.\d{3}/, '');
 
+/** Every clock time with a scheduled dose, earliest first. */
+export function reminderTimes(plan: PlanState): ClockTime[] {
+  const times = new Set(plan.medicines.flatMap((m) => medicineDoseTimes(m).map((d) => d.time)));
+  return [...times].sort((a, b) => toMinutes(a) - toMinutes(b));
+}
+
 /**
- * One daily repeating event per time of day that has medicines, each with an alarm.
- * Floating local time, so it rings at 07:00 wherever the phone is.
+ * One daily repeating event per dose time, each with an alarm. The times come straight from
+ * each medicine's interval, so "every 8 hours" also rings at 23:00. Floating local time.
  */
-export function buildIcs(plan: PlanState, clock: ClockTimes, t: Strings, now: Date): string | null {
+export function buildIcs(plan: PlanState, t: Strings, now: Date): string | null {
   const day = plan.tracker.start.replace(/-/g, '');
-  const events = TIME_SLOTS.flatMap((slot) => {
-    const due = plan.medicines.filter((m) => !m.prn && m.times.includes(slot));
-    if (due.length === 0) return [];
-    const time = clock[slot].replace(':', '');
+  const events = reminderTimes(plan).flatMap((time) => {
+    const due = plan.medicines.filter((m) =>
+      medicineDoseTimes(m).some((dose) => dose.time === time),
+    );
+    const compact = time.replace(':', '');
+    const title = t.calendar.eventTitle(formatClock(time, t.locale));
     const lines = due.map((m) =>
       t.calendar.eventLine(
         [m.name, displayStrength(m, t.locale)].filter(Boolean).join(' '),
@@ -67,17 +65,17 @@ export function buildIcs(plan: PlanState, clock: ClockTimes, t: Strings, now: Da
     const description = [...lines, t.calendar.repeats(REMINDER_DAYS)].join('\n');
     return [
       'BEGIN:VEVENT',
-      `UID:pillplan-${day}-${slot}@pillplan`,
+      `UID:pillplan-${day}-${compact}@pillplan`,
       `DTSTAMP:${stamp(now)}`,
-      `DTSTART:${day}T${time}00`,
+      `DTSTART:${day}T${compact}00`,
       'DURATION:PT15M',
       `RRULE:FREQ=DAILY;COUNT=${REMINDER_DAYS}`,
-      `SUMMARY:${escape(t.calendar.eventTitle(t.slots[slot]))}`,
+      `SUMMARY:${escape(title)}`,
       `DESCRIPTION:${escape(description)}`,
       'BEGIN:VALARM',
       'ACTION:DISPLAY',
       'TRIGGER:PT0M',
-      `DESCRIPTION:${escape(t.calendar.eventTitle(t.slots[slot]))}`,
+      `DESCRIPTION:${escape(title)}`,
       'END:VALARM',
       'END:VEVENT',
     ];
@@ -94,8 +92,4 @@ export function buildIcs(plan: PlanState, clock: ClockTimes, t: Strings, now: Da
     .map(fold)
     .join('\r\n')
     .concat('\r\n');
-}
-
-export function isClockTime(value: string): boolean {
-  return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
 }

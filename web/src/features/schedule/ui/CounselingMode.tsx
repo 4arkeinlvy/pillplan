@@ -1,20 +1,16 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { useCatalog } from '@/features/catalog';
-import {
-  displayAdvice,
-  displayStrength,
-  medicineWarnings,
-  PillPreview,
-  usePlan,
-} from '@/features/medicines';
+import { displayAdvice, displayStrength, medicineWarnings, usePlan } from '@/features/medicines';
+import { isLiquid } from '@/shared/domain/time';
 import { formatDose } from '@/shared/format/dose';
 import { local, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { Icon } from '@/shared/ui/Icon';
 import { Sticker } from '@/shared/ui/Sticker';
+import { DoseClock } from '@/shared/ui/DoseClock';
 import { useModalDialog } from '@/shared/ui/useModalDialog';
-import { DayTimeline } from './DayTimeline';
+import { FormModel } from './FormModel';
 import styles from './CounselingMode.module.css';
 
 interface CounselingModeProps {
@@ -89,7 +85,7 @@ export function CounselingMode({ onClose }: CounselingModeProps) {
 
         <div className={styles.body} style={{ viewTransitionName: 'counsel-body' }}>
           <div className={styles.title}>
-            <PillPreview pill={medicine.pill} size={120} />
+            <FormModel preparation={medicine.preparation} size={160} />
             <h2 ref={headingRef} tabIndex={-1}>
               {medicine.name}
               <span className={styles.strength}>{displayStrength(medicine, t.locale)}</span>
@@ -111,13 +107,17 @@ export function CounselingMode({ onClose }: CounselingModeProps) {
                 {t.chart.prnLine(dose, medicine.prnMaxPerDay)}
               </p>
             ) : (
-              <DayTimeline medicine={medicine} />
+              <div className={styles.when}>
+                <DoseClock every={medicine.every} firstDose={medicine.firstDose} size={220} />
+                <p className={styles.time}>{dose}</p>
+              </div>
             )}
           </div>
 
           <div>
             <p className={styles.label}>{t.counsel.how}</p>
             <p>{t.foodLong[medicine.food]}</p>
+            {isLiquid(medicine.preparation) && <p>{t.preparation.note[medicine.preparation]}</p>}
           </div>
 
           {warnings.length > 0 && (

@@ -40,7 +40,8 @@ Patients who take several medicines often take them at the wrong time, with the 
 
 Research gives a clear direction:
 \begin{itemize}
-  \item The \textbf{Universal Medication Schedule (UMS)} uses four standard times: morning, noon, evening and bedtime. It improves understanding for every literacy level and helps most for people with low literacy and complex regimens.
+  \item The \textbf{Universal Medication Schedule (UMS)} showed that a fixed grid of times improves understanding for every literacy level. PillPlan keeps the grid but not the four day parts: current pharmacy practice spreads doses evenly, so ``3 dd 1'' means \textbf{every 8 hours} (for example 07.00, 15.00 and 23.00), not morning, noon and evening. Even gaps keep blood levels steady, which matters most for antibiotics.
+  \item Patients recognise a medicine by its \textbf{sediaan} first: tablet, capsule, syrup or suspension. The exact pill colour matters less than knowing that a suspension must be shaken and measured.
   \item The \textbf{AHRQ Pill Card} shows that a simple table with a row per medicine, sun and moon icons and a ``what it is for'' column is easier to follow than text.
   \item Good instructions use \textbf{numbers instead of words}, put \textbf{each dose on its own line}, and use \textbf{plain words} for the purpose.
 \end{itemize}
@@ -109,12 +110,15 @@ Patient & Know what to take and when & Picture chart, pill drawings, warning sti
 Feature & Accepted when \\
 \midrule
 Drug search & Generic, brand or Indonesian name (``parasetamol'', ``CTM'') lists matches at once. Picking one fills strength, usual time, food rule, warnings and advice. \\
-Signa entry & Typing \texttt{3 dd 1 tab p.c.} or \texttt{2x1 sesudah makan} fills times, amount and food, shows a plain preview, and lists any word it did not understand. \\
+Signa entry & Typing \texttt{3 dd 1 tab p.c.} or \texttt{2x1 sesudah makan} fills the interval (every 8 or 12 hours), the first dose, amount and food, shows a plain preview, and lists any word it did not understand. \\
 Own drugs & Any drug can be typed. It is tagged ``not checked'' and remembered on the device as ``My drugs'' for next time. \\
 Language & One switch changes the whole app, the chart and the print between English and Indonesian, including number format (\texttt{0,5 mg}). \\
-Phone reminders & One button downloads a calendar file with a daily reminder for each time of day. \\
-Medicine form & Amount in half steps, four times or ``when needed'' with a daily limit, food rule, warning stickers, purpose, note, pill shape and color. Errors are shown next to the field. \\
-Live chart & Each medicine is one row, each time is one column, doses are numbers. When-needed medicines sit in their own box. \\
+Phone reminders & One button downloads a calendar file with a daily reminder for each dose time. \\
+Dose clock & A 24-hour dial shows the doses evenly around the day. Dragging the first dose, or using the arrow keys, moves every dose and keeps the interval. \\
+Sediaan & Tablet, capsule, syrup or suspension, drawn as a simple picture. Liquids show ``measure with the dosing spoon'', suspensions also ``shake well''. Counseling mode shows a 3D model the patient can turn. \\
+Welcome film & On the first visit a 20 second film tells the problem and the solution, then the app opens. It is rendered ahead of time, so the site ships no video library. \\
+Medicine form & Amount in half steps, every 24, 12, 8 or 6 hours from a first dose or ``when needed'' with a daily limit, food rule, warning stickers, purpose, note and sediaan. Errors are shown next to the field. \\
+Live chart & Each medicine is one row, each dose time (such as 07.00) is one column, doses are numbers. When-needed medicines sit in their own box. \\
 Safety notes & Daily total per ingredient across products, duplicate ingredient, duplicate class and time-of-day hints. \\
 Reorder & Drag with mouse or touch, or move with the keyboard. Screen readers hear the new position. \\
 Spotlight & Tapping a time highlights only the doses at that time. \\
@@ -161,13 +165,13 @@ Print & Only the chart prints, on A4, with names and doses at 14 pt or larger. \
 \end{center}
 
 \section{The chart}
-The chart follows the UMS grid. The drawing below shows the layout with the example patient used in demos.
+The chart keeps the UMS grid, with one column per clock time instead of per part of the day. The drawing below shows the layout with the example patient used in demos.
 
 \begin{center}
 \begin{tikzpicture}[x=1mm, y=1mm, font=\small]
   \draw[line width=1.6pt] (0,0) -- (150,0);
   \node[anchor=west, font=\bfseries] at (0,-6) {Medicine};
-  \foreach \x/\t in {84/Morning, 101/Noon, 118/Evening, 135/Bedtime}
+  \foreach \x/\t in {84/07.00, 101/15.00, 118/19.00, 135/21.00}
     \node[font=\bfseries\footnotesize] at (\x,-6) {\t};
   \draw[line width=0.9pt] (0,-10) -- (150,-10);
   \foreach \y/\n/\p/\m/\no/\e/\b in {

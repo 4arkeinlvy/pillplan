@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import type { ClockTime } from '@/shared/domain/time';
 import type { MyDrug } from '../model';
 import { loadMyDrugs, MY_DRUGS_KEY, saveMyDrugs, upsertMyDrug } from './myDrugs';
 
@@ -7,7 +8,9 @@ const drug = (id: string, name: string): MyDrug => ({
   name,
   strength: '10 mg',
   form: 'tablet',
-  times: ['morning'],
+  every: 24,
+  firstDose: '07:00' as ClockTime,
+  preparation: 'tablet',
   prn: false,
   prnMaxPerDay: null,
   food: 'any',

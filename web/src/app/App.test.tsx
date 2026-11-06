@@ -76,17 +76,20 @@ describe('PillPlan app', () => {
     expect(screen.getByText('Ginger tea is not in the drug list')).toBeInTheDocument();
   });
 
-  it('asks for a time before adding', async () => {
+  it('moves every dose together when the first dose moves on the clock', async () => {
     const user = userEvent.setup();
     render(<App startup={startup()} catalog={testCatalog} />);
 
-    await user.type(screen.getByRole('combobox', { name: 'Find a medicine' }), 'amlo');
-    await user.click(screen.getByRole('option', { name: /^Amlodipine/ }));
-    await user.click(screen.getByRole('checkbox', { name: 'Morning' }));
+    await user.type(screen.getByRole('combobox', { name: 'Find a medicine' }), 'amox');
+    await user.click(screen.getByRole('option', { name: /^Amoxicillin/ }));
+    await user.click(screen.getByRole('radio', { name: 'Every 8 hours (3x)' }));
+    const handle = screen.getByRole('slider', { name: 'First dose of the day' });
+    expect(handle).toHaveAttribute('aria-valuetext', 'First dose 07:00, then 15:00 and 23:00');
+    handle.focus();
+    await user.keyboard('{PageUp}');
+    expect(handle).toHaveAttribute('aria-valuetext', 'First dose 08:00, then 16:00 and 00:00');
     await user.click(screen.getByRole('button', { name: 'Add to chart' }));
-
-    expect(screen.getByText('Choose at least one time, or "When needed".')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Medicines on the chart (0)' })).toBeInTheDocument();
+    expect(within(chart()).getByRole('columnheader', { name: '16:00' })).toBeInTheDocument();
   });
 
   it('loads the example and steps through counseling mode', async () => {
@@ -94,13 +97,13 @@ describe('PillPlan app', () => {
     render(<App startup={startup({ example: true, counsel: true })} catalog={testCatalog} />);
 
     const dialog = await screen.findByRole('dialog', { name: 'Counseling mode' });
-    expect(within(dialog).getByText('Medicine 1 of 4')).toBeInTheDocument();
+    expect(within(dialog).getByText('Medicine 1 of 5')).toBeInTheDocument();
     expect(within(dialog).getByRole('heading', { name: /Metformin/ })).toBeInTheDocument();
 
     await user.click(within(dialog).getByRole('button', { name: 'Next' }));
-    expect(within(dialog).getByText('Medicine 2 of 4')).toBeInTheDocument();
-    await user.keyboard('{ArrowRight}{ArrowRight}');
-    expect(within(dialog).getByText('Medicine 4 of 4')).toBeInTheDocument();
+    expect(within(dialog).getByText('Medicine 2 of 5')).toBeInTheDocument();
+    await user.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}');
+    expect(within(dialog).getByText('Medicine 5 of 5')).toBeInTheDocument();
     expect(within(dialog).getByText(/No more than 4 times a day/)).toBeInTheDocument();
 
     await user.click(within(dialog).getByRole('button', { name: 'Done' }));
@@ -112,24 +115,24 @@ describe('PillPlan app', () => {
     render(<App startup={startup({ example: true })} catalog={testCatalog} />);
 
     const bubble = await screen.findByRole('button', {
-      name: /Tuesday, November 3, Evening: not taken yet/,
+      name: /Tuesday, November 3, 23:00: not taken yet/,
     });
     await user.click(bubble);
     expect(
-      screen.getByRole('button', { name: /Tuesday, November 3, Evening: taken/ }),
+      screen.getByRole('button', { name: /Tuesday, November 3, 23:00: taken/ }),
     ).toHaveAttribute('aria-pressed', 'true');
-    expect(window.localStorage.getItem('pillplan:plan')).toContain('d1-evening');
+    expect(window.localStorage.getItem('pillplan:plan')).toContain('d1-2300');
   });
 
-  it('highlights one time of day', async () => {
+  it('highlights one dose time', async () => {
     const user = userEvent.setup();
     render(<App startup={startup({ example: true })} catalog={testCatalog} />);
 
-    const bedtime = await screen.findByRole('button', { name: /^Bedtime/, pressed: false });
-    await user.click(bedtime);
+    const night = await screen.findByRole('button', { name: /^21:00/, pressed: false });
+    await user.click(night);
     expect(
       within(chart()).getByRole('table', { name: 'When to take each medicine' }),
-    ).toHaveAttribute('data-spot', 'bedtime');
+    ).toHaveAttribute('data-spot', '21:00');
   });
 
   it('stops saving when "Remember on this device" is turned off', async () => {
@@ -167,10 +170,8 @@ describe('PillPlan app', () => {
     await user.click(screen.getByRole('option', { name: /^Amoxicillin/ }));
     await user.type(screen.getByRole('textbox', { name: /Signa/ }), '3 dd 1 caps p.c.');
 
-    expect(screen.getByRole('checkbox', { name: 'Morning' })).toBeChecked();
-    expect(screen.getByRole('checkbox', { name: 'Noon' })).toBeChecked();
-    expect(screen.getByRole('checkbox', { name: 'Evening' })).toBeChecked();
-    expect(screen.getByRole('checkbox', { name: 'Bedtime' })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Every 8 hours (3x)' })).toBeChecked();
+    expect(screen.getByText(/Every 8 hours: 07:00, 15:00, 23:00/)).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'With or after food' })).toBeChecked();
   });
 
@@ -185,8 +186,7 @@ describe('PillPlan app', () => {
     expect(
       within(drawer).getByRole('button', { name: 'Add to phone calendar' }),
     ).toBeInTheDocument();
-    await user.click(within(drawer).getByRole('button', { name: /Morning/ }));
-    expect(within(drawer).getByRole('spinbutton', { name: 'Hour' })).toHaveValue(7);
+    expect(within(drawer).getByText('23:00')).toBeInTheDocument();
     await user.click(within(drawer).getByRole('button', { name: 'Close' }));
     await waitFor(() => expect(drawer).not.toHaveAttribute('open'));
   });
@@ -198,7 +198,50 @@ describe('PillPlan app', () => {
     await screen.findByRole('rowheader', { name: /Metformin/ });
     await user.click(screen.getByRole('button', { name: 'ID' }));
     const sheet = screen.getByRole('article', { name: 'Jadwal minum obat' });
-    expect(within(sheet).getAllByText('Sebelum tidur').length).toBeGreaterThan(0);
+    expect(within(sheet).getAllByText('21.00').length).toBeGreaterThan(0);
     expect(screen.getByText('Biasanya diminum pada malam hari.')).toBeInTheDocument();
+  });
+});
+
+describe('welcome intro', () => {
+  it('plays the film for the chosen language and opens the app on Start, only once', async () => {
+    window.localStorage.clear();
+    const user = userEvent.setup();
+    const { container } = render(
+      <App startup={startup({ welcome: true })} catalog={testCatalog} />,
+    );
+
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      /patient can actually follow/,
+    );
+    const sources = [...container.querySelectorAll('video source')].map((s) =>
+      s.getAttribute('src'),
+    );
+    expect(sources).toEqual(['/intro/intro-en.webm', '/intro/intro-en.mp4']);
+    expect(container.querySelector('video')).toHaveAttribute('poster', '/intro/poster-en.png');
+
+    await user.click(screen.getByRole('button', { name: 'Start a plan' }));
+    expect(await screen.findByRole('combobox', { name: 'Find a medicine' })).toBeInTheDocument();
+    expect(window.localStorage.getItem('pillplan:welcome-seen')).toBe('1');
+  });
+
+  it('starts muted with a sound toggle, skips with Escape and replays from the navbar', async () => {
+    const user = userEvent.setup();
+    render(<App startup={startup({ welcome: true })} catalog={testCatalog} />);
+
+    expect(screen.getByRole('button', { name: 'Turn sound on' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    await user.keyboard('{Escape}');
+    await user.click(await screen.findByRole('button', { name: /Intro/ }));
+    expect(await screen.findByRole('button', { name: 'Start a plan' })).toBeInTheDocument();
+  });
+
+  it('uses the Indonesian film in Indonesian', () => {
+    const { container } = render(
+      <App startup={startup({ welcome: true, lang: 'id' })} catalog={testCatalog} />,
+    );
+    expect(container.querySelector('source')).toHaveAttribute('src', '/intro/intro-id.webm');
   });
 });

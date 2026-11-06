@@ -128,6 +128,24 @@ const PATHS = {
   ),
   check: <path className="icon-check" d="m5 12 5 5L20 7" />,
   next: <path d="m9 6 6 6-6 6" />,
+  soundOn: (
+    <>
+      <path d="M4 9h4l5-4v14l-5-4H4Z" />
+      <path className="icon-waves" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />
+    </>
+  ),
+  soundOff: (
+    <>
+      <path d="M4 9h4l5-4v14l-5-4H4Z" />
+      <path d="m17 9 5 6M22 9l-5 6" />
+    </>
+  ),
+  play: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path className="icon-play" d="m10 8.5 5 3.5-5 3.5Z" />
+    </>
+  ),
   close: <path d="M6 6l12 12M18 6 6 18" />,
   download: <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />,
   upload: <path d="M12 15V3M7 8l5-5 5 5M5 21h14" />,

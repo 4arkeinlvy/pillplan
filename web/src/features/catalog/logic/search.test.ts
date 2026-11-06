@@ -1,3 +1,4 @@
+import type { ClockTime } from '@/shared/domain/time';
 import { describe, expect, it } from 'vitest';
 import { testCatalog } from '@/test/catalog';
 import type { MyDrug } from '../model';
@@ -37,7 +38,9 @@ describe('searchDrugs', () => {
       name: 'Metformin XR racikan',
       strength: '750 mg',
       form: 'tablet',
-      times: ['evening'],
+      every: 24,
+      firstDose: '19:00' as ClockTime,
+      preparation: 'tablet',
       prn: false,
       prnMaxPerDay: null,
       food: 'with_after',

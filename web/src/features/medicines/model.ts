@@ -1,24 +1,13 @@
-import type { DoseForm, DoseUnit, FoodRule, TimeSlot } from '@/shared/domain/time';
-
-export const PILL_SHAPES = ['round', 'oval', 'capsule'] as const;
-export type PillShape = (typeof PILL_SHAPES)[number];
-
-/** Real pill colors, not interface colors. */
-export const PILL_COLORS = [
-  { name: 'White', hex: '#FFFFFF' },
-  { name: 'Yellow', hex: '#F6D55C' },
-  { name: 'Orange', hex: '#F4A259' },
-  { name: 'Pink', hex: '#F7A8B8' },
-  { name: 'Red', hex: '#D64545' },
-  { name: 'Blue', hex: '#6FA8DC' },
-  { name: 'Green', hex: '#93C47D' },
-  { name: 'Brown', hex: '#A47551' },
-] as const;
-
-export interface PillLook {
-  shape: PillShape;
-  color: string;
-}
+import {
+  doseTimes,
+  type ClockTime,
+  type DoseForm,
+  type DoseTime,
+  type DoseUnit,
+  type FoodRule,
+  type IntervalHours,
+  type Preparation,
+} from '@/shared/domain/time';
 
 export interface Medicine {
   id: string;
@@ -32,7 +21,10 @@ export interface Medicine {
   /** Units per dose, for example 0.5 tablet. */
   amount: number;
   form: DoseForm;
-  times: TimeSlot[];
+  /** Hours between doses: 24, 12, 8 or 6. Ignored when taken only when needed. */
+  every: IntervalHours;
+  /** Clock time of the first dose of the day; the rest follow every `every` hours. */
+  firstDose: ClockTime;
   prn: boolean;
   /** Most doses a day when taken only when needed. */
   prnMaxPerDay: number | null;
@@ -40,7 +32,8 @@ export interface Medicine {
   warnings: string[];
   purpose: string;
   advice: string;
-  pill: PillLook;
+  /** Sediaan: tablet, capsule, syrup or suspension. */
+  preparation: Preparation;
   /** The prescription signa as typed, for example "3 dd 1 tab p.c.". */
   signa?: string | undefined;
 }
@@ -48,7 +41,7 @@ export interface Medicine {
 export interface Tracker {
   /** First day of the week shown, as yyyy-mm-dd in local time. */
   start: string;
-  /** Keys of doses ticked off, like "d0-morning". */
+  /** Keys of doses ticked off, like "d0-0700" (day 0, the 07:00 dose). */
   popped: string[];
 }
 
@@ -60,5 +53,10 @@ export interface PlanState {
 
 /** How many doses a day count towards daily totals. */
 export function dosesPerDay(medicine: Medicine): number {
-  return medicine.prn ? (medicine.prnMaxPerDay ?? 0) : medicine.times.length;
+  return medicine.prn ? (medicine.prnMaxPerDay ?? 0) : 24 / medicine.every;
+}
+
+/** The clock times of a medicine's doses in one day; none when only taken when needed. */
+export function medicineDoseTimes(medicine: Medicine): DoseTime[] {
+  return medicine.prn ? [] : doseTimes(medicine.every, medicine.firstDose);
 }

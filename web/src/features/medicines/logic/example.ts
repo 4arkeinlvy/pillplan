@@ -1,13 +1,13 @@
 import type { Catalog } from '@/features/catalog';
 import type { Lang, Strings } from '@/shared/i18n';
-import type { PillShape, PlanState } from '../model';
+import type { Preparation } from '@/shared/domain/time';
+import type { PlanState } from '../model';
 import { medicineFromDrug } from './fromDrug';
 
 interface ExampleItem {
   drugId: string;
   strengthIndex: number;
-  shape: PillShape;
-  color: string;
+  preparation: Preparation;
   amount?: number;
   prnMaxPerDay?: number;
   signa: string;
@@ -19,29 +19,31 @@ export const EXAMPLE_ITEMS: readonly ExampleItem[] = [
     drugId: 'metformin',
     signa: '2 dd 1 tab p.c.',
     strengthIndex: 0,
-    shape: 'oval',
-    color: '#FFFFFF',
+    preparation: 'tablet',
   },
   {
     drugId: 'amlodipine',
     signa: '1 dd 1 tab',
     strengthIndex: 1,
-    shape: 'round',
-    color: '#FFFFFF',
+    preparation: 'tablet',
+  },
+  {
+    drugId: 'amoxicillin',
+    signa: '3 dd 1 caps',
+    strengthIndex: 0,
+    preparation: 'capsule',
   },
   {
     drugId: 'simvastatin',
     signa: '1 dd 1 tab h.s.',
     strengthIndex: 1,
-    shape: 'oval',
-    color: '#F7A8B8',
+    preparation: 'tablet',
   },
   {
     drugId: 'paracetamol',
     signa: '4 dd 2 tab p.r.n.',
     strengthIndex: 0,
-    shape: 'capsule',
-    color: '#FFFFFF',
+    preparation: 'tablet',
     amount: 2,
     prnMaxPerDay: 4,
   },
@@ -62,7 +64,7 @@ export function buildExamplePlan(
       {
         ...base,
         purpose: t.example.purposes[item.drugId] ?? '',
-        pill: { shape: item.shape, color: item.color },
+        preparation: item.preparation,
         amount: item.amount ?? base.amount,
         prnMaxPerDay: item.prnMaxPerDay ?? base.prnMaxPerDay,
         signa: item.signa,
@@ -72,6 +74,6 @@ export function buildExamplePlan(
   return {
     patientName: t.example.patient,
     medicines,
-    tracker: { start: today, popped: ['d0-morning'] },
+    tracker: { start: today, popped: ['d0-0700'] },
   };
 }

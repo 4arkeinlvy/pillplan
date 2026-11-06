@@ -1,3 +1,4 @@
+import type { ClockTime } from '@/shared/domain/time';
 import { describe, expect, it } from 'vitest';
 import { customMedicine, medicineFromDrug, type Medicine } from '@/features/medicines';
 import { en, id } from '@/shared/i18n';
@@ -49,7 +50,7 @@ describe('runSafetyChecks', () => {
   });
 
   it('counts fixed doses by the number of times a day', () => {
-    const notes = kinds([med('metformin', { amount: 2, times: ['morning', 'evening'] }, 2)]);
+    const notes = kinds([med('metformin', { amount: 2, every: 12 }, 2)]);
     expect(notes).toEqual(['max-daily']);
   });
 
@@ -63,7 +64,7 @@ describe('runSafetyChecks', () => {
 
   it('gives a timing hint when a drug is set outside its best times', () => {
     const notes = runSafetyChecks(
-      [med('simvastatin', { times: ['morning'] })],
+      [med('simvastatin', { firstDose: '07:00' as ClockTime })],
       testCatalog,
       en,
       'en',
@@ -95,7 +96,7 @@ describe('runSafetyChecks', () => {
   it('puts alerts before cautions and information', () => {
     const notes = runSafetyChecks(
       [
-        med('simvastatin', { times: ['morning'] }),
+        med('simvastatin', { firstDose: '07:00' as ClockTime }),
         med('atorvastatin'),
         med('amlodipine', { amount: 3 }, 2),
       ],

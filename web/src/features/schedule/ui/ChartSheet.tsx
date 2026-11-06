@@ -4,11 +4,11 @@ import {
   displayAdvice,
   displayStrength,
   medicineWarnings,
-  PillPreview,
+  PreparationIcon,
   usePlan,
   type Medicine,
 } from '@/features/medicines';
-import { TIME_SLOTS, type TimeSlot } from '@/shared/domain/time';
+import { dayPartOf, formatClock, isLiquid, type ClockTime } from '@/shared/domain/time';
 import { formatDose } from '@/shared/format/dose';
 import { local, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
@@ -32,7 +32,7 @@ export function ChartSheet({ today, onExample, highlight = [] }: ChartSheetProps
   const { plan } = usePlan();
   const catalog = useCatalog();
   const { t } = useI18n();
-  const [spot, setSpot] = useState<TimeSlot | null>(null);
+  const [spot, setSpot] = useState<ClockTime | null>(null);
   const chart = buildChart(plan.medicines, t);
   const isEmpty = plan.medicines.length === 0;
   const linked = (id: string) => (highlight.includes(id) ? '' : undefined);
@@ -66,18 +66,23 @@ export function ChartSheet({ today, onExample, highlight = [] }: ChartSheetProps
         <>
           {chart.rows.length > 0 && (
             <>
-              <SlotSpotlight counts={chart.counts} selected={spot} onSelect={setSpot} />
+              <SlotSpotlight
+                times={chart.times}
+                counts={chart.counts}
+                selected={spot}
+                onSelect={setSpot}
+              />
               <div className={styles.tableWrap}>
                 <table className={styles.chart} data-spot={spot ?? undefined}>
                   <caption className="visually-hidden">{t.chart.caption}</caption>
                   <thead>
                     <tr>
                       <th scope="col">{t.chart.medicine}</th>
-                      {TIME_SLOTS.map((slot) => (
-                        <th key={slot} scope="col" data-on={spot === slot ? '' : undefined}>
+                      {chart.times.map((time) => (
+                        <th key={time} scope="col" data-on={spot === time ? '' : undefined}>
                           <span className={styles.slotHead}>
-                            <Icon name={slot} size={26} />
-                            <span className={styles.slotLabel}>{t.slots[slot]}</span>
+                            <Icon name={dayPartOf(time)} size={26} />
+                            <span className={styles.slotLabel}>{formatClock(time, t.locale)}</span>
                           </span>
                         </th>
                       ))}
@@ -99,10 +104,10 @@ export function ChartSheet({ today, onExample, highlight = [] }: ChartSheetProps
                         <th scope="row">
                           <MedicineCell medicine={medicine} catalog={catalog} />
                         </th>
-                        {TIME_SLOTS.map((slot, column) => {
-                          const cell = cells[slot];
+                        {chart.times.map((time, column) => {
+                          const cell = cells[time];
                           return (
-                            <td key={slot} data-on={spot === slot ? '' : undefined}>
+                            <td key={time} data-on={spot === time ? '' : undefined}>
                               {cell ? (
                                 <span
                                   className={styles.dose}
@@ -159,7 +164,7 @@ export function ChartSheet({ today, onExample, highlight = [] }: ChartSheetProps
             </section>
           )}
 
-          <BlisterTracker slots={chart.usedSlots} today={toIsoDate(today)} />
+          <BlisterTracker times={chart.times} today={toIsoDate(today)} />
         </>
       )}
 
@@ -177,7 +182,7 @@ function MedicineCell({ medicine, catalog }: { medicine: Medicine; catalog: Cata
   const advice = displayAdvice(medicine, catalog, lang);
   return (
     <div className={styles.medicine}>
-      <PillPreview pill={medicine.pill} size={44} />
+      <PreparationIcon preparation={medicine.preparation} size={44} />
       <div>
         <p className={styles.name}>
           {medicine.name}{' '}
@@ -188,6 +193,10 @@ function MedicineCell({ medicine, catalog }: { medicine: Medicine; catalog: Cata
           <Icon name="food" size={16} />
           {t.food[medicine.food]}
         </p>
+        {!medicine.prn && <p className={styles.every}>{t.interval.every(medicine.every)}</p>}
+        {isLiquid(medicine.preparation) && (
+          <p className={styles.advice}>{t.preparation.note[medicine.preparation]}</p>
+        )}
         {advice && <p className={styles.advice}>{advice}</p>}
         {warnings.length > 0 && (
           <div className={styles.stickers}>

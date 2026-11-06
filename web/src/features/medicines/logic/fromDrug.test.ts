@@ -4,6 +4,8 @@ import { testCatalog } from '@/test/catalog';
 import { medicineFromDrug, withStrength } from './fromDrug';
 import { buildExamplePlan } from './example';
 import { validateMedicine } from './validate';
+import { medicineDoseTimes } from '../model';
+import type { ClockTime } from '@/shared/domain/time';
 
 const drug = (id: string) => {
   const found = testCatalog.drugById.get(id);
@@ -18,7 +20,8 @@ describe('medicineFromDrug', () => {
       drugId: 'metformin',
       strength: '850 mg',
       ingredientAmounts: [850],
-      times: ['morning', 'evening'],
+      every: 12,
+      firstDose: '07:00',
       food: 'with_after',
       prn: false,
     });
@@ -28,7 +31,7 @@ describe('medicineFromDrug', () => {
     const paracetamol = medicineFromDrug(drug('paracetamol'), 0, 'x', 'en');
     expect(paracetamol.prn).toBe(true);
     expect(paracetamol.prnMaxPerDay).toBe(4);
-    expect(paracetamol.times).toEqual([]);
+    expect(medicineDoseTimes(paracetamol)).toEqual([]);
   });
 
   it('labels combination strengths', () => {
@@ -52,9 +55,10 @@ describe('validateMedicine', () => {
     expect(validateMedicine(valid, en)).toEqual({});
   });
 
-  it('needs a time unless taken when needed', () => {
-    expect(validateMedicine({ ...valid, times: [] }, en).times).toBeDefined();
-    expect(validateMedicine({ ...valid, times: [], prn: true, prnMaxPerDay: 3 }, en)).toEqual({});
+  it('needs a valid first dose unless taken when needed', () => {
+    const broken = { ...valid, firstDose: '7' as ClockTime };
+    expect(validateMedicine(broken, en).firstDose).toBeDefined();
+    expect(validateMedicine({ ...broken, prn: true, prnMaxPerDay: 3 }, en)).toEqual({});
   });
 
   it('needs a sensible max per day for when-needed medicines', () => {
@@ -78,6 +82,7 @@ describe('buildExamplePlan', () => {
     expect(plan.medicines.map((m) => m.drugId)).toEqual([
       'metformin',
       'amlodipine',
+      'amoxicillin',
       'simvastatin',
       'paracetamol',
     ]);

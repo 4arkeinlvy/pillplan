@@ -1,5 +1,5 @@
 import { usePlan } from '@/features/medicines';
-import type { TimeSlot } from '@/shared/domain/time';
+import { dayPartOf, formatClock, type ClockTime } from '@/shared/domain/time';
 import { useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { Icon } from '@/shared/ui/Icon';
@@ -7,15 +7,15 @@ import { doseKey, trackerDays } from '../logic/tracker';
 import styles from './BlisterTracker.module.css';
 
 interface BlisterTrackerProps {
-  slots: readonly TimeSlot[];
+  times: readonly ClockTime[];
   today: string;
 }
 
-/** A week drawn like a blister pack: one bubble per time of day, popped when taken. */
-export function BlisterTracker({ slots, today }: BlisterTrackerProps) {
+/** A week drawn like a blister pack: one bubble per dose time, popped when taken. */
+export function BlisterTracker({ times, today }: BlisterTrackerProps) {
   const { t } = useI18n();
   const { plan, dispatch } = usePlan();
-  if (slots.length === 0) return null;
+  if (times.length === 0) return null;
   const days = trackerDays(plan.tracker.start, t.locale);
   const popped = new Set(plan.tracker.popped);
 
@@ -37,33 +37,36 @@ export function BlisterTracker({ slots, today }: BlisterTrackerProps) {
           </tr>
         </thead>
         <tbody>
-          {slots.map((slot) => (
-            <tr key={slot}>
-              <th scope="row">
-                <span className={styles.rowLabel}>
-                  <Icon name={slot} size={16} />
-                  <span className={styles.rowText}>{t.slots[slot]}</span>
-                </span>
-              </th>
-              {days.map((day) => {
-                const key = doseKey(day.index, slot);
-                const taken = popped.has(key);
-                return (
-                  <td key={key}>
-                    <button
-                      type="button"
-                      className={styles.bubble}
-                      aria-pressed={taken}
-                      aria-label={t.tracker.bubble(day.longLabel, t.slots[slot], taken)}
-                      onClick={() => dispatch({ type: 'toggleDose', key })}
-                    >
-                      {taken && <Icon name="check" size={18} />}
-                    </button>
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+          {times.map((time) => {
+            const label = formatClock(time, t.locale);
+            return (
+              <tr key={time}>
+                <th scope="row">
+                  <span className={styles.rowLabel}>
+                    <Icon name={dayPartOf(time)} size={16} />
+                    <span className={styles.rowText}>{label}</span>
+                  </span>
+                </th>
+                {days.map((day) => {
+                  const key = doseKey(day.index, time);
+                  const taken = popped.has(key);
+                  return (
+                    <td key={key}>
+                      <button
+                        type="button"
+                        className={styles.bubble}
+                        aria-pressed={taken}
+                        aria-label={t.tracker.bubble(day.longLabel, label, taken)}
+                        onClick={() => dispatch({ type: 'toggleDose', key })}
+                      >
+                        {taken && <Icon name="check" size={18} />}
+                      </button>
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <div className={`${styles.reset} no-print`}>

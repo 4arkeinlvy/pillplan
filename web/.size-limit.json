@@ -1,6 +1,14 @@
 [
-  { "name": "Initial JavaScript", "path": "dist/assets/index-*.js", "limit": "110 kB" },
-  { "name": "CSS", "path": "dist/assets/*.css", "limit": "15 kB" },
+  {
+    "name": "Initial JavaScript",
+    "path": "dist/assets/index-*.js",
+    "limit": "110 kB"
+  },
+  {
+    "name": "CSS",
+    "path": "dist/assets/*.css",
+    "limit": "15 kB"
+  },
   {
     "name": "Main fonts (woff2)",
     "path": "dist/assets/*-latin-*-normal-*.woff2",

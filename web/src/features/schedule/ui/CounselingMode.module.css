@@ -156,3 +156,14 @@
     transform: translateX(-12%);
   }
 }
+
+.when {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.when .time {
+  font-size: var(--step-2);
+}

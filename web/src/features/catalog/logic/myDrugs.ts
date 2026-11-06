@@ -1,5 +1,12 @@
 import * as v from 'valibot';
-import { DOSE_FORMS, FOOD_RULES, TIME_SLOTS } from '@/shared/domain/time';
+import {
+  DOSE_FORMS,
+  FOOD_RULES,
+  INTERVALS,
+  isClockTime,
+  PREPARATIONS,
+  type ClockTime,
+} from '@/shared/domain/time';
 import type { MyDrug } from '../model';
 
 export const MY_DRUGS_KEY = 'pillplan:mydrugs';
@@ -12,7 +19,9 @@ const MyDrugSchema = v.object({
   name: v.pipe(v.string(), v.minLength(1), v.maxLength(120)),
   strength: text(80),
   form: v.picklist(DOSE_FORMS),
-  times: v.pipe(v.array(v.picklist(TIME_SLOTS)), v.maxLength(4)),
+  every: v.picklist(INTERVALS),
+  firstDose: v.custom<ClockTime>((value) => typeof value === 'string' && isClockTime(value)),
+  preparation: v.picklist(PREPARATIONS),
   prn: v.boolean(),
   prnMaxPerDay: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(24))),
   food: v.picklist(FOOD_RULES),

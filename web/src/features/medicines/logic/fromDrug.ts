@@ -1,10 +1,16 @@
 import type { Drug, MyDrug } from '@/features/catalog';
 import { formatStrength } from '@/shared/format/dose';
 import type { Lang } from '@/shared/i18n';
+import {
+  DEFAULT_FIRST_DOSE,
+  intervalFromDayParts,
+  preparationFor,
+  type Interval,
+} from '@/shared/domain/time';
 import type { Medicine } from '../model';
 
 export const DEFAULT_PRN_MAX = 4;
-const WHITE = '#FFFFFF';
+const ONCE_DAILY: Interval = { every: 24, firstDose: DEFAULT_FIRST_DOSE };
 
 /** A new medicine pre-filled from the catalog, in the chosen language. Every field stays editable. */
 export function medicineFromDrug(
@@ -23,14 +29,14 @@ export function medicineFromDrug(
     unit: drug.unit,
     amount: 1,
     form: drug.form,
-    times: [...drug.defaultTimes],
+    ...(intervalFromDayParts(drug.defaultTimes) ?? ONCE_DAILY),
     prn: drug.defaultPrn,
     prnMaxPerDay: drug.defaultPrn ? DEFAULT_PRN_MAX : null,
     food: drug.food,
     warnings: [...drug.warnings],
     purpose: '',
     advice: drug.advice[lang],
-    pill: { shape: drug.form === 'capsule' ? 'capsule' : 'round', color: WHITE },
+    preparation: preparationFor(drug.form),
   };
 }
 
@@ -54,14 +60,14 @@ export function customMedicine(name: string, id: string): Medicine {
     unit: null,
     amount: 1,
     form: 'tablet',
-    times: ['morning'],
+    ...ONCE_DAILY,
     prn: false,
     prnMaxPerDay: null,
     food: 'any',
     warnings: [],
     purpose: '',
     advice: '',
-    pill: { shape: 'round', color: WHITE },
+    preparation: 'tablet',
   };
 }
 
@@ -71,13 +77,14 @@ export function medicineFromMyDrug(drug: MyDrug, id: string): Medicine {
     ...customMedicine(drug.name, id),
     strength: drug.strength,
     form: drug.form,
-    times: [...drug.times],
+    every: drug.every,
+    firstDose: drug.firstDose,
     prn: drug.prn,
     prnMaxPerDay: drug.prnMaxPerDay,
     food: drug.food,
     warnings: [...drug.warnings],
     advice: drug.advice,
-    pill: { shape: drug.form === 'capsule' ? 'capsule' : 'round', color: WHITE },
+    preparation: drug.preparation,
   };
 }
 
@@ -88,7 +95,9 @@ export function toMyDrug(medicine: Medicine, id: string): MyDrug {
     name: medicine.name.trim(),
     strength: medicine.strength,
     form: medicine.form,
-    times: [...medicine.times],
+    every: medicine.every,
+    firstDose: medicine.firstDose,
+    preparation: medicine.preparation,
     prn: medicine.prn,
     prnMaxPerDay: medicine.prnMaxPerDay,
     food: medicine.food,

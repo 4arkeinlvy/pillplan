@@ -1,4 +1,12 @@
-import type { DoseForm, DoseUnit, FoodRule, TimeSlot } from '@/shared/domain/time';
+import type {
+  ClockTime,
+  DayPart,
+  DoseForm,
+  DoseUnit,
+  FoodRule,
+  IntervalHours,
+  Preparation,
+} from '@/shared/domain/time';
 import type { LocalText } from '@/shared/i18n';
 import type { StickerTone } from '@/shared/ui/Sticker';
 
@@ -31,9 +39,10 @@ export interface Drug {
   form: 'tablet' | 'capsule';
   strengths: number[][];
   unit: DoseUnit;
-  defaultTimes: TimeSlot[];
+  /** Day parts from the label; turned into an even interval when the drug is added. */
+  defaultTimes: DayPart[];
   defaultPrn: boolean;
-  bestTimes: TimeSlot[];
+  bestTimes: DayPart[];
   food: FoodRule;
   warnings: string[];
   advice: LocalText;
@@ -59,7 +68,9 @@ export interface MyDrug {
   name: string;
   strength: string;
   form: DoseForm;
-  times: TimeSlot[];
+  every: IntervalHours;
+  firstDose: ClockTime;
+  preparation: Preparation;
   prn: boolean;
   prnMaxPerDay: number | null;
   food: FoodRule;

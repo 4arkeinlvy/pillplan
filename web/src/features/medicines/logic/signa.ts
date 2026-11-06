@@ -1,13 +1,26 @@
-import { TIME_SLOTS, type DoseForm, type FoodRule, type TimeSlot } from '@/shared/domain/time';
+import {
+  DAY_PART_CLOCK,
+  DAY_PARTS,
+  DEFAULT_FIRST_DOSE,
+  intervalFor,
+  intervalFromDayParts,
+  type DayPart,
+  type DoseForm,
+  type FoodRule,
+  type Interval,
+} from '@/shared/domain/time';
 
 /**
  * Reads a prescription signa (Latin or Indonesian) such as "S 3 dd 1 tab p.c.",
  * "2x1 sesudah makan", "1 dd 1 h.s." or "prn 1 tab". Anything it cannot read is
  * returned in `unknown`, so the apoteker always sees what was not understood.
+ *
+ * Doses are spread evenly: "3 dd 1" is every 8 hours. Day words such as "malam" or "h.s."
+ * only set when the first dose is taken.
  */
 export interface SignaResult {
-  /** Times of day, or null when the signa did not say. */
-  times: TimeSlot[] | null;
+  /** Hours between doses and the first dose, or null when the signa did not say. */
+  interval: Interval | null;
   /** Doses per day, or null when not given. */
   count: number | null;
   amount: number | null;
@@ -17,14 +30,6 @@ export interface SignaResult {
   maxPerDay: number | null;
   unknown: string[];
 }
-
-/** How Indonesian practice spreads n doses over the Universal Medication Schedule. */
-const SPREAD: Record<number, TimeSlot[]> = {
-  1: ['morning'],
-  2: ['morning', 'evening'],
-  3: ['morning', 'noon', 'evening'],
-  4: ['morning', 'noon', 'evening', 'bedtime'],
-};
 
 const ROMAN: Record<string, number> = { i: 1, ii: 2, iii: 3, iv: 4 };
 const FRACTION: Record<string, number> = { '½': 0.5, '¼': 0.25, '¾': 0.75 };
@@ -101,7 +106,7 @@ function unitToForm(unit: string): { form: DoseForm; perUnitMl?: number } {
   return { form: 'mL' };
 }
 
-export function parseSigna(text: string, defaultTimes: readonly TimeSlot[] = []): SignaResult {
+export function parseSigna(text: string, defaultTimes: readonly DayPart[] = []): SignaResult {
   let rest = ` ${text.toLowerCase().replace(/\s+/g, ' ').trim()} `;
   rest = rest.replace(/^\s*s\.?\s+/, ' ');
   const take = (pattern: RegExp): boolean => {
@@ -116,7 +121,7 @@ export function parseSigna(text: string, defaultTimes: readonly TimeSlot[] = [])
     : take(PATTERNS.after)
       ? 'with_after'
       : null;
-  const named = new Set<TimeSlot>();
+  const named = new Set<DayPart>();
   if (take(PATTERNS.bedtime)) named.add('bedtime');
   if (take(PATTERNS.morning)) named.add('morning');
   if (take(PATTERNS.evening)) named.add('evening');
@@ -140,9 +145,9 @@ export function parseSigna(text: string, defaultTimes: readonly TimeSlot[] = [])
     rest = rest.replace(PATTERNS.latinDaily, ' ');
   }
 
-  const interval = PATTERNS.interval.exec(rest);
-  if (interval) {
-    const hours = Number(interval[1] ?? interval[2]);
+  const hoursMatch = PATTERNS.interval.exec(rest);
+  if (hoursMatch) {
+    const hours = Number(hoursMatch[1] ?? hoursMatch[2]);
     if (hours > 0 && 24 % hours === 0) count = 24 / hours;
     rest = rest.replace(PATTERNS.interval, ' ');
   }
@@ -176,26 +181,30 @@ export function parseSigna(text: string, defaultTimes: readonly TimeSlot[] = [])
     .map((token) => token.replace(/^[.]+|[.]+$/g, ''))
     .filter((token) => token && !FILLER.has(token));
 
-  let times: TimeSlot[] | null = null;
+  let interval: Interval | null = null;
   let maxPerDay: number | null = null;
+  const parts = DAY_PARTS.filter((part) => named.has(part));
   if (prn) {
     maxPerDay = count;
-    times = [];
-  } else if (named.size > 0) {
-    times = TIME_SLOTS.filter((slot) => named.has(slot));
+  } else if (count === null && parts.length > 0) {
+    interval = intervalFromDayParts(parts);
   } else if (count !== null) {
-    if (defaultTimes.length === count) times = [...defaultTimes];
-    else if (SPREAD[count]) times = [...(SPREAD[count] ?? [])];
-    else unknown.push(`${count} x`);
+    const every = intervalFor(count);
+    const fromDefault = intervalFromDayParts(defaultTimes);
+    const first = parts[0];
+    if (!every) unknown.push(`${count} x`);
+    else if (first) interval = { every, firstDose: DAY_PART_CLOCK[first] };
+    else if (fromDefault?.every === every) interval = fromDefault;
+    else interval = { every, firstDose: DEFAULT_FIRST_DOSE };
   }
 
-  return { times, count, amount, form, food, prn, maxPerDay, unknown };
+  return { interval, count, amount, form, food, prn, maxPerDay, unknown };
 }
 
 /** True when the signa gave nothing usable yet, for example while the user is still typing. */
 export function isEmptySigna(result: SignaResult): boolean {
   return (
-    result.times === null &&
+    result.interval === null &&
     result.amount === null &&
     result.food === null &&
     !result.prn &&

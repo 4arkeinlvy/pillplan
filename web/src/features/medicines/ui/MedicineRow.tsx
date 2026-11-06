@@ -3,8 +3,9 @@ import { useI18n, type Strings } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
 import { Tooltip } from '@/shared/ui/Tooltip';
 import { displayStrength } from '../logic/display';
-import type { Medicine } from '../model';
-import { PillPreview } from './PillPreview';
+import { formatClock } from '@/shared/domain/time';
+import { medicineDoseTimes, type Medicine } from '../model';
+import { PreparationIcon } from './PreparationIcon';
 import styles from './MedicineList.module.css';
 
 export interface MedicineListProps {
@@ -17,7 +18,9 @@ export interface MedicineListProps {
 export function scheduleSummary(medicine: Medicine, t: Strings): string {
   return medicine.prn
     ? t.list.prnSummary(medicine.prnMaxPerDay)
-    : t.list.schedule(medicine.times.map((slot) => t.slots[slot]));
+    : `${t.interval.every(medicine.every)}: ${t.list.schedule(
+        medicineDoseTimes(medicine).map(({ time }) => formatClock(time, t.locale)),
+      )}`;
 }
 
 interface MedicineRowProps {
@@ -44,7 +47,7 @@ export function MedicineRow({
   return (
     <li ref={rowRef} className={`${styles.item} ${dragging ? styles.dragging : ''}`} style={style}>
       {handle ?? <span className={styles.handle} aria-hidden="true" />}
-      <PillPreview pill={medicine.pill} size={36} />
+      <PreparationIcon preparation={medicine.preparation} size={36} />
       <div>
         <p className={styles.name}>
           {medicine.name} {displayStrength(medicine, t.locale)}

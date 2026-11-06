@@ -82,6 +82,8 @@
 .slotLabel {
   white-space: nowrap;
   line-height: 1.2;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .chart tbody th,
@@ -277,12 +279,7 @@
   }
 
   .slotLabel {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
+    font-size: 0.75rem;
   }
 
   .medicine {
@@ -329,4 +326,11 @@
     padding-left: 0;
     padding-right: 0;
   }
+}
+
+.every {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 700;
 }

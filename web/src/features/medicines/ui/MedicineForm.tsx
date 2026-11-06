@@ -3,13 +3,20 @@ import { useCatalog } from '@/features/catalog';
 import {
   amountStep,
   DOSE_FORMS,
+  doseTimes,
   FOOD_RULES,
-  TIME_SLOTS,
-  type TimeSlot,
+  formatClock,
+  INTERVALS,
+  isClockTime,
+  isLiquid,
+  PREPARATIONS,
+  type IntervalHours,
+  type Preparation,
 } from '@/shared/domain/time';
 import { formatDose, formatStrength, formName } from '@/shared/format/dose';
 import { local, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
+import { DoseClock } from '@/shared/ui/DoseClock';
 import {
   ChoiceGroup,
   MultiChoiceGroup,
@@ -24,11 +31,11 @@ import { displayStrength } from '../logic/display';
 import { DEFAULT_PRN_MAX, withStrength } from '../logic/fromDrug';
 import { isEmptySigna, parseSigna } from '../logic/signa';
 import { validateMedicine, type MedicineErrors } from '../logic/validate';
-import { PILL_COLORS, PILL_SHAPES, type Medicine } from '../model';
-import { PillPreview } from './PillPreview';
+import type { Medicine } from '../model';
+import { PreparationIcon } from './PreparationIcon';
 import styles from './MedicineForm.module.css';
 
-type When = TimeSlot | 'prn';
+type When = `${IntervalHours}` | 'prn';
 
 interface MedicineFormProps {
   initial: Medicine;
@@ -80,13 +87,35 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
       )
     : 0;
 
-  const when: When[] = medicine.prn ? ['prn'] : medicine.times;
-  const changeWhen = (next: When[]) => {
-    if (next.includes('prn') && !medicine.prn) {
-      set({ prn: true, times: [], prnMaxPerDay: medicine.prnMaxPerDay ?? DEFAULT_PRN_MAX });
+  const when: When = medicine.prn ? 'prn' : `${medicine.every}`;
+  const changeWhen = (next: When) => {
+    if (next === 'prn') {
+      set({ prn: true, prnMaxPerDay: medicine.prnMaxPerDay ?? DEFAULT_PRN_MAX });
     } else {
-      set({ prn: false, times: TIME_SLOTS.filter((slot) => next.includes(slot)) });
+      set({ prn: false, every: Number(next) as IntervalHours });
     }
+  };
+
+  // While a typed time is incomplete it lives in `clockDraft`; the clock dial keeps the last valid one.
+  const [clockDraft, setClockDraft] = useState<string | null>(null);
+  const changeClockText = (text: string) => {
+    if (isClockTime(text)) {
+      setClockDraft(null);
+      set({ firstDose: text });
+    } else {
+      setClockDraft(text);
+    }
+  };
+
+  /** Picking a liquid for a custom medicine switches the unit to mL, and back. */
+  const changePreparation = (preparation: Preparation) => {
+    if (medicine.drugId !== null) return set({ preparation });
+    const form = isLiquid(preparation) ? 'mL' : preparation === 'capsule' ? 'capsule' : 'tablet';
+    set({
+      preparation,
+      form,
+      amount: form === 'mL' && medicine.form !== 'mL' ? 5 : medicine.amount,
+    });
   };
 
   const submit = (event: FormEvent) => {
@@ -114,8 +143,10 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
   const preview = medicine.prn
     ? t.signa.previewPrn(dose, medicine.prnMaxPerDay)
     : t.signa.preview(
-        t.signa.timesCount(medicine.times.length),
-        medicine.times.map((slot) => t.slots[slot]).join(', '),
+        t.interval.every(medicine.every),
+        doseTimes(medicine.every, medicine.firstDose)
+          .map(({ time }) => formatClock(time, t.locale))
+          .join(', '),
         dose,
         medicine.food === 'any' ? null : t.food[medicine.food],
       );
@@ -130,7 +161,7 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
   return (
     <form ref={formRef} className={styles.form} onSubmit={submit} noValidate aria-label={heading}>
       <h3 className={styles.title}>
-        <PillPreview pill={medicine.pill} />
+        <PreparationIcon preparation={medicine.preparation} />
         <span>
           {heading}
           {strength && <span className={styles.strength}> {strength}</span>}
@@ -209,6 +240,19 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
 
       {!medicine.drugId && (
         <ChoiceGroup
+          legend={t.preparation.legend}
+          value={medicine.preparation}
+          choices={PREPARATIONS.map((preparation) => ({
+            value: preparation,
+            label: t.preparation.names[preparation],
+            icon: <PreparationIcon preparation={preparation} size={22} />,
+          }))}
+          onChange={changePreparation}
+        />
+      )}
+
+      {!medicine.drugId && (
+        <ChoiceGroup
           legend={t.form.form}
           value={medicine.form}
           choices={DOSE_FORMS.map((form) => ({ value: form, label: t.form.forms[form] }))}
@@ -216,21 +260,43 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
         />
       )}
 
-      <MultiChoiceGroup
+      <ChoiceGroup
         legend={t.form.when}
         hint={medicine.prn ? t.form.whenNeededHint : undefined}
         error={errors.times}
         value={when}
         choices={[
-          ...TIME_SLOTS.map((slot) => ({
-            value: slot,
-            label: t.slots[slot],
-            icon: <Icon name={slot} />,
+          ...INTERVALS.map((hours) => ({
+            value: `${hours}` as const,
+            label: t.interval.choice(hours),
           })),
           { value: 'prn' as const, label: t.whenNeeded, icon: <Icon name="prn" /> },
         ]}
         onChange={changeWhen}
       />
+
+      {!medicine.prn && (
+        <div className={styles.schedule}>
+          <DoseClock
+            every={medicine.every}
+            firstDose={medicine.firstDose}
+            onChange={(firstDose) => {
+              setClockDraft(null);
+              set({ firstDose });
+            }}
+            size={200}
+          />
+          <TextField
+            label={t.form.firstDose}
+            hint={t.form.firstDoseHint}
+            type="time"
+            step={900}
+            value={clockDraft ?? medicine.firstDose}
+            error={errors.firstDose}
+            onChange={(event) => changeClockText(event.target.value)}
+          />
+        </div>
+      )}
 
       <div className={styles.row}>
         <Stepper
@@ -301,31 +367,6 @@ export function MedicineForm({ initial, mode, onSubmit, onCancel }: MedicineForm
             rows={2}
             onChange={(event) => set({ advice: event.target.value })}
           />
-          <fieldset className={styles.look}>
-            <legend className="visually-hidden">{t.form.pillLook}</legend>
-            <div className={styles.row}>
-              <ChoiceGroup
-                legend={t.form.shape}
-                value={medicine.pill.shape}
-                choices={PILL_SHAPES.map((shape) => ({
-                  value: shape,
-                  label: t.form.shapes[shape],
-                }))}
-                onChange={(shape) => set({ pill: { ...medicine.pill, shape } })}
-              />
-              <ChoiceGroup
-                legend={t.form.color}
-                value={medicine.pill.color}
-                choices={PILL_COLORS.map((color) => ({
-                  value: color.hex,
-                  label: color.name,
-                  icon: <span className={styles.swatch} style={{ background: color.hex }} />,
-                }))}
-                onChange={(color) => set({ pill: { ...medicine.pill, color } })}
-              />
-            </div>
-            <PillPreview pill={medicine.pill} size={88} />
-          </fieldset>
         </div>
       </details>
 

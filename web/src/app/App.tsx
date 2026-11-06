@@ -1,9 +1,10 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { CatalogProvider, MyDrugsList, useCatalog } from '@/features/catalog';
 import { buildExamplePlan, MedicinePanel, PlanProvider, usePlan } from '@/features/medicines';
 import { SafetyNotes } from '@/features/safety';
 import { ChartSheet, toIsoDate } from '@/features/schedule';
 import { CalendarExport, StorageControls, usePersistence } from '@/features/storage';
+import { markWelcomeSeen, Welcome } from '@/features/welcome';
 import { newId } from '@/shared/id';
 import { I18nProvider, useI18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/Button';
@@ -16,7 +17,7 @@ import { withViewTransition } from '@/shared/viewTransition';
 import type { Catalog } from '@/features/catalog';
 import { readStartup, type Startup } from './startup';
 import { LanguageSwitch } from './LanguageSwitch';
-import { Wordmark } from './Wordmark';
+import { Wordmark } from '@/shared/ui/Wordmark';
 import styles from './App.module.css';
 
 const CounselingMode = lazy(() =>
@@ -35,7 +36,7 @@ export function App({ startup: given, catalog }: AppProps) {
       <CatalogProvider catalog={catalog} storage={startup.storage}>
         <PlanProvider initial={startup.plan}>
           <ToastProvider>
-            <Shell startup={startup} />
+            <Entry startup={startup} />
           </ToastProvider>
         </PlanProvider>
       </CatalogProvider>
@@ -43,7 +44,25 @@ export function App({ startup: given, catalog }: AppProps) {
   );
 }
 
-function Shell({ startup }: { startup: Startup }) {
+/**
+ * First visit: the welcome film, then the app. Leaving it runs one view transition, so the
+ * mark at the end of the film glides into the navbar while the rest crossfades.
+ */
+function Entry({ startup }: { startup: Startup }) {
+  const [welcome, setWelcome] = useState(startup.welcome ?? false);
+  const leave = useCallback(() => {
+    markWelcomeSeen(startup.storage);
+    withViewTransition(() => setWelcome(false));
+  }, [startup.storage]);
+  const replay = useCallback(() => withViewTransition(() => setWelcome(true)), []);
+
+  if (welcome) {
+    return <Welcome onDone={leave} />;
+  }
+  return <Shell startup={startup} onReplayIntro={replay} />;
+}
+
+function Shell({ startup, onReplayIntro }: { startup: Startup; onReplayIntro: () => void }) {
   const { plan, dispatch } = usePlan();
   const catalog = useCatalog();
   const { t, lang } = useI18n();
@@ -96,6 +115,11 @@ function Shell({ startup }: { startup: Startup }) {
         <nav className={styles.actions} aria-label={t.app.name}>
           <LanguageSwitch />
           <span className={styles.divider} aria-hidden="true" />
+          <Tooltip text={t.welcome.replayHint}>
+            <Button variant="nav" icon="play" onClick={onReplayIntro}>
+              {t.welcome.replay}
+            </Button>
+          </Tooltip>
           <Tooltip text={hasMedicines ? t.counsel.hint : t.app.needMedicine}>
             <Button
               variant="nav"

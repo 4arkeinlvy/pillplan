@@ -1,5 +1,5 @@
-import type { Medicine } from '@/features/medicines';
-import { TIME_SLOTS, type TimeSlot } from '@/shared/domain/time';
+import { medicineDoseTimes, type Medicine } from '@/features/medicines';
+import { toMinutes, type ClockTime } from '@/shared/domain/time';
 import { formatAmount, formName } from '@/shared/format/dose';
 import type { Strings } from '@/shared/i18n';
 
@@ -10,28 +10,22 @@ export interface ChartCell {
 
 export interface ChartRow {
   medicine: Medicine;
-  cells: Record<TimeSlot, ChartCell | null>;
+  /** Dose at each chart column; a missing key means no dose at that time. */
+  cells: Partial<Record<ClockTime, ChartCell>>;
 }
 
 export interface Chart {
   rows: ChartRow[];
   whenNeeded: Medicine[];
-  /** Medicines due at each time of day. */
-  counts: Record<TimeSlot, number>;
-  /** Times of day with at least one dose, in day order. */
-  usedSlots: TimeSlot[];
+  /** Every clock time with at least one dose, earliest first. These are the columns. */
+  times: ClockTime[];
+  /** Medicines due at each clock time. */
+  counts: Partial<Record<ClockTime, number>>;
 }
 
-const emptyCounts = (): Record<TimeSlot, number> => ({
-  morning: 0,
-  noon: 0,
-  evening: 0,
-  bedtime: 0,
-});
-
-/** Universal Medication Schedule layout: one row per medicine, one column per time of day. */
+/** One row per medicine, one column per clock time that any medicine is due. */
 export function buildChart(medicines: readonly Medicine[], t: Strings): Chart {
-  const counts = emptyCounts();
+  const counts: Partial<Record<ClockTime, number>> = {};
   const rows: ChartRow[] = [];
   const whenNeeded: Medicine[] = [];
 
@@ -44,16 +38,14 @@ export function buildChart(medicines: readonly Medicine[], t: Strings): Chart {
       amount: formatAmount(medicine.amount, medicine.form, t.locale),
       formName: formName(medicine.amount, medicine.form, t),
     };
-    const cells = { morning: null, noon: null, evening: null, bedtime: null } as Record<
-      TimeSlot,
-      ChartCell | null
-    >;
-    for (const slot of medicine.times) {
-      cells[slot] = cell;
-      counts[slot] += 1;
+    const cells: ChartRow['cells'] = {};
+    for (const { time } of medicineDoseTimes(medicine)) {
+      cells[time] = cell;
+      counts[time] = (counts[time] ?? 0) + 1;
     }
     rows.push({ medicine, cells });
   }
 
-  return { rows, whenNeeded, counts, usedSlots: TIME_SLOTS.filter((slot) => counts[slot] > 0) };
+  const times = (Object.keys(counts) as ClockTime[]).sort((a, b) => toMinutes(a) - toMinutes(b));
+  return { rows, whenNeeded, times, counts };
 }

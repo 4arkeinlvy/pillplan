@@ -75,7 +75,7 @@ The app is \textbf{one codebase, one build and one deploy}, split into five feat
   \node[feature, right=of medicines] (schedule) {schedule\\\footnotesize chart, tracker};
   \node[feature, below=12mm of medicines, xshift=-17mm] (safety) {safety\\\footnotesize checks, notes};
   \node[feature, right=of safety] (storage) {storage\\\footnotesize save, export};
-  \node[soft, below=12mm of safety, xshift=17mm, minimum width=110mm] (shared) {shared kernel: time slots, dose format, strings, icons, UI primitives, tokens};
+  \node[soft, below=12mm of safety, xshift=17mm, minimum width=110mm] (shared) {shared kernel: intervals and clock times, dose format, strings, icons, UI primitives, tokens};
 
   \begin{scope}[on background layer]
     \node[draw=rule, dashed, rounded corners=2pt, inner sep=5mm, fit=(catalog) (schedule) (safety) (storage), label={[font=\footnotesize, text=inkmuted]north east:features}] {};
@@ -163,19 +163,19 @@ The catalog check refuses:
 \CatalogDrugs\ medicines in \CatalogClasses\ drug classes and \CatalogAreas\ areas. \CatalogIngredientsWithLimit\ of \CatalogIngredients\ ingredients have a usual daily maximum, \CatalogTimingRules\ medicines have a best time of day, and there are \CatalogWarnings\ warning stickers.
 
 \section{Signa entry}
-\texttt{parseSigna()} in \texttt{features/medicines/logic/signa.ts} is a pure function with 34 tests. It reads Latin and Indonesian aturan pakai and returns times, amount, form, food, ``when needed'' and a list of words it did not understand, which the form shows as ``Check: \dots''.
+\texttt{parseSigna()} in \texttt{features/medicines/logic/signa.ts} is a pure function with 34 tests. It reads Latin and Indonesian aturan pakai and returns an interval and first dose, amount, form, food, ``when needed'' and a list of words it did not understand, which the form shows as ``Check: \dots''.
 
 \begin{tabularx}{\linewidth}{@{}>{\ttfamily}p{44mm}X@{}}
 \toprule
 \textrm{\textbf{Signa}} & \textbf{Meaning in PillPlan} \\
 \midrule
-1 dd, 1x, o.d., q.d. & once a day: the drug's usual time, or Pagi \\
-2 dd, 2x, b.i.d., tiap 12 jam & Pagi and Malam \\
-3 dd, 3x, t.i.d., tiap 8 jam, q8h & Pagi, Siang and Malam \\
-4 dd, 4x, q.i.d., tiap 6 jam & Pagi, Siang, Malam and Sebelum tidur \\
-o.m., pagi & Pagi (omni mane) \\
-o.n., malam & Malam (omni nocte) \\
-h.s., sebelum tidur & Sebelum tidur (hora somni) \\
+1 dd, 1x, o.d., q.d. & every 24 hours, at the drug's usual time or 07.00 \\
+2 dd, 2x, b.i.d., tiap 12 jam & every 12 hours: 07.00 and 19.00 \\
+3 dd, 3x, t.i.d., tiap 8 jam, q8h & every 8 hours: 07.00, 15.00 and 23.00 \\
+4 dd, 4x, q.i.d., tiap 6 jam & every 6 hours: 07.00, 13.00, 19.00 and 01.00 \\
+o.m., pagi & first dose at 07.00 (omni mane) \\
+o.n., malam & first dose at 19.00 (omni nocte) \\
+h.s., sebelum tidur & first dose at 21.00 (hora somni) \\
 a.c., sebelum makan & before food (ante coenam) \\
 p.c., d.c., sesudah/saat makan & with or after food (post or durante coenam) \\
 p.r.n., s.o.s., bila perlu, k/p & when needed; ``3 dd 1 prn'' means at most 3 a day \\
@@ -196,7 +196,7 @@ More than 4 doses a day (for example \texttt{tiap 4 jam}) is never guessed: the 
   \node[cls] (drug) {\textcolor{white}{\textbf{Drug}}\nodepart{second}id, name, brands\\ingredients[], strengths[][]\\drugClass, area, form, unit\\defaultTimes, bestTimes\\food, warnings[], advice, source};
   \node[cls, right=of drug] (ing) {\textcolor{white}{\textbf{Ingredient}}\nodepart{second}id, name, unit\\usualMaxDaily, source};
   \node[cls, below=of ing] (warn) {\textcolor{white}{\textbf{WarningLabel}}\nodepart{second}id, short, text\\icon, sticker color};
-  \node[cls, below=of drug] (med) {\textcolor{white}{\textbf{Medicine}}\nodepart{second}id, drugId or null\\name, strength\\ingredientAmounts[]\\amount, form, times[]\\prn, prnMaxPerDay, food\\warnings[], purpose, advice\\pill: shape, color};
+  \node[cls, below=of drug] (med) {\textcolor{white}{\textbf{Medicine}}\nodepart{second}id, drugId or null\\name, strength\\ingredientAmounts[]\\amount, form\\every, firstDose\\prn, prnMaxPerDay, food\\warnings[], purpose, advice\\preparation};
   \node[cls, below=of med] (plan) {\textcolor{white}{\textbf{PlanState}}\nodepart{second}patientName\\medicines[]\\tracker: start, popped[]};
   \node[cls, right=of plan] (note) {\textcolor{white}{\textbf{SafetyNote}}\nodepart{second}id, kind, severity\\medicineIds[], title, detail};
 
@@ -248,7 +248,7 @@ The add is wrapped in a View Transition, so the new row slides in. Browsers with
   \draw[flow] (blocked) -- node[lbl, above] {export only} (fresh);
 \end{tikzpicture}
 \end{center}
-The browser copy and an exported file use the same envelope: \texttt{\{app, version, savedAt, plan\}}. Valibot checks it before use. Pill colors must be plain hex values, because they end up in an SVG fill.
+The browser copy and an exported file use the same envelope: \texttt{\{app, version, savedAt, plan\}}. Valibot checks it before use. The first dose must be a valid \texttt{HH:MM} and the interval one of 24, 12, 8 or 6 hours. Files from version 1, which used morning, noon, evening and bedtime, are migrated on load: the number of times becomes the interval (three times is every 8 hours from 07.00) and the pill shape becomes a sediaan.
 
 \section{Phone reminders}
 \texttt{buildIcs()} writes an iCalendar (RFC 5545) file in the browser: one daily event per time of day in use, each with an alarm, repeating for 30 days, in floating local time so it rings at the same clock time wherever the phone is. Text is escaped and long lines are folded at 75 bytes. The default times are 07:00, 12:00, 19:00 and 21:00 and can be changed before download. When-needed medicines get no reminder.
@@ -313,7 +313,7 @@ Motion & Material 3 tokens: standard easing \texttt{(0.2, 0, 0, 1)}, enter \text
 \end{tabularx}
 
 \subsection{Icons}
-Each time of day has its own shape, so they are never confused: \textbf{Pagi} a sun rising over the horizon, \textbf{Siang} a full sun, \textbf{Malam} a moon with a star, \textbf{Sebelum tidur} a bed with ``z''. When a time chip is switched on, its icon moves once: the sun rays turn, the rising sun lifts, the moon tilts, the ``z'' floats up. The icons are drawn as 24 px SVG with 2 px strokes, so they print sharply.
+Dose times are written as clock times (07.00, 15.00, 23.00). Each one gets a small sun or moon picked from the hour, only as a visual aid: a rising sun before 11.00, a full sun until 15.00, a moon with a star until 20.00 and a bed with ``z'' at night. The sediaan has its own drawings: a scored tablet, a two-tone capsule, a syrup bottle, and a suspension bottle with sediment and shake marks. The icons are drawn as 24 px SVG with 2 px strokes, so they print sharply.
 
 \subsection{Anti-slop rules}
 Taken from Anthropic's \texttt{frontend-design} skill and the \texttt{avoid-ai-design} catalog. PillPlan does not use:
@@ -327,7 +327,7 @@ Taken from Anthropic's \texttt{frontend-design} skill and the \texttt{avoid-ai-d
   \item sparkle icons or icons in rounded squares;
   \item marketing copy.
 \end{itemize}
-Motion is used only where it explains a change, built with CSS and the View Transitions API, so it adds no library:
+Motion is used only where it explains a change, built with CSS and the View Transitions API, so the app's main bundle adds no animation library:
 
 \begin{tabularx}{\linewidth}{@{}>{\bfseries}p{38mm}X@{}}
 \toprule
@@ -338,7 +338,8 @@ Dose stamp & Then each dose is pressed into its column like a pharmacy stamp, co
 Navbar icons & Hover or focus makes each icon act out its meaning (paper feed, bubble, dots). \\
 Signa preview & The preview turns bold, a check mark draws itself, and the time chips switch on with their icons moving. \\
 Drawer and strip & The More drawer slides in from the right; the safety strip opens downward with a turning chevron. \\
-Counseling timeline & A line from sunrise to night; the doses of the current medicine light up and a sun or moon marker slides to the first one. \\
+Dose clock & The doses sit on a 24-hour dial joined into one shape. Dragging the first dose turns the shape along the ring, so the gaps stay equal. \\
+Welcome to app & Leaving the welcome film, the PillPlan mark glides into the navbar while the rest cross-fades, in one 450 ms view transition. \\
 Counseling page turn & Next slides the medicine to the left, Back to the right, so the direction is clear. \\
 Note to rows & Pointing at a safety note outlines the medicines it is about and fades the rest. \\
 Day ribbon & The bars grow and shrink as medicines are added or removed. \\
@@ -346,6 +347,11 @@ Rows and language & Rows slide when added, removed or reordered; the language sw
 Tracker and notes & A blister bubble pops when ticked; a new safety note arrives like a slapped sticker. \\
 \bottomrule
 \end{tabularx}
+
+\subsection{Welcome film and 3D model}
+The welcome film is a Remotion project in \texttt{web/video/} that is \emph{rendered ahead of time}, not played live. \texttt{npm run video:render} writes, for each language, a VP9 webm with a transparent background (the page grid shows through it), an H.264 mp4 on the desk colour for Safari, and a poster image. Each file must stay under 600 KB or the script stops. The site plays them with a plain \texttt{<video>}, muted, with a sound toggle, so no Remotion code reaches the browser. The English film has a narration from the public domain LJSpeech voice (Piper TTS, offline, \texttt{npm run video:voice}); both films have generated sound effects. Rendering uses the GPU through ANGLE when it is available.
+
+Counseling mode shows the sediaan as a 3D model built from simple shapes with three.js and react-three-fiber. It is loaded only there, renders only when it is dragged, and falls back to the flat drawing without WebGL or with reduced motion.
 
 Same-document View Transitions work in Chrome, Edge, Firefox 144+ and Safari 18+; other browsers simply update. All motion is switched off when the device asks for reduced motion.
 

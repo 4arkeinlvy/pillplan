@@ -1,3 +1,4 @@
+import { isLiquid } from '@/shared/domain/time';
 import type { Medicine } from '../model';
 import { DEFAULT_PRN_MAX } from './fromDrug';
 import type { SignaResult } from './signa';
@@ -10,15 +11,18 @@ export function applySigna(medicine: Medicine, signa: string, result: SignaResul
   const next: Medicine = { ...medicine, signa };
   if (result.prn) {
     next.prn = true;
-    next.times = [];
     next.prnMaxPerDay = result.maxPerDay ?? medicine.prnMaxPerDay ?? DEFAULT_PRN_MAX;
-  } else if (result.times) {
+  } else if (result.interval) {
     next.prn = false;
-    next.times = result.times;
+    next.every = result.interval.every;
+    next.firstDose = result.interval.firstDose;
     next.prnMaxPerDay = null;
   }
   if (result.amount !== null) next.amount = result.amount;
   if (result.food) next.food = result.food;
-  if (result.form && medicine.drugId === null) next.form = result.form;
+  if (result.form && medicine.drugId === null) {
+    next.form = result.form;
+    if (result.form === 'mL' && !isLiquid(next.preparation)) next.preparation = 'syrup';
+  }
   return next;
 }

@@ -35,11 +35,45 @@ describe('browser storage', () => {
     expect(loadPlan(window.localStorage).status).toBe('invalid');
 
     const tampered = JSON.parse(serializePlan(example(), now)) as {
-      plan: { medicines: { pill: { color: string } }[] };
+      plan: { medicines: { firstDose: string }[] };
     };
-    tampered.plan.medicines[0]!.pill.color = 'red;background:url(x)';
+    tampered.plan.medicines[0]!.firstDose = '25:00';
     window.localStorage.setItem(PLAN_KEY, JSON.stringify(tampered));
     expect(loadPlan(window.localStorage).status).toBe('invalid');
+  });
+
+  it('moves an old day-part plan onto even intervals', () => {
+    const base = example().medicines[0]!;
+    const rest: Record<string, unknown> = { ...base };
+    delete rest.every;
+    delete rest.firstDose;
+    delete rest.preparation;
+    const v1 = {
+      app: 'pillplan',
+      version: 1,
+      savedAt: now.toISOString(),
+      plan: {
+        patientName: 'A',
+        tracker: { start: '2026-11-02', popped: ['d0-morning'] },
+        medicines: [
+          {
+            ...rest,
+            times: ['morning', 'noon', 'evening'],
+            pill: { shape: 'capsule', color: '#FFFFFF' },
+          },
+        ],
+      },
+    };
+    window.localStorage.setItem(PLAN_KEY, JSON.stringify(v1));
+    const result = loadPlan(window.localStorage);
+    expect(result.status).toBe('restored');
+    if (result.status !== 'restored') return;
+    expect(result.plan.medicines[0]).toMatchObject({
+      every: 8,
+      firstDose: '07:00',
+      preparation: 'capsule',
+    });
+    expect(result.plan.tracker.popped).toEqual([]);
   });
 
   it('works without storage', () => {

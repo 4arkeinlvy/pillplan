@@ -1,5 +1,6 @@
 import type { Catalog, Drug } from '@/features/catalog';
-import { dosesPerDay, type Medicine } from '@/features/medicines';
+import { dosesPerDay, medicineDoseTimes, type Medicine } from '@/features/medicines';
+import { dayPartOf } from '@/shared/domain/time';
 import { formatNumber } from '@/shared/format/dose';
 import { local, type Lang, type Strings } from '@/shared/i18n';
 import type { SafetyNote, Severity } from '../model';
@@ -106,7 +107,8 @@ function duplicateNotes(
 function timingNotes(items: readonly Checked[], t: Strings, lang: Lang): SafetyNote[] {
   return items.flatMap(({ medicine, drug }) => {
     const best = drug.bestTimes;
-    if (medicine.prn || best.length === 0 || medicine.times.every((t) => best.includes(t))) {
+    const onTime = medicineDoseTimes(medicine).every(({ time }) => best.includes(dayPartOf(time)));
+    if (medicine.prn || best.length === 0 || onTime) {
       return [];
     }
     return [

@@ -16,7 +16,7 @@ const noAppFromBelow = {
 };
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage'] },
+  { ignores: ['dist', 'coverage', 'scripts/*.mjs', 'public'] },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
@@ -93,5 +93,17 @@ export default tseslint.config(
   {
     files: ['eslint.config.js'],
     rules: { 'import-x/no-named-as-default-member': 'off' },
+  },
+  {
+    // react-three-fiber elements take three.js props (position, args, intensity) that the DOM rule does not know.
+    files: ['src/**/*3D.tsx'],
+    rules: { 'react/no-unknown-property': 'off' },
+  },
+  {
+    // The intro film is a build-time Remotion project; it may reach into feature internals
+    // that have no CSS, because the app's public APIs pull in CSS modules webpack cannot load.
+    files: ['video/**/*.{ts,tsx}', 'scripts/**/*.ts'],
+    languageOptions: { globals: globals.node },
+    rules: { 'no-restricted-imports': 'off' },
   },
 );

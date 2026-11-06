@@ -1,9 +1,10 @@
-import type { TimeSlot } from '@/shared/domain/time';
+import type { ClockTime } from '@/shared/domain/time';
 
 export const TRACKER_DAYS = 7;
 
-export function doseKey(day: number, slot: TimeSlot): string {
-  return `d${day}-${slot}`;
+/** Tracker bubble for one dose time on one day of the week, like "d0-0700". */
+export function doseKey(day: number, time: ClockTime): string {
+  return `d${day}-${time.replace(':', '')}`;
 }
 
 /** Local calendar date as yyyy-mm-dd. */

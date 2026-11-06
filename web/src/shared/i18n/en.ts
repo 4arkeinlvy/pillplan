@@ -2,7 +2,7 @@
  * English text. Every piece of interface text lives here, so the app can be translated
  * in one place. Plain words, numbers as digits, no dashes as punctuation.
  */
-import type { DoseForm, FoodRule, TimeSlot } from '@/shared/domain/time';
+import type { DoseForm, FoodRule, IntervalHours, Preparation } from '@/shared/domain/time';
 
 const list = (items: readonly string[]): string =>
   items.length <= 1
@@ -24,6 +24,7 @@ export const en = {
     purposes: {
       metformin: 'for diabetes',
       amlodipine: 'for blood pressure',
+      amoxicillin: 'for the infection',
       simvastatin: 'for cholesterol',
       paracetamol: 'for pain',
     } as Record<string, string>,
@@ -42,12 +43,60 @@ export const en = {
       'Starter drug data comes from US FDA labels. Check it against your own formulary before real use.',
     privacy: 'Everything stays in this browser. Nothing is uploaded.',
   },
-  slots: {
-    morning: 'Morning',
-    noon: 'Noon',
-    evening: 'Evening',
-    bedtime: 'Bedtime',
-  } satisfies Record<TimeSlot, string>,
+  welcome: {
+    title: 'Clear medicine plans the patient can actually follow',
+    film: 'Short film: how PillPlan turns a prescription into an even schedule',
+    start: 'Start a plan',
+    skip: 'Skip intro',
+    soundOn: 'Turn sound on',
+    soundOff: 'Turn sound off',
+    replay: 'Intro',
+    replayHint: 'Watch the short introduction again',
+    points: {
+      interval: '3x a day means every 8 hours, also at night',
+      forms: 'Tablet, capsule, syrup or suspension at a glance',
+      reminder: "Reminders straight to the patient's phone",
+    },
+    problem: 'When do I take these?',
+    oldWay: ['Morning', 'Noon', 'Night'] as readonly string[],
+    counter: 'The pharmacist types the prescription',
+    typedSigna: '3 dd 1 caps p.c.',
+    rule: '3 times a day = every 8 hours',
+    ruleSub: 'Even gaps keep the medicine working day and night.',
+    formsTitle: 'Know the form on the shelf',
+    shakeTag: 'Shake well',
+    reminder: 'Time for your medicine',
+    home: 'At home, one tap per dose',
+    tagline: 'A chart the patient can follow.',
+  },
+  interval: {
+    every: (hours: IntervalHours) => (hours === 24 ? 'Once a day' : `Every ${hours} hours`),
+    perDay: (count: number) => (count === 1 ? 'once a day' : `${count} times a day`),
+    choice: (hours: IntervalHours) =>
+      hours === 24 ? 'Every 24 hours (1x)' : `Every ${hours} hours (${24 / hours}x)`,
+  },
+  clock: {
+    label: (every: string, times: readonly string[]) => `${every}: ${list(times)}`,
+    firstDose: 'First dose of the day',
+    valueText: (times: readonly string[]) =>
+      `First dose ${times[0] ?? ''}, then ${list(times.slice(1)) || 'none'}`,
+    hint: 'Drag the ringed dot or use the arrow keys. The other doses follow.',
+  },
+  preparation: {
+    legend: 'Preparation',
+    names: {
+      tablet: 'Tablet',
+      capsule: 'Capsule',
+      syrup: 'Syrup',
+      suspension: 'Suspension',
+    } satisfies Record<Preparation, string>,
+    note: {
+      tablet: '',
+      capsule: '',
+      syrup: 'Measure with the dosing spoon or cup, not a kitchen spoon.',
+      suspension: 'Shake well before each dose. Measure with the dosing spoon or cup.',
+    } satisfies Record<Preparation, string>,
+  },
   whenNeeded: 'When needed',
   food: {
     before: 'Before food',
@@ -64,8 +113,8 @@ export const en = {
     placeholder: 'For example 3 dd 1 tab p.c. or 2x1 sesudah makan',
     hint: 'Type the signa from the prescription. Times, amount and food fill in below.',
     timesCount: (count: number) => (count === 1 ? 'Once a day' : `${count} times a day`),
-    preview: (count: string, slots: string, dose: string, food: string | null) =>
-      [`${count}: ${slots}`, dose, food].filter(Boolean).join('. ') + '.',
+    preview: (every: string, times: string, dose: string, food: string | null) =>
+      [`${every}: ${times}`, dose, food].filter(Boolean).join('. ') + '.',
     previewPrn: (dose: string, max: number | null) =>
       max ? `When needed: ${dose}, at most ${max} times a day.` : `When needed: ${dose}.`,
     check: (tokens: readonly string[]) => `Check: ${tokens.join(', ')}`,
@@ -84,17 +133,11 @@ export const en = {
     heading: 'Phone reminders',
     hint: 'Download a calendar file and open it on the phone for daily reminders.',
     export: 'Add to phone calendar',
-    times: 'Clock time for each part of the day',
-    hour: 'Hour',
-    minute: 'Minute',
-    done: 'Done',
+    times: 'Reminder times (set on each medicine)',
     none: 'Add a medicine with a fixed time first.',
     eventTitle: (slot: string) => `Medicines: ${slot}`,
     eventLine: (name: string, dose: string) => `${name}: ${dose}`,
     repeats: (days: number) => `Repeats every day for ${days} days.`,
-  },
-  timeline: {
-    label: 'When in the day',
   },
   drawer: {
     more: 'More',
@@ -133,7 +176,9 @@ export const en = {
     more: 'More',
     form: 'Form',
     forms: { tablet: 'Tablet', capsule: 'Capsule', mL: 'Liquid (mL)', puff: 'Puff', drop: 'Drop' },
-    when: 'When to take it',
+    when: 'How often',
+    firstDose: 'First dose',
+    firstDoseHint: 'The other doses follow at even gaps, also through the night.',
     whenNeededHint: 'Only when the patient needs it, for example for pain.',
     maxPerDay: 'Most times a day',
     timesUnit: 'times',
@@ -142,19 +187,16 @@ export const en = {
     purpose: 'What it is for',
     purposeHint: 'Plain words, for example "for blood pressure".',
     advice: 'Note for the patient',
-    pillLook: 'How the pill looks',
-    shape: 'Shape',
-    shapes: { round: 'Round', oval: 'Oval', capsule: 'Capsule' },
-    color: 'Color',
     add: 'Add to chart',
     save: 'Save changes',
     moreDetails: 'More details',
-    moreDetailsHint: 'Warnings, purpose, pill look and note',
+    moreDetailsHint: 'Warnings, purpose and note',
     cancel: 'Cancel',
     errors: {
       name: 'Enter the medicine name.',
       amount: 'Enter an amount above zero.',
-      times: 'Choose at least one time, or "When needed".',
+      times: 'Choose how often, or "When needed".',
+      firstDose: 'Enter the first dose as HH:MM, for example 07:00.',
       maxPerDay: 'Enter how many times a day, from 1 to 24.',
     },
   },
@@ -194,8 +236,8 @@ export const en = {
     emptyTitle: 'The chart is empty',
     emptyBody:
       'Search a medicine on the left, or type the signa from the prescription. It appears here straight away.',
-    spotlightLabel: 'Highlight one time of day',
-    spotlightHint: (slot: string) => `Highlight the ${slot.toLowerCase()} doses`,
+    spotlightLabel: 'Highlight one dose time',
+    spotlightHint: (time: string) => `Highlight the ${time} doses`,
     medicinesAt: (count: number) => (count === 1 ? '1 medicine' : `${count} medicines`),
     footer: 'Bring this chart to every doctor and pharmacy visit.',
   },
@@ -203,8 +245,8 @@ export const en = {
     heading: '7-day tracker',
     hint: 'Tap a bubble each time the doses are taken.',
     reset: 'Start a new week',
-    bubble: (day: string, slot: string, taken: boolean) =>
-      `${day}, ${slot}: ${taken ? 'taken' : 'not taken yet'}`,
+    bubble: (day: string, time: string, taken: boolean) =>
+      `${day}, ${time}: ${taken ? 'taken' : 'not taken yet'}`,
   },
   counsel: {
     title: 'Counseling mode',
@@ -219,7 +261,6 @@ export const en = {
     next: 'Next',
     done: 'Done',
     close: 'Close',
-    at: (slot: string, dose: string) => `${slot}: ${dose}`,
   },
   safety: {
     heading: 'Safety notes',

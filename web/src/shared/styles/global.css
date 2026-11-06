@@ -102,6 +102,11 @@ a {
   animation-timing-function: var(--ease-standard);
 }
 
+/* Welcome to app: the mark glides into the navbar, the one long orchestrated moment. */
+::view-transition-group(wordmark) {
+  animation-duration: var(--dur-long);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
